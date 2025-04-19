@@ -129,5 +129,5 @@ Thank you for contributing to make the U-eAdmission Online System better!
 ## 👥 Team Members
 
 - [Md. Atikur Rahaman](https://github.com/Atik203) - **Team Leader**
-- []Sagor Ahmed
-- []Md. Salman Rohoman Nayeem
+- [Sagor Ahmed](https://github.com/SASagorAhmed)
+- [Md. Salman Rohoman Nayeem](https://github.com/Md-Salman-Rahman339)
