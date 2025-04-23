@@ -34,6 +34,12 @@ The U-eAdmission Online System is a comprehensive JavaFX application designed to
 
 </details>
 
+### Registration Screen
+![Student Registration](img/Registration.png)
+
+### Login Screen
+![Login Screen](img/Login.png)
+
 ### About Screen
 ![About Screen](img/about-1.png)
 

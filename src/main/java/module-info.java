@@ -17,7 +17,13 @@ module com.u.eadmission.ueadmission {
 
     opens com.ueadmission to javafx.fxml;
     opens com.ueadmission.about to javafx.fxml;
+    opens com.ueadmission.auth to javafx.fxml;
+    opens com.ueadmission.student to javafx.fxml;
+    opens com.ueadmission.admin to javafx.fxml;
     
     exports com.ueadmission;
     exports com.ueadmission.about;
+    exports com.ueadmission.auth;
+    exports com.ueadmission.student;
+    exports com.ueadmission.admin;
 }
