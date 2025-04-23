@@ -31,7 +31,13 @@ The U-eAdmission Online System is a comprehensive JavaFX application designed to
 ![Home Screen 2](img/Home-2.png)
 
 ![Home Screen 3](img/Home-3.png)
+
 </details>
+
+### About Screen
+![About Screen](img/about-1.png)
+
+
 
 ## 🛠️ Technologies
 
