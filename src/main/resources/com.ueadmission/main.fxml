@@ -33,13 +33,15 @@
                 </ImageView>
                 <Label id="title" style="-fx-text-fill: white; -fx-font-weight: bold;" text="United International University" />
                 <Region fx:id="spacer" HBox.hgrow="ALWAYS" />
-                <MFXButton id="nav-button" styleClass="mfx-button" text="Home" />
-                <MFXButton id="nav-button" styleClass="mfx-button" text="About" />
-                <MFXButton id="nav-button" styleClass="mfx-button" text="Admission" />
-                <MFXButton id="nav-button" styleClass="mfx-button" text="Mock Test" />
-                <MFXButton id="nav-button" styleClass="mfx-button" text="Contact" />
-                <MFXButton id="login-button" styleClass="mfx-button-login" text="Login" />
+                <MFXButton id="nav-button" fx:id="homeButton" styleClass="mfx-button" text="Home" />
+                <MFXButton id="nav-button" fx:id="aboutButton" styleClass="mfx-button" text="About" />
+                <MFXButton id="nav-button" fx:id="admissionButton" styleClass="mfx-button" text="Admission" />
+                <MFXButton id="nav-button" fx:id="mockTestButton" styleClass="mfx-button" text="Mock Test" />
+                <MFXButton id="nav-button" fx:id="contactButton" styleClass="mfx-button" text="Contact" />
+                <MFXButton id="login-button" fx:id="loginButton" styleClass="mfx-button-login" text="Login" />
             </HBox>
+            
+            <!-- Content Container - No StackPane wrapping -->
 
             <!-- 🦸 Hero Section -->
             <HBox id="hero" alignment="CENTER" spacing="50">
@@ -52,7 +54,7 @@
                     <Label id="hero-description" text="Students must login first to apply for admission and access all services. Create an account to get started with your journey at UIU." wrapText="true" />
                     <HBox spacing="15" alignment="CENTER_LEFT">
                         <MFXButton id="get-started-btn" styleClass="mfx-button-primary" text="Apply Now" />
-                        <MFXButton id="learn-more-btn" styleClass="mfx-button-outline" text="Learn More" />
+                        <MFXButton id="learn-more-btn" fx:id="learnMoreBtn" styleClass="mfx-button-outline" text="Learn More" />
                     </HBox>
                 </VBox>
                 <ImageView fitHeight="280" fitWidth="280">
