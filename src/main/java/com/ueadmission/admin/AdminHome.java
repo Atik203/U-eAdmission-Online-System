@@ -1,4 +1,4 @@
 package com.ueadmission.admin;
 
-public class AdminLogin {
+public class AdminHome {
 }
