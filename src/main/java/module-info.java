@@ -14,6 +14,7 @@ module com.u.eadmission.ueadmission {
     requires atlantafx.base;
     requires MaterialFX;
     requires java.desktop;
+    requires java.sql;
 
     opens com.ueadmission to javafx.fxml;
     opens com.ueadmission.about to javafx.fxml;
