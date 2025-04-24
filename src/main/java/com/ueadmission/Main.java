@@ -18,7 +18,7 @@ public class Main extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("/com.ueadmission/main.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 1280, 768);
         // set the fullscreen mode
-
+//       hi Our team leader name:Atikur Rahman
         Image icon = new Image(getClass().getResourceAsStream("/com.ueadmission/uiu_logo_update.png"));
         stage.getIcons().add(icon);
         stage.setMaximized(true);
