@@ -6,7 +6,7 @@ public class MyJDBC {
     // Database connection parameters
     private static final String DB_URL = "jdbc:mysql://127.0.0.1:3306/login_schema";
     private static final String DB_USER = "root";
-    private static final String DB_PASSWORD = "poi@20470";
+    private static final String DB_PASSWORD = "";
 
     public static boolean authenticateUser(String email, String password) {
         String query = "SELECT * FROM users WHERE email_address = ? AND password = ?";
