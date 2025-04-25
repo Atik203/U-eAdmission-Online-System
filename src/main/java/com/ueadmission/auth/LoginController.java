@@ -128,8 +128,47 @@ public class LoginController {
     }
 
     // Navigation methods (unchanged)
-    public void navigateToAbout(ActionEvent event) { /* ... */ }
-    public void navigateToRegistration(ActionEvent event) { /* ... */ }
+    @FXML
+    public void navigateToAbout(ActionEvent event) {
+        try {
+            // Get current stage and its properties
+            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            double width = currentStage.getWidth();
+            double height = currentStage.getHeight();
+            double x = currentStage.getX();
+            double y = currentStage.getY();
+            boolean maximized = currentStage.isMaximized();
+
+            // Prepare the About window before closing current one
+            Stage aboutWindow = About.prepareAboutWindow(width, height, x, y, maximized);
+            if (aboutWindow != null) {
+                // Apply smooth transition
+                applyTransition(currentStage, aboutWindow);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println("Failed to navigate to about: " + e.getMessage());
+        }
+    }
+    @FXML
+    public void navigateToRegistration(ActionEvent event) {
+        try {
+            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            double width = currentStage.getWidth();
+            double height = currentStage.getHeight();
+            double x = currentStage.getX();
+            double y = currentStage.getY();
+            boolean maximized = currentStage.isMaximized();
+
+            // Assuming Auth.prepareRegistrationWindow() loads the registration scene
+            Stage registrationStage = Auth.prepareRegistrationWindow(width, height, x, y, maximized);
+
+            applyTransition(currentStage, registrationStage);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public void navigateToAdmission(ActionEvent event) { /* ... */ }
     public void navigateToMockTest(ActionEvent event) { /* ... */ }
     public void navigateToContact(ActionEvent event) { /* ... */ }
