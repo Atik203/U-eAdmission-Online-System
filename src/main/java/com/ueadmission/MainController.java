@@ -24,6 +24,12 @@ public class MainController {
     private MFXButton loginButton;
     
     @FXML
+    private MFXButton applyNowBtn; // "Apply Now" button in the hero section
+    
+    @FXML
+    private MFXButton learnMoreAboutUIUBtn; // "Learn More About UIU" button in the about section
+    
+    @FXML
     private void initialize() {
         // Set up the About button click action
         aboutButton.setOnAction(event -> openAboutPage(event));
@@ -33,6 +39,16 @@ public class MainController {
         
         // Set up the Login button click action
         loginButton.setOnAction(event -> openLoginPage(event));
+        
+        // Set up the Apply Now button to open login page
+        if (applyNowBtn != null) {
+            applyNowBtn.setOnAction(event -> openLoginPage(event));
+        }
+        
+        // Set up the Learn More About UIU button to open about page
+        if (learnMoreAboutUIUBtn != null) {
+            learnMoreAboutUIUBtn.setOnAction(event -> openAboutPage(event));
+        }
     }
     
     /**
@@ -146,5 +162,39 @@ public class MainController {
     @FXML
     protected void onHelloButtonClick() {
         welcomeText.setText("Welcome to JavaFX Application!");
+    }
+    
+    /**
+     * Helper method to find a button by its ID in the scene graph
+     * @param id The ID of the button to find
+     * @return The found button or null if not found
+     */
+    private MFXButton findButtonById(String id) {
+        try {
+            return (MFXButton) welcomeText.getScene().lookup("#" + id);
+        } catch (Exception e) {
+            System.err.println("Could not find button with ID: " + id);
+            return null;
+        }
+    }
+    
+    /**
+     * Helper method to find a button by its text in the scene graph
+     * @param text The text of the button to find
+     * @return The found button or null if not found
+     */
+    private MFXButton findButtonByText(String text) {
+        try {
+            // Find all MFXButtons in the scene
+            for (Node node : welcomeText.getScene().getRoot().lookupAll(".mfx-button, .mfx-button-outline")) {
+                if (node instanceof MFXButton button && text.equals(button.getText())) {
+                    return button;
+                }
+            }
+            return null;
+        } catch (Exception e) {
+            System.err.println("Could not find button with text: " + text);
+            return null;
+        }
     }
 }

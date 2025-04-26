@@ -53,7 +53,7 @@
                     <Label id="hero-subtitle" text="Apply, Prepare, Succeed — All in One Place" wrapText="true" />
                     <Label id="hero-description" text="Students must login first to apply for admission and access all services. Create an account to get started with your journey at UIU." wrapText="true" />
                     <HBox spacing="15" alignment="CENTER_LEFT">
-                        <MFXButton id="get-started-btn" styleClass="mfx-button-primary" text="Apply Now" />
+                        <MFXButton id="get-started-btn" fx:id="applyNowBtn" styleClass="mfx-button-primary" text="Apply Now" />
                         <MFXButton id="learn-more-btn" fx:id="learnMoreBtn" styleClass="mfx-button-outline" text="Learn More" />
                     </HBox>
                 </VBox>
@@ -125,7 +125,7 @@
                         <Label styleClass="about-text" wrapText="true" text="United International University (UIU) is one of the leading private universities in Bangladesh. Established in 2003, UIU has been committed to excellence in education, research, and innovation." />
                         <Label styleClass="about-text" wrapText="true" text="With modern facilities, qualified faculty members, and industry-focused curriculum, UIU prepares students to meet the challenges of the global job market and contribute to the society." />
                         <Label styleClass="about-stats" text="20+ Departments | 15,000+ Students | 500+ Faculty Members" />
-                        <MFXButton styleClass="mfx-button-outline" text="Learn More About UIU" />
+                        <MFXButton fx:id="learnMoreAboutUIUBtn" styleClass="mfx-button-outline" text="Learn More About UIU" />
                     </VBox>
                 </HBox>
             </VBox>
