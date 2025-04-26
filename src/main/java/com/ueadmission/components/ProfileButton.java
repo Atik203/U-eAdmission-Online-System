@@ -34,7 +34,7 @@ public class ProfileButton extends HBox {
     
     private final MFXButton loginButton = new MFXButton("Login");
     private final MFXButton profileButton = new MFXButton();
-    private final Circle profileCircle = new Circle(15, Color.valueOf("#FA4506"));
+    private final Circle profileCircle = new Circle(20, Color.valueOf("#FA4506"));  // Increased size to 20
     private final Text initialsText = new Text();
     private final StringProperty displayName = new SimpleStringProperty("Guest");
     
@@ -105,11 +105,12 @@ public class ProfileButton extends HBox {
      * Create the profile graphic with circle and initials
      */
     private HBox createProfileGraphic() {
-        HBox graphic = new HBox(5);
+        HBox graphic = new HBox();  // Removed spacing since we're only showing the avatar
+        graphic.setAlignment(Pos.CENTER);
         graphic.getStyleClass().add("profile-graphic");
-        
+
         // Add initials to circle
-        profileCircle.setRadius(15);
+        profileCircle.setRadius(20);  // Increased size to 20
         initialsText.textProperty().bind(new SimpleStringProperty("").concat(
             displayName.map(name -> {
                 if (name == null || name.isEmpty()) return "";
@@ -122,43 +123,42 @@ public class ProfileButton extends HBox {
                 return "";
             })
         ));
-        
+
         // Stack circle and text
         javafx.scene.layout.StackPane circleStack = new javafx.scene.layout.StackPane();
         circleStack.getChildren().addAll(profileCircle, initialsText);
-        
-        // Create label with username
-        Text usernameText = new Text();
-        usernameText.textProperty().bind(displayName);
-        usernameText.getStyleClass().add("profile-name");
-        
-        graphic.getChildren().addAll(circleStack, usernameText);
+
+        // Only add the circle stack (removed usernameText)
+        graphic.getChildren().add(circleStack);
         return graphic;
     }
-    
+
     /**
      * Create the profile context menu
      */
     private void createProfileMenu() {
         profileMenu = new ContextMenu();
-        
+        profileMenu.getStyleClass().add("profile-context-menu");
+
         MenuItem profileMenuItem = new MenuItem("My Profile");
+        profileMenuItem.setStyle("-fx-text-fill: #2E3B55; -fx-font-weight: bold; -fx-padding: 8 15;");
         profileMenuItem.setOnAction(e -> handleProfileClick());
-        
-            // Role-based menu items will be added dynamically when user logs in
-            
-            MenuItem logoutMenuItem = new MenuItem("Logout");
-            logoutMenuItem.setOnAction(e -> handleLogoutClick());
-            
-            // Add the basic items that all users have
+
+        // Role-based menu items will be added dynamically when user logs in
+
+        MenuItem logoutMenuItem = new MenuItem("Logout");
+        logoutMenuItem.setStyle("-fx-text-fill: #FF3B30; -fx-font-weight: bold; -fx-padding: 8 15;");  // Red text
+        logoutMenuItem.setOnAction(e -> handleLogoutClick());
+
+        // Add the basic items that all users have
         profileMenu.getItems().addAll(profileMenuItem, logoutMenuItem);
-        
+
         // Show menu on profile button click
         profileButton.setOnAction(e -> {
             profileMenu.show(profileButton, javafx.geometry.Side.BOTTOM, 0, 10);
         });
     }
-    
+
     /**
      * Subscribe to auth state changes
      */
@@ -167,42 +167,42 @@ public class ProfileButton extends HBox {
         authStateListener = state -> {
             updateUIFromAuthState(state);
         };
-        
+
         // Subscribe to auth state changes
         AuthStateManager.getInstance().subscribe(authStateListener);
     }
-    
+
     /**
      * Update UI based on auth state
      */
     public void updateUIFromAuthState(AuthState state) {
         System.out.println("ProfileButton.updateUIFromAuthState called");
-        
+
         if (state != null && state.isAuthenticated() && state.getUser() != null) {
             // User is authenticated, show profile button
             User user = state.getUser();
             String fullName = user.getFirstName() + " " + user.getLastName();
             System.out.println("Authenticated user: " + fullName + " (Email: " + user.getEmail() + ")");
-            
+
             displayName.set(fullName);
-            
+
             // Update menu based on user role
             updateMenuForUserRole(user.getRole());
-            
+
             // Update UI on JavaFX thread
             javafx.application.Platform.runLater(() -> {
                 try {
                     this.getChildren().clear();
-                    
+
                     // Add profile button and check if it was successful
                     this.getChildren().add(profileButton);
-                    
+
                     // Log successful update
                     System.out.println("UI updated to show profile button for: " + fullName);
-                    
+
                     // Force layout refresh
                     this.requestLayout();
-                    
+
                     // Update button tooltip only, don't set text to avoid duplication
                     profileButton.setText("");
                     profileButton.setTooltip(new javafx.scene.control.Tooltip("Logged in as " + fullName));
@@ -215,39 +215,51 @@ public class ProfileButton extends HBox {
             // User is not authenticated, show login button
             System.out.println("No authenticated user, showing login button");
             displayName.set("Guest");
-            
+
             // Update UI on JavaFX thread
             javafx.application.Platform.runLater(() -> {
-                this.getChildren().clear();
-                this.getChildren().add(loginButton);
-                System.out.println("UI updated to show login button");
+                try {
+                    this.getChildren().clear();
+                    this.getChildren().add(loginButton);
+                    System.out.println("UI updated to show login button");
+
+                    // Force layout refresh
+                    this.requestLayout();
+                } catch (Exception e) {
+                    System.err.println("Error updating login button UI: " + e.getMessage());
+                    e.printStackTrace();
+                }
             });
         }
     }
-        
+
         /**
          * Updates the profile menu based on user role
          */
         private void updateMenuForUserRole(String role) {
             // Clear existing menu items
             profileMenu.getItems().clear();
-            
+
             // Common items for all users
             MenuItem profileMenuItem = new MenuItem("My Profile");
+            profileMenuItem.setStyle("-fx-text-fill: #2E3B55; -fx-font-weight: bold; -fx-padding: 8 15;");
             profileMenuItem.setOnAction(e -> handleProfileClick());
-            
-            // Add role-specific menu items
+
+            // Add role-specific menu items with styling
             if ("student".equalsIgnoreCase(role)) {
                 // Student menu items
                 MenuItem applicationMenuItem = new MenuItem("Application");
+                applicationMenuItem.setStyle("-fx-text-fill: #2E3B55; -fx-padding: 8 15;");
                 applicationMenuItem.setOnAction(e -> navigateTo("application"));
-                
+
                 MenuItem resultMenuItem = new MenuItem("Result");
+                resultMenuItem.setStyle("-fx-text-fill: #2E3B55; -fx-padding: 8 15;");
                 resultMenuItem.setOnAction(e -> navigateTo("result"));
-                
+
                 MenuItem examScheduleMenuItem = new MenuItem("Exam Schedule");
+                examScheduleMenuItem.setStyle("-fx-text-fill: #2E3B55; -fx-padding: 8 15;");
                 examScheduleMenuItem.setOnAction(e -> navigateTo("examschedule"));
-                
+
                 profileMenu.getItems().addAll(
                     profileMenuItem,
                     applicationMenuItem,
@@ -255,28 +267,35 @@ public class ProfileButton extends HBox {
                     examScheduleMenuItem
                 );
             } else if ("admin".equalsIgnoreCase(role)) {
-                // Admin menu items
+                // Admin menu items with styled menu items
                 MenuItem manageStudentMenuItem = new MenuItem("Manage Student");
+                manageStudentMenuItem.setStyle("-fx-text-fill: #2E3B55; -fx-padding: 8 15;");
                 manageStudentMenuItem.setOnAction(e -> navigateTo("managestudent"));
-                
+
                 MenuItem manageAdminMenuItem = new MenuItem("Manage User (Admin)");
+                manageAdminMenuItem.setStyle("-fx-text-fill: #2E3B55; -fx-padding: 8 15;");
                 manageAdminMenuItem.setOnAction(e -> navigateTo("manageadmin"));
-                
+
                 MenuItem examScheduleMenuItem = new MenuItem("Set Exam Schedule");
+                examScheduleMenuItem.setStyle("-fx-text-fill: #2E3B55; -fx-padding: 8 15;");
                 examScheduleMenuItem.setOnAction(e -> navigateTo("setexamschedule"));
-                
+
                 MenuItem publishResultMenuItem = new MenuItem("Publish Result");
+                publishResultMenuItem.setStyle("-fx-text-fill: #2E3B55; -fx-padding: 8 15;");
                 publishResultMenuItem.setOnAction(e -> navigateTo("publishresult"));
-                
+
                 MenuItem approveApplicationMenuItem = new MenuItem("Approve Application");
+                approveApplicationMenuItem.setStyle("-fx-text-fill: #2E3B55; -fx-padding: 8 15;");
                 approveApplicationMenuItem.setOnAction(e -> navigateTo("approveapplication"));
-                
+
                 MenuItem addQuestionMenuItem = new MenuItem("Add Question Paper");
+                addQuestionMenuItem.setStyle("-fx-text-fill: #2E3B55; -fx-padding: 8 15;");
                 addQuestionMenuItem.setOnAction(e -> navigateTo("addquestion"));
-                
+
                 MenuItem monitorExamMenuItem = new MenuItem("Exam Monitoring");
+                monitorExamMenuItem.setStyle("-fx-text-fill: #2E3B55; -fx-padding: 8 15;");
                 monitorExamMenuItem.setOnAction(e -> navigateTo("exammonitoring"));
-                
+
                 profileMenu.getItems().addAll(
                     profileMenuItem,
                     manageStudentMenuItem,
@@ -291,13 +310,18 @@ public class ProfileButton extends HBox {
                 // Default menu for unknown roles
                 profileMenu.getItems().add(profileMenuItem);
             }
-            
-            // Logout menu item for all users
+
+            // Add separator before logout
+            javafx.scene.control.SeparatorMenuItem separator = new javafx.scene.control.SeparatorMenuItem();
+            profileMenu.getItems().add(separator);
+
+            // Logout menu item for all users - Red text
             MenuItem logoutMenuItem = new MenuItem("Logout");
+            logoutMenuItem.setStyle("-fx-text-fill: #FF3B30; -fx-font-weight: bold; -fx-padding: 8 15;");
             logoutMenuItem.setOnAction(e -> handleLogoutClick());
             profileMenu.getItems().add(logoutMenuItem);
         }
-        
+
         /**
          * Navigate to a specific screen
          */
@@ -313,7 +337,7 @@ public class ProfileButton extends HBox {
                 e.printStackTrace();
             }
         }
-    
+
     /**
      * Handle login button click
      */
@@ -326,21 +350,21 @@ public class ProfileButton extends HBox {
             double x = stage.getX();
             double y = stage.getY();
             boolean maximized = stage.isMaximized();
-            
+
             // Prepare the Login window
             Stage loginWindow = com.ueadmission.auth.Auth.prepareLoginWindow(width, height, x, y, maximized);
             if (loginWindow != null) {
                 // Close current window and show login
                 stage.close();
                 loginWindow.show();
-                
+
                 // Apply fade-in animation
                 Parent root = loginWindow.getScene().getRoot();
                 FadeTransition fadeIn = new FadeTransition(Duration.millis(800), root);
                 fadeIn.setFromValue(0.0);
                 fadeIn.setToValue(1.0);
                 fadeIn.play();
-                
+
                 System.out.println("Navigated to login screen");
             }
         } catch (Exception e) {
@@ -348,7 +372,7 @@ public class ProfileButton extends HBox {
             System.err.println("Failed to navigate to login screen: " + e.getMessage());
         }
     }
-    
+
         /**
          * Update user information displayed in the button
          * @param user The current authenticated user
@@ -357,14 +381,14 @@ public class ProfileButton extends HBox {
             if (user != null) {
                 // Update display name property which is bound to the UI
                 displayName.set(user.getFirstName() + " " + user.getLastName());
-                
+
                 // Update profile menu for user role
                 updateMenuForUserRole(user.getRole());
-                
+
                 System.out.println("Profile button updated with user: " + user.getEmail());
             }
         }
-    
+
         /**
          * Handle profile click
          */
@@ -378,24 +402,37 @@ public class ProfileButton extends HBox {
                 System.err.println("Failed to navigate to profile screen: " + e.getMessage());
             }
         }
-        
+
         /**
          * Handle logout click
          */
+        // In handleLogoutClick()
         private void handleLogoutClick() {
-            // Logout the user
-            AuthStateManager.getInstance().logout();
-            
             try {
-                // Use NavigationManager to navigate to home screen
-                com.ueadmission.navigation.NavigationManager.navigate("/com.ueadmission/main.fxml", "UeAdmission - Home");
-                System.out.println("User logged out and redirected to home");
+                System.out.println("Logout menu item clicked");
+                AuthStateManager.getInstance().logout();
+
+                // Navigate to home screen (main.fxml)
+                javafx.application.Platform.runLater(() -> {
+                    try {
+                        com.ueadmission.navigation.NavigationManager.navigateToHome();
+
+                        System.out.println("User logged out and redirected to home");
+                    } catch (Exception e) {
+                        System.err.println("Failed to navigate to home screen after logout: " + e.getMessage());
+                        e.printStackTrace();
+                        try {
+                            com.ueadmission.navigation.NavigationManager.navigateToHome();
+                        } catch (Exception ex) {
+                            System.err.println("Fallback navigation also failed: " + ex.getMessage());
+                        }
+                    }
+                });
             } catch (Exception e) {
+                System.err.println("Error during logout process: " + e.getMessage());
                 e.printStackTrace();
-                System.err.println("Failed to navigate to home screen after logout: " + e.getMessage());
             }
         }
-    
     /**
      * Clean up resources when this component is no longer needed
      */
@@ -405,7 +442,7 @@ public class ProfileButton extends HBox {
             AuthStateManager.getInstance().unsubscribe(authStateListener);
         }
     }
-    
+
     /**
      * Set the login button text
      * @param text The new text for the login button
@@ -413,7 +450,7 @@ public class ProfileButton extends HBox {
     public void setLoginButtonText(String text) {
         loginButton.setText(text);
     }
-    
+
     /**
      * Set the profile circle color
      * @param color The new color for the profile circle
@@ -422,3 +459,4 @@ public class ProfileButton extends HBox {
         profileCircle.setFill(color);
     }
 }
+

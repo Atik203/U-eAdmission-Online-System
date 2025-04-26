@@ -16,6 +16,61 @@
     -bg-dark: #222222;
     -border-color: #e0e0e0;
     -shadow-color: rgba(0,0,0,0.1);
+    -danger-color: #FF3B30;
+}
+
+/* Profile Button Styles */
+.profile-button {
+    -fx-background-color: transparent;
+    -fx-padding: 5;
+    -fx-border-radius: 50%;
+    -fx-background-radius: 50%;
+    -mfx-ripple-color: rgba(255, 255, 255, 0.3);
+    -mfx-ripple-radius: 25;
+}
+
+.profile-button:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+}
+
+.profile-initials {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+.profile-context-menu {
+    -fx-background-color: white;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 4);
+    -fx-padding: 5;
+    -fx-background-radius: 5;
+    -fx-border-radius: 5;
+}
+
+.profile-context-menu .menu-item {
+    -fx-padding: 8 15;
+    -fx-background-radius: 4;
+}
+
+.profile-context-menu .menu-item:hover {
+    -fx-background-color: rgba(250, 69, 6, 0.1);
+}
+
+.profile-context-menu .menu-item .label {
+    -fx-text-fill: -secondary-color;
+}
+
+.profile-context-menu .separator {
+    -fx-padding: 2;
+}
+
+.profile-context-menu .menu-item#logout {
+    -fx-text-fill: -danger-color;
+    -fx-font-weight: bold;
+}
+
+.profile-context-menu .menu-item#logout:hover {
+    -fx-background-color: rgba(255, 59, 48, 0.1);
 }
 
 /* Navbar Styles */
