@@ -27,7 +27,9 @@ public class Auth {
      */
     public static Stage prepareLoginWindow(double width, double height, double x, double y, boolean maximized) {
         try {
-            FXMLLoader loader = new FXMLLoader(Auth.class.getResource("/com.ueadmission/auth/login.fxml"));
+                // Create a loader without explicitly setting the controller
+                // The controller is already defined in the FXML file
+                FXMLLoader loader = new FXMLLoader(Auth.class.getResource("/com.ueadmission/auth/login.fxml"));
             Parent root = loader.load();
             
             // Apply a subtle fade effect to the root node
@@ -72,7 +74,9 @@ public class Auth {
      */
     public static Stage prepareRegistrationWindow(double width, double height, double x, double y, boolean maximized) {
         try {
-            FXMLLoader loader = new FXMLLoader(Auth.class.getResource("/com.ueadmission/auth/registration.fxml"));
+                // Create a loader without explicitly setting the controller
+                // The controller should be defined in the FXML file
+                FXMLLoader loader = new FXMLLoader(Auth.class.getResource("/com.ueadmission/auth/registration.fxml"));
             Parent root = loader.load();
             
             // Apply a subtle fade effect to the root node
