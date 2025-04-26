@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<MFXScrollPane fitToWidth="true" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ueadmission.auth.Login">
+<MFXScrollPane fitToWidth="true" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ueadmission.auth.LoginController">
     <VBox spacing="0" stylesheets="@login.css">
         <!-- 🔷 Navbar -->
         <HBox id="navbar" alignment="CENTER_LEFT" spacing="30" style="-fx-background-color: #FA4506;">
