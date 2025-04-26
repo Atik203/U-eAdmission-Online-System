@@ -350,6 +350,17 @@
 .mfx-checkbox {
     -fx-font-size: 14px;
     -fx-text-fill: -text-dark;
+    -mfx-main: -primary-color;
+    -mfx-secondary: white;
+}
+
+.mfx-checkbox:selected .box {
+    -fx-background-color: -primary-color;
+    -fx-border-color: -primary-color;
+}
+
+.mfx-checkbox .ripple-container .mfx-ripple-generator {
+    -mfx-ripple-color: rgba(250, 69, 6, 0.3);
 }
 
 .auth-link {

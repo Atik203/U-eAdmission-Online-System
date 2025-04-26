@@ -5,6 +5,7 @@ package com.ueadmission.auth;
  * Note: This is a model class, not a controller. The controller is RegistrationController.
  */
 public class Registration {
+    private int id;
     private String firstName;
     private String lastName;
     private String email;
@@ -13,9 +14,11 @@ public class Registration {
     private String city;
     private String country;
     private String password;
+    private String role;
     
     public Registration() {
         // Default constructor
+        this.role = "student"; // Default role is student
     }
     
     public Registration(String firstName, String lastName, String email, String phone, 
@@ -28,6 +31,20 @@ public class Registration {
         this.city = city;
         this.country = country;
         this.password = password;
+        this.role = "student"; // Default role is student
+    }
+    
+    public Registration(String firstName, String lastName, String email, String phone, 
+                       String address, String city, String country, String password, String role) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.phone = phone;
+        this.address = address;
+        this.city = city;
+        this.country = country;
+        this.password = password;
+        this.role = role;
     }
     
     // Getters and setters
@@ -93,5 +110,22 @@ public class Registration {
     
     public void setPassword(String password) {
         this.password = password;
+    }
+    
+    public String getRole() {
+        return role;
+    }
+    
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+
+    public int getId() {
+        return id;
+    }
+    
+    public void setId(int id) {
+        this.id = id;
     }
 }
