@@ -1,0 +1,83 @@
+/* Import base styles from main.css */
+@import "../main.css";
+
+/* Profile specific styles */
+.profile-container {
+    -fx-background-color: white;
+    -fx-padding: 30px;
+}
+
+.profile-header {
+    -fx-background-color: -bg-light;
+    -fx-padding: 30px;
+    -fx-background-radius: 10px;
+    -fx-effect: dropshadow(gaussian, -shadow-color, 10, 0, 0, 2);
+}
+
+.profile-avatar {
+    -fx-background-radius: 100%;
+    -fx-border-radius: 100%;
+    -fx-background-color: -primary-color;
+    -fx-border-color: white;
+    -fx-border-width: 4px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 0);
+}
+
+.profile-name {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -text-dark;
+}
+
+.profile-role {
+    -fx-font-size: 16px;
+    -fx-text-fill: -primary-color;
+    -fx-font-weight: bold;
+}
+
+.profile-email {
+    -fx-font-size: 14px;
+    -fx-text-fill: -text-dark;
+    -fx-opacity: 0.8;
+}
+
+.profile-section {
+    -fx-background-color: white;
+    -fx-padding: 20px;
+    -fx-border-color: -border-color;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-effect: dropshadow(gaussian, -shadow-color, 5, 0, 0, 1);
+}
+
+.section-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -text-dark;
+    -fx-padding: 0 0 10 0;
+}
+
+.profile-field-label {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -secondary-color;
+}
+
+.profile-field-value {
+    -fx-font-size: 14px;
+    -fx-text-fill: -text-dark;
+}
+
+.profile-tabs .tab {
+    -fx-background-color: white;
+    -fx-padding: 10px 20px;
+}
+
+.profile-tabs .tab:selected {
+    -fx-background-color: -primary-light;
+    -fx-text-fill: white;
+}
+
+.profile-tabs .tab-header-background {
+    -fx-background-color: -bg-light;
+}

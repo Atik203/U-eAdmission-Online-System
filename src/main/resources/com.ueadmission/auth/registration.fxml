@@ -37,7 +37,18 @@
             <MFXButton id="nav-button" fx:id="admissionButton" onAction="#navigateToAdmission" styleClass="mfx-button" text="Admission" />
             <MFXButton id="nav-button" fx:id="mockTestButton" onAction="#navigateToMockTest" styleClass="mfx-button" text="Mock Test" />
             <MFXButton id="nav-button" fx:id="contactButton" onAction="#navigateToContact" styleClass="mfx-button" text="Contact" />
-            <MFXButton id="nav-button" fx:id="loginButton" onAction="#navigateToLogin" styleClass="mfx-button-login" text="Login" />
+            
+            <!-- Login button container - visible when not authenticated -->
+            <HBox id="loginButtonContainer" alignment="CENTER">
+                <MFXButton id="nav-button" fx:id="loginButton" onAction="#navigateToLogin" styleClass="mfx-button-login" text="Login" />
+            </HBox>
+            
+            <!-- Profile button container - visible when authenticated -->
+            <HBox id="profileButtonContainer" alignment="CENTER" visible="false" managed="false">
+                <children>
+                    <com.ueadmission.components.ProfileButton fx:id="profileButton" styleClass="profile-button-container" />
+                </children>
+            </HBox>
         </HBox>
         
         <!-- Registration Section -->

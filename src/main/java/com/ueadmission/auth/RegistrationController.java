@@ -1,6 +1,9 @@
 package com.ueadmission.auth;
 
 import com.ueadmission.about.About;
+import com.ueadmission.auth.state.AuthStateManager;
+import com.ueadmission.auth.state.User;
+import com.ueadmission.utils.MFXNotifications;
 import javafx.animation.FadeTransition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -13,6 +16,7 @@ import io.github.palexdev.materialfx.controls.MFXCheckbox;
 import io.github.palexdev.materialfx.controls.MFXComboBox;
 import io.github.palexdev.materialfx.controls.MFXPasswordField;
 import io.github.palexdev.materialfx.controls.MFXTextField;
+
 
 public class RegistrationController {
     
@@ -67,6 +71,8 @@ public class RegistrationController {
     @FXML
     private MFXButton loginButton;
     
+    // Role field removed from the controller
+    
     @FXML
     public void initialize() {
         // Initialize the country dropdown with some common countries
@@ -79,6 +85,9 @@ public class RegistrationController {
         admissionButton.setOnAction(event -> navigateToAdmission(event));
         mockTestButton.setOnAction(event -> navigateToMockTest(event));
         contactButton.setOnAction(event -> navigateToContact(event));
+        
+        // Style the terms checkbox
+        termsCheckbox.setSelected(false);
     }
 
     /**
@@ -296,11 +305,72 @@ public class RegistrationController {
         
         // Validate form inputs
         if (isFormValid()) {
-            // Process registration (in a real app, this would connect to a backend)
-            System.out.println("Registration successful!");
+            // Check if email already exists
+            if (UserDAO.emailExists(emailField.getText())) {
+                errorLabel.setText("Email already exists. Please use a different email address.");
+                errorLabel.setVisible(true);
+                return;
+            }
             
-            // Redirect to login
-            navigateToLogin(event);
+            // Create registration object with role hardcoded as "student"
+            Registration registration = new Registration(
+                firstNameField.getText(),
+                lastNameField.getText(),
+                emailField.getText(),
+                phoneField.getText(),
+                addressField.getText(),
+                cityField.getText(),
+                countryComboBox.getValue(),
+                passwordField.getText(),
+                "student" // Role is always student for registrations
+            );
+            
+
+            
+            // Save to database
+            boolean success = UserDAO.registerUser(registration);
+            
+            if (success) {
+                // Get the user ID (it should be set by registerUser)
+                // If ID is not available in the Registration object, use 0 as a default
+                int userId = 0;
+                try {
+                    userId = registration.getId();
+                } catch (Exception e) {
+                    System.err.println("Warning: Could not get user ID, using default: " + e.getMessage());
+                }
+                
+                // Create User object for auth state
+                User user = new User(
+                    userId,
+                    firstNameField.getText(),
+                    lastNameField.getText(),
+                    emailField.getText(),
+                    phoneField.getText(),
+                    "student" // Role is always student for new registrations
+                );
+                
+                // Auto login the user (without remember me)
+                AuthStateManager.getInstance().login(user, false);
+                
+                // Show success notification
+                MFXNotifications.showSuccess("Registration Successful",
+                    "Welcome, " + firstNameField.getText() + "! Your account has been created successfully.");
+                
+                System.out.println("Registration successful for " + firstNameField.getText() + " " + 
+                                  lastNameField.getText() + " (" + emailField.getText() + ")");
+                
+                // Redirect to home page directly since user is now logged in
+                navigateToHome(event);
+            } else {
+                // Show error message
+                errorLabel.setText("Registration failed. Please try again later.");
+                errorLabel.setVisible(true);
+                
+                // Show error notification
+                MFXNotifications.showError("Registration Failed",
+                    "There was a problem creating your account. Please try again later.");
+            }
         } else {
             // Show error message
             errorLabel.setVisible(true);

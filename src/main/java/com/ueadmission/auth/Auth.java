@@ -1,11 +1,13 @@
 package com.ueadmission.auth;
 
 import com.ueadmission.Main;
+import com.ueadmission.utils.MFXNotifications;
 import javafx.animation.FadeTransition;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -52,6 +54,14 @@ public class Auth {
             // Handle maximized state
             if (maximized) {
                 stage.setMaximized(true);
+            }
+            
+            // Initialize notification center for this stage
+            com.ueadmission.utils.MFXNotifications.initialize(stage);
+            
+            // Make sure the notification pane is added to the scene's root
+            if (stage.getScene().getRoot() instanceof Pane) {
+                com.ueadmission.utils.MFXNotifications.addToPane((Pane) stage.getScene().getRoot());
             }
             
             return stage;
@@ -101,6 +111,9 @@ public class Auth {
                 stage.setMaximized(true);
             }
             
+            // Initialize notification center for this stage
+            com.ueadmission.utils.MFXNotifications.initialize(stage);
+                
             return stage;
         } catch (IOException e) {
             e.printStackTrace();
@@ -144,6 +157,9 @@ public class Auth {
             if (maximized) {
                 stage.setMaximized(true);
             }
+            
+            // Initialize notification center for this stage
+            com.ueadmission.utils.MFXNotifications.initialize(stage);
             
             return stage;
         } catch (IOException e) {

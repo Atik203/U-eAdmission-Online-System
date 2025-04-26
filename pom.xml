@@ -122,6 +122,13 @@
             <artifactId>materialfx</artifactId>
             <version>11.17.0</version>
         </dependency>
+        
+        <!-- MySQL Connector for database connectivity -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.33</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -144,7 +151,7 @@
                         <!-- Default configuration for running with: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>com.u.eadmission.ueadmission/com.ueadmission.HelloApplication
+                            <mainClass>com.u.eadmission.ueadmission/com.ueadmission.Main
                             </mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>
