@@ -46,13 +46,13 @@ The U-eAdmission Online System is a comprehensive JavaFX application designed to
 ## 🎬 Demo Videos
 
 ### Admin Login Demo
-<video src="video/AdminLogin.mkv" controls width="640"></video>
+https://github.com/user-attachments/assets/7efe35cc-1f5f-4181-82ac-e3400ee76fcf
 
 ### Student Login Demo
-<video src="video/StudentLogin.mkv" controls width="640"></video>
+https://github.com/user-attachments/assets/0d5d2956-f818-42c3-bb8e-b53ef8558ede
 
 ### Student Registration Demo
-<video src="video/StudentRegistration.mkv" controls width="640"></video>
+https://github.com/user-attachments/assets/66ad1f9d-0fab-46f4-a57c-f1cbc99951e1
 
 
 ## 🛠️ Technologies
