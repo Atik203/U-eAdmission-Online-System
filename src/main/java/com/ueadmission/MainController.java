@@ -4,8 +4,10 @@ import com.ueadmission.about.About;
 import com.ueadmission.auth.Auth;
 import com.ueadmission.auth.state.AuthState;
 import com.ueadmission.auth.state.AuthStateManager;
+
 import io.github.palexdev.materialfx.controls.MFXButton;
 import javafx.animation.FadeTransition;
+import javafx.application.HostServices;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -13,11 +15,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import javafx.event.ActionEvent;
-
-import com.ueadmission.admission.Admission;
-
-import javafx.application.HostServices;
 
 
 
@@ -67,13 +64,19 @@ public class MainController {
         // Set up the Login button click action
         loginButton.setOnAction(event -> openLoginPage(event));
 
-        // Set up the admission button click action--sagor
-        //
+        // Set up the admission button click action
         admissionButton.setOnAction(event -> openAdmissionPage(event));
         
-        // Set up the Apply Now button to open login page
+        // Set up the Apply Now button to open login page if not logged in,
+        // otherwise go directly to admission page
         if (applyNowBtn != null) {
-            applyNowBtn.setOnAction(event -> openLoginPage(event));
+            applyNowBtn.setOnAction(event -> {
+                if (AuthStateManager.getInstance().isAuthenticated()) {
+                    openAdmissionPage(event);
+                } else {
+                    openLoginPage(event);
+                }
+            });
         }
         
         // Set up the Learn More About UIU button to open about page
@@ -172,7 +175,7 @@ public class MainController {
         }
     }
     /**
-     * Opens the About page
+     * Opens the Admission page with proper auth state tracking
      * @param event The event that triggered this action
      */
     private void openAdmissionPage(javafx.event.ActionEvent event) {
@@ -185,32 +188,59 @@ public class MainController {
             double y = currentStage.getY();
             boolean maximized = currentStage.isMaximized();
 
-            // ✅ Prepare the Admission window instead of About
-            Stage admissionStage = Admission.prepareAdmissionWindow(width, height, x, y, maximized);
+            // Store current auth state
+            AuthState currentAuthState = AuthStateManager.getInstance().getState();
+            boolean isAuthenticated = (currentAuthState != null && currentAuthState.isAuthenticated());
+            System.out.println("Navigating to admission with auth state: " + (isAuthenticated ? "authenticated" : "not authenticated"));
+
+            // Prepare the Admission window before closing current one
+            Stage admissionStage = com.ueadmission.admission.Admission.prepareAdmissionWindow(width, height, x, y, maximized);
 
             if (admissionStage == null) {
                 System.err.println("Failed to create Admission window.");
                 return;
             }
 
-            // Fade in for new window
+            // Make the new stage ready but not visible yet
             admissionStage.setOpacity(0.0);
             admissionStage.show();
 
+            // Force layout before accessing UI elements
+            admissionStage.getScene().getRoot().applyCss();
+            admissionStage.getScene().getRoot().layout();
+
+            // Try to get the controller
+            javafx.fxml.FXMLLoader loader = (javafx.fxml.FXMLLoader) admissionStage.getScene().getUserData();
+            if (loader != null) {
+                Object controller = loader.getController();
+                if (controller != null && controller instanceof com.ueadmission.admission.AdmissionController) {
+                    // Call refresh method if available
+                    try {
+                        ((com.ueadmission.admission.AdmissionController) controller).refreshUI();
+                        System.out.println("Refreshed UI in AdmissionController");
+                    } catch (Exception e) {
+                        System.out.println("Could not call refreshUI: " + e.getMessage());
+                    }
+                }
+            }
+
+            // Use a fade transition for the new window
             FadeTransition fadeIn = new FadeTransition(Duration.millis(300), admissionStage.getScene().getRoot());
             fadeIn.setFromValue(0.0);
             fadeIn.setToValue(1.0);
 
-            // Fade out for current window
+            // Add a fade out transition for the current window
             FadeTransition fadeOut = new FadeTransition(Duration.millis(200), currentStage.getScene().getRoot());
             fadeOut.setFromValue(1.0);
             fadeOut.setToValue(0.0);
 
+            // Start the fade out, then hide current stage when done
             fadeOut.setOnFinished(e -> {
                 currentStage.hide();
                 admissionStage.setOpacity(1.0);
                 fadeIn.play();
 
+                // Finally close the original stage after transition completes
                 fadeIn.setOnFinished(f -> currentStage.close());
             });
 
