@@ -70,7 +70,7 @@ public class AboutController {
 
         // Configure other navigation buttons if they exist
         if (admissionButton != null) {
-            admissionButton.setOnAction(event -> System.out.println("Admission button clicked"));
+            admissionButton.setOnAction(event ->navigateToAdmission(event));//System.out.println("Admission button clicked"));
         }
 
         if (mockTestButton != null) {
@@ -409,6 +409,139 @@ public class AboutController {
             }
         }
     }
+
+
+    /**
+     * Navigates to the home page with transition effects
+     * @param event The event that triggered this action
+     */
+    private void navigateToAdmission(javafx.event.ActionEvent event) {
+        try {
+            // Get current stage and its properties
+            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            double width = currentStage.getWidth();
+            double height = currentStage.getHeight();
+            double x = currentStage.getX();
+            double y = currentStage.getY();
+            boolean maximized = currentStage.isMaximized();
+
+            // Store current auth state
+            AuthState currentAuthState = AuthStateManager.getInstance().getState();
+            boolean isAuthenticated = (currentAuthState != null && currentAuthState.isAuthenticated());
+            LOGGER.info("Navigating to home with auth state: " + (isAuthenticated ? "authenticated" : "not authenticated"));
+
+            // Prepare the Main window before closing current one
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com.ueadmission/main.fxml"));
+            javafx.scene.Parent root = loader.load();
+
+            // Get the controller and pass auth state data
+            MainController mainController = loader.getController();
+
+            // Create new stage
+            Stage mainStage = new Stage();
+            javafx.scene.Scene scene = new javafx.scene.Scene(root, width, height);
+            mainStage.setScene(scene);
+            mainStage.setTitle("UeAdmission - Admission");
+
+            // Set the position and size
+            mainStage.setX(x);
+            mainStage.setY(y);
+            mainStage.setWidth(width);
+            mainStage.setHeight(height);
+            mainStage.setMaximized(maximized);
+
+            // Make the new stage ready but not visible yet
+            mainStage.setOpacity(0.0);
+            mainStage.show();
+
+            // Important: Force the scene to layout all nodes before accessing containers
+            scene.getRoot().applyCss();
+            scene.getRoot().layout();
+
+            // Ensure UI is updated with authentication state before displaying
+            mainController.refreshUI();
+
+            // Set up JavaFX logging to help troubleshoot UI issues
+            java.util.logging.Logger jfxLogger = java.util.logging.Logger.getLogger("javafx");
+            jfxLogger.setLevel(java.util.logging.Level.FINE);
+
+            // Use a fade transition for the new window
+            FadeTransition fadeIn = new FadeTransition(Duration.millis(300), mainStage.getScene().getRoot());
+            fadeIn.setFromValue(0.0);
+            fadeIn.setToValue(1.0);
+
+            // Add a fade out transition for the current window
+            FadeTransition fadeOut = new FadeTransition(Duration.millis(200), currentStage.getScene().getRoot());
+            fadeOut.setFromValue(1.0);
+            fadeOut.setToValue(0.0);
+
+            // Clean up before transition
+            cleanup();
+
+            // Start the fade out, then hide current stage when done
+            fadeOut.setOnFinished(e -> {
+                currentStage.hide();
+                mainStage.setOpacity(1.0);
+                fadeIn.play();
+
+                // Execute this after fade in to ensure UI is fully ready
+                fadeIn.setOnFinished(f -> {
+                    try {
+                        // Ensure profile is updated with current auth state after navigation
+                        LOGGER.info("Fade in complete, calling onSceneActive on MainController");
+                        mainController.onSceneActive();
+
+                        // Log the status of important controls
+                        LOGGER.info("Profile button in MainController: " +
+                                (mainController.findProfileButtonInScene() != null ? "found" : "not found"));
+                    } catch (Exception ex) {
+                        LOGGER.severe("Error in fade in completion: " + ex.getMessage());
+                        ex.printStackTrace();
+                    } finally {
+                        currentStage.close();
+                    }
+                });
+            });
+
+            fadeOut.play();
+
+            LOGGER.info("Navigating to home screen with transition");
+
+        } catch (Exception e) {
+            LOGGER.severe("Failed to navigate to home: " + e.getMessage());
+            e.printStackTrace();
+
+            // Clean up even if there's an error
+            cleanup();
+
+            // Try direct navigation as fallback (much simpler approach)
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com.ueadmission/main.fxml"));
+                javafx.scene.Parent root = loader.load();
+                MainController mainController = loader.getController();
+
+                Stage stage = (Stage) admissionButton.getScene().getWindow();
+                stage.setScene(new javafx.scene.Scene(root));
+                stage.setTitle("UeAdmission - Home");
+
+                // Force layout before accessing UI elements
+                stage.getScene().getRoot().applyCss();
+                stage.getScene().getRoot().layout();
+
+                // Call refresh UI on the controller
+                mainController.refreshUI();
+
+                // Then call onSceneActive to ensure everything is properly updated
+                mainController.onSceneActive();
+
+                LOGGER.info("Navigated to home using fallback method");
+            } catch (Exception ex) {
+                LOGGER.severe("Complete navigation failure: " + ex.getMessage());
+            }
+        }
+    }
+
+
 
     /**
      * Navigates to the login page

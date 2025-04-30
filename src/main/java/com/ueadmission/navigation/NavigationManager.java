@@ -11,6 +11,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -51,6 +52,24 @@ public class NavigationManager {
      */
     public static void navigateToAbout() {
         navigate("/com.ueadmission/about/about.fxml", "About - UeAdmission");
+    }
+
+
+    /**
+     * Navigate to the admission screen
+     */
+    public void handleAdmissionButton(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/ueadmission/admissionPage.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = new Stage();
+            stage.setTitle("Admission Page");
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**

@@ -16,9 +16,11 @@ module com.u.eadmission.ueadmission {
     requires java.desktop;
     requires java.sql;
     requires java.prefs;
+    requires annotations;
 
     opens com.ueadmission to javafx.fxml;
     opens com.ueadmission.about to javafx.fxml;
+    opens com.ueadmission.admission to javafx.fxml; // trying admission fixing;
     opens com.ueadmission.auth to javafx.fxml;
     opens com.ueadmission.student to javafx.fxml;
     opens com.ueadmission.admin to javafx.fxml;
@@ -26,6 +28,7 @@ module com.u.eadmission.ueadmission {
     
     exports com.ueadmission;
     exports com.ueadmission.about;
+    exports com.ueadmission.admission;// trying admission fixing;
     exports com.ueadmission.auth;
     exports com.ueadmission.student;
     exports com.ueadmission.admin;

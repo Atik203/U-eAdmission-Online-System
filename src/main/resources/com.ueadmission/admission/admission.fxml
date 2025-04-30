@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import io.github.palexdev.materialfx.controls.MFXButton?>
+<?import io.github.palexdev.materialfx.controls.MFXScrollPane?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.control.Button?>
+<MFXScrollPane fitToWidth="true" fitToHeight="true" prefViewportWidth="1280" prefViewportHeight="720" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ueadmission.admission.admissionController">
+    <VBox spacing="0" stylesheets="@admission.css">
+        <!-- 🔷 Navbar -->
+        <HBox id="navbar" alignment="CENTER_LEFT" spacing="30" style="-fx-background-color: #FA4506;">
+            <padding>
+                <Insets topRightBottomLeft="15" />
+            </padding>
+            <ImageView fitHeight="40" fitWidth="40">
+                <image>
+                    <Image url="@../uiu_logo_update.png" />
+                </image>
+            </ImageView>
+            <Label id="title" style="-fx-text-fill: white; -fx-font-weight: bold;" text="United International University" />
+            <Region fx:id="spacer" HBox.hgrow="ALWAYS" />
+            <MFXButton id="nav-button" fx:id="homeButton" styleClass="mfx-button" text="Home" />
+            <MFXButton id="nav-button" fx:id="aboutButton" styleClass="mfx-button" text="About" />
+            <MFXButton id="nav-button" fx:id="admissionButton" styleClass="mfx-button" text="Admission" />
+            <MFXButton id="nav-button" fx:id="mockTestButton" styleClass="mfx-button" text="Mock Test" />
+            <MFXButton id="nav-button" fx:id="contactButton" styleClass="mfx-button" text="Contact" />
+            <HBox id="loginButtonContainer" alignment="CENTER">
+                <MFXButton id="login-button" fx:id="loginButton" styleClass="mfx-button-login" text="Login" />
+            </HBox>
+            <HBox id="profileButtonContainer" alignment="CENTER" visible="false" managed="false">
+                <children>
+                    <com.ueadmission.components.ProfileButton fx:id="profileButton" styleClass="profile-button-container" />
+                </children>
+            </HBox>
+        </HBox>
+
+
+
+
+
+
+
+
+        <!--        //merge here the fxml-->
+
+        <!--        &lt;!&ndash; 🎓 UIU Undergraduate Programs Section &ndash;&gt;-->
+        <!--        <VBox fx:id="mainContent" spacing="20" padding="20">-->
+        <!--            &lt;!&ndash; Header &ndash;&gt;-->
+        <!--            <Label fx:id="title" text="UIU Undergraduate Programs" styleClass="hero-title"/>-->
+
+        <!--            &lt;!&ndash; School Sections &ndash;&gt;-->
+        <!--            <VBox fx:id="soBeSection" spacing="10">-->
+        <!--                <Label text="School of Business and Economics (SoBE)" styleClass="section-title"/>-->
+        <!--                <FlowPane fx:id="soBeFlowPane" hgap="10" vgap="10"/>-->
+        <!--            </VBox>-->
+
+        <!--            <VBox fx:id="soSeSection" spacing="10">-->
+        <!--                <Label text="School of Science and Engineering (SoSE)" styleClass="section-title"/>-->
+        <!--                <FlowPane fx:id="soSeFlowPane" hgap="10" vgap="10"/>-->
+        <!--            </VBox>-->
+
+        <!--            <VBox fx:id="soHssSection" spacing="10">-->
+        <!--                <Label text="School of Humanities and Social Sciences (SoHSS)" styleClass="section-title"/>-->
+        <!--                <FlowPane fx:id="soHssFlowPane" hgap="10" vgap="10"/>-->
+        <!--            </VBox>-->
+
+        <!--            <VBox fx:id="soLsSection" spacing="10">-->
+        <!--                <Label text="School of Life Sciences (SoLS)" styleClass="section-title"/>-->
+        <!--                <FlowPane fx:id="soLsFlowPane" hgap="10" vgap="10"/>-->
+        <!--            </VBox>-->
+
+        <!--            &lt;!&ndash; Apply Now button &ndash;&gt;-->
+        <!--            <HBox alignment="CENTER" padding="30, 0, 30, 0">-->
+        <!--                <Button fx:id="applyNowButton" text="Apply Now" styleClass="uiu-button-primary"/>-->
+        <!--            </HBox>-->
+        <!--        </VBox>-->
+
+
+        <!-- 🎓 Admission Header -->
+        <VBox id="admission-header" alignment="CENTER" spacing="15">
+            <padding>
+                <Insets top="30" right="20" bottom="30" left="20" />
+            </padding>
+            <Label id="section-title" text="UIU Admission Portal" />
+            <Label styleClass="about-subtitle" text="Your Gateway to Quality Higher Education" />
+            <MFXButton fx:id="visitWebsiteBtn" text="Visit Official Admission Website" styleClass="mfx-button-primary" />
+        </VBox>
+
+
+
+
+        <VBox styleClass="ux-root">
+
+            <!-- Title -->
+            <Text text="UIU Undergraduate Programs" styleClass="ux-hero-title">
+                <!--                <font>-->
+                <!--                    <Font name="Segoe UI Semibold" size="26"/>-->
+                <!--                </font>-->
+            </Text>
+
+            <!-- SoBE -->
+            <VBox styleClass="ux-section-box">
+                <Text text="School of Business and Economics (SoBE)" styleClass="ux-section-title"/>
+                <FlowPane styleClass="ux-flow">
+                    <MFXButton text="BBA" onAction="#openBBA" styleClass="ux-button-outline"/>
+                    <MFXButton text="BBA in AIS" onAction="#openBBAAIS" styleClass="ux-button-outline"/>
+                    <MFXButton text="Economics" onAction="#openEconomics" styleClass="ux-button-outline"/>
+                </FlowPane>
+            </VBox>
+
+            <!-- SoSE -->
+            <VBox styleClass="ux-section-box">
+                <Text text="School of Science and Engineering (SoSE)" styleClass="ux-section-title"/>
+                <FlowPane styleClass="ux-flow">
+                    <MFXButton text="Civil Engineering" onAction="#openCivil" styleClass="ux-button-outline"/>
+                    <MFXButton text="CSE" onAction="#openCSE" styleClass="ux-button-outline"/>
+                    <MFXButton text="Data Science" onAction="#openDS" styleClass="ux-button-outline"/>
+                    <MFXButton text="EEE" onAction="#openEEE" styleClass="ux-button-outline"/>
+                </FlowPane>
+            </VBox>
+
+            <!-- SoHSS -->
+            <VBox styleClass="ux-section-box">
+                <Text text="School of Humanities and Social Sciences (SoHSS)" styleClass="ux-section-title"/>
+                <FlowPane styleClass="ux-flow">
+                    <MFXButton text="EDS" onAction="#openEDS" styleClass="ux-button-outline"/>
+                    <MFXButton text="MSJ" onAction="#openMSJ" styleClass="ux-button-outline"/>
+                    <MFXButton text="English" onAction="#openEnglish" styleClass="ux-button-outline"/>
+                </FlowPane>
+            </VBox>
+
+            <!-- SoLS -->
+            <VBox styleClass="ux-section-box">
+                <Text text="School of Life Sciences (SoLS)" styleClass="ux-section-title"/>
+                <FlowPane styleClass="ux-flow">
+                    <MFXButton text="Pharmacy" onAction="#openPharmacy" styleClass="ux-button-outline"/>
+                    <MFXButton text="Biotech and Genetic Engineering" onAction="#openBiotech" styleClass="ux-button-outline"/>
+                </FlowPane>
+            </VBox>
+
+            <!-- Apply Now -->
+            <HBox styleClass="ux-center-box">
+                <MFXButton fx:id="applyNowBtn" text="Apply Now" onAction="#openApply" styleClass="ux-button-primary"/>
+            </HBox>
+
+        </VBox>
+
+
+
+
+        <!-- Programs Section -->
+        <VBox spacing="15.0" style="-fx-background-color: white;">
+            <padding>
+                <Insets top="40" right="40" bottom="40" left="40" />
+            </padding>
+            <Label id="section-title" text="Academic Programs" />
+
+            <HBox spacing="20.0">
+                <VBox spacing="10.0" styleClass="contact-card" HBox.hgrow="ALWAYS">
+                    <padding>
+                        <Insets topRightBottomLeft="15" />
+                    </padding>
+                    <Label styleClass="contact-title" text="School of Business and Economics" />
+                    <Text strokeType="OUTSIDE" strokeWidth="0.0"
+                          style="-fx-fill: -text-dark; -fx-font-size: 14;"
+                          text="• BBA in Accounting Information Systems&#10;• BBA in Economics&#10;• BBA in Finance and Banking&#10;• BBA in Marketing&#10;• BBA in Management Information Systems&#10;• MBA (Regular &amp; Executive)" />
+                </VBox>
+
+                <VBox spacing="10.0" styleClass="contact-card" HBox.hgrow="ALWAYS">
+                    <padding>
+                        <Insets topRightBottomLeft="15" />
+                    </padding>
+                    <Label styleClass="contact-title" text="School of Science and Engineering" />
+                    <Text strokeType="OUTSIDE" strokeWidth="0.0"
+                          style="-fx-fill: -text-dark; -fx-font-size: 14;"
+                          text="• BSc in Computer Science and Engineering&#10;• BSc in Electrical and Electronic Engineering&#10;• BSc in Civil Engineering&#10;• MSc in Computer Science and Engineering&#10;• PhD in Computer Science and Engineering" />
+                </VBox>
+            </HBox>
+
+            <HBox spacing="20.0">
+                <VBox spacing="10.0" styleClass="contact-card" HBox.hgrow="ALWAYS">
+                    <padding>
+                        <Insets topRightBottomLeft="15" />
+                    </padding>
+                    <Label styleClass="contact-title" text="Department of English" />
+                    <Text strokeType="OUTSIDE" strokeWidth="0.0"
+                          style="-fx-fill: -text-dark; -fx-font-size: 14;"
+                          text="• BA in English&#10;• MA in English" />
+                </VBox>
+
+                <VBox spacing="10.0" styleClass="contact-card" HBox.hgrow="ALWAYS">
+                    <padding>
+                        <Insets topRightBottomLeft="15" />
+                    </padding>
+                    <Label styleClass="contact-title" text="Department of Law" />
+                    <Text strokeType="OUTSIDE" strokeWidth="0.0"
+                          style="-fx-fill: -text-dark; -fx-font-size: 14;"
+                          text="• LLB (Hons.)&#10;• LLM" />
+                </VBox>
+            </HBox>
+        </VBox>
+
+        <!-- Stats Section -->
+        <HBox alignment="CENTER" style="-fx-background-color: -primary-color; -fx-padding: 30;">
+            <VBox alignment="CENTER" spacing="5" HBox.hgrow="ALWAYS">
+                <Label style="-fx-font-size: 32; -fx-font-weight: bold; -fx-text-fill: white;" text="20+" />
+                <Label style="-fx-font-size: 16; -fx-text-fill: white;" text="Academic Programs" />
+            </VBox>
+            <VBox alignment="CENTER" spacing="5" HBox.hgrow="ALWAYS">
+                <Label style="-fx-font-size: 32; -fx-font-weight: bold; -fx-text-fill: white;" text="15,000+" />
+                <Label style="-fx-font-size: 16; -fx-text-fill: white;" text="Students" />
+            </VBox>
+            <VBox alignment="CENTER" spacing="5" HBox.hgrow="ALWAYS">
+                <Label style="-fx-font-size: 32; -fx-font-weight: bold; -fx-text-fill: white;" text="500+" />
+                <Label style="-fx-font-size: 16; -fx-text-fill: white;" text="Faculty Members" />
+            </VBox>
+        </HBox>
+
+        <!-- 🔚 Footer -->
+        <VBox id="footer" alignment="CENTER" spacing="30" style="-fx-background-color: #222222;">
+            <padding>
+                <Insets top="50" right="20" bottom="30" left="20" />
+            </padding>
+            <HBox alignment="CENTER" spacing="60">
+                <VBox spacing="15" alignment="CENTER_LEFT" maxWidth="300">
+                    <ImageView fitHeight="60" fitWidth="60">
+                        <image>
+                            <Image url="@../uiu_logo_update.png" />
+                        </image>
+                    </ImageView>
+                    <Label styleClass="footer-text" text="UIU is committed to providing quality education and preparing students for the global challenges through innovative teaching methods and research." wrapText="true" />
+                </VBox>
+                <VBox spacing="15" alignment="CENTER_LEFT">
+                    <Label styleClass="footer-title" text="Quick Links" />
+                    <Label styleClass="footer-link" text="Home" />
+                    <Label styleClass="footer-link" text="About UIU" />
+                    <Label styleClass="footer-link" text="Apply Now" />
+                    <Label styleClass="footer-link" text="Academic Programs" />
+                </VBox>
+                <VBox spacing="15" alignment="CENTER_LEFT">
+                    <Label styleClass="footer-title" text="Resources" />
+                    <Label styleClass="footer-link" text="Student Portal" />
+                    <Label styleClass="footer-link" text="Mock Tests" />
+                    <Label styleClass="footer-link" text="FAQ" />
+                    <Label styleClass="footer-link" text="Help Center" />
+                </VBox>
+                <VBox spacing="15" alignment="CENTER_LEFT">
+                    <Label styleClass="footer-title" text="Social Media" />
+                    <Label styleClass="footer-link" text="Facebook" />
+                    <Label styleClass="footer-link" text="Twitter" />
+                    <Label styleClass="footer-link" text="LinkedIn" />
+                    <Label styleClass="footer-link" text="Instagram" />
+                </VBox>
+            </HBox>
+            <HBox alignment="CENTER" spacing="10">
+                <Label styleClass="copyright" text="© 2025 United International University. All rights reserved." />
+            </HBox>
+            <Label styleClass="developer" text="Developed by PhantomDevs" style="-fx-text-fill: #FA4506;" />
+        </VBox>
+    </VBox>
+</MFXScrollPane>

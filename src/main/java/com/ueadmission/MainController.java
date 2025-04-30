@@ -13,6 +13,14 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import javafx.event.ActionEvent;
+
+import com.ueadmission.admission.Admission;
+
+import javafx.application.HostServices;
+
+
+
 
 public class MainController {
     @FXML
@@ -32,6 +40,9 @@ public class MainController {
     
     @FXML
     private MFXButton learnMoreAboutUIUBtn; // "Learn More About UIU" button in the about section
+
+    @FXML
+    private MFXButton admissionButton; //" it will be show admission info about bsc--sagor"
     
     @FXML
     private javafx.scene.layout.HBox loginButtonContainer; // Container for login button
@@ -55,6 +66,10 @@ public class MainController {
         
         // Set up the Login button click action
         loginButton.setOnAction(event -> openLoginPage(event));
+
+        // Set up the admission button click action--sagor
+        //
+        admissionButton.setOnAction(event -> openAdmissionPage(event));
         
         // Set up the Apply Now button to open login page
         if (applyNowBtn != null) {
@@ -92,7 +107,20 @@ public class MainController {
             }
         });
     }
-    
+    /**
+     * Opens the admission page
+     * @param event The event that triggered this action
+     */
+    private HostServices hostServices;
+
+    public void setHostServices(HostServices hostServices) {
+        this.hostServices = hostServices;
+    }
+
+
+
+
+
     /**
      * Opens the About page
      * @param event The event that triggered this action
@@ -143,7 +171,59 @@ public class MainController {
             System.err.println("Failed to navigate to about: " + e.getMessage());
         }
     }
-    
+    /**
+     * Opens the About page
+     * @param event The event that triggered this action
+     */
+    private void openAdmissionPage(javafx.event.ActionEvent event) {
+        try {
+            // Get current stage and its properties
+            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            double width = currentStage.getWidth();
+            double height = currentStage.getHeight();
+            double x = currentStage.getX();
+            double y = currentStage.getY();
+            boolean maximized = currentStage.isMaximized();
+
+            // ✅ Prepare the Admission window instead of About
+            Stage admissionStage = Admission.prepareAdmissionWindow(width, height, x, y, maximized);
+
+            if (admissionStage == null) {
+                System.err.println("Failed to create Admission window.");
+                return;
+            }
+
+            // Fade in for new window
+            admissionStage.setOpacity(0.0);
+            admissionStage.show();
+
+            FadeTransition fadeIn = new FadeTransition(Duration.millis(300), admissionStage.getScene().getRoot());
+            fadeIn.setFromValue(0.0);
+            fadeIn.setToValue(1.0);
+
+            // Fade out for current window
+            FadeTransition fadeOut = new FadeTransition(Duration.millis(200), currentStage.getScene().getRoot());
+            fadeOut.setFromValue(1.0);
+            fadeOut.setToValue(0.0);
+
+            fadeOut.setOnFinished(e -> {
+                currentStage.hide();
+                admissionStage.setOpacity(1.0);
+                fadeIn.play();
+
+                fadeIn.setOnFinished(f -> currentStage.close());
+            });
+
+            fadeOut.play();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println("Failed to open Admission Page: " + e.getMessage());
+        }
+    }
+
+
+
     /**
      * Opens the Login page
      * @param event The event that triggered this action
@@ -284,7 +364,9 @@ public class MainController {
                             loginContainer = welcomeText.getScene().lookup("#loginButtonContainer");
                         } else if (aboutButton != null && aboutButton.getScene() != null) {
                             loginContainer = aboutButton.getScene().lookup("#loginButtonContainer");
-                        } else if (mainContainer != null) {
+                        } else if (admissionButton != null && admissionButton.getScene() != null) {
+                            loginContainer = admissionButton.getScene().lookup("#loginButtonContainer");
+                        }else if (mainContainer != null) {
                             loginContainer = mainContainer.lookup("#loginButtonContainer");
                         }
                         
@@ -313,7 +395,9 @@ public class MainController {
                             profileContainer = welcomeText.getScene().lookup("#profileButtonContainer");
                         } else if (aboutButton != null && aboutButton.getScene() != null) {
                             profileContainer = aboutButton.getScene().lookup("#profileButtonContainer");
-                        } else if (mainContainer != null) {
+                        }else if (admissionButton != null && admissionButton.getScene() != null) {
+                            profileContainer = admissionButton.getScene().lookup("#profileButtonContainer");
+                        }  else if (mainContainer != null) {
                             profileContainer = mainContainer.lookup("#profileButtonContainer");
                         }
                         
@@ -340,7 +424,7 @@ public class MainController {
      */
     private void initializeContainersIfNull() {
         try {
-            if (loginButtonContainer == null || profileButtonContainer == null) {
+            if (loginButtonContainer == null || profileButtonContainer == null  ) {
                 LOGGER.info("One or both containers are null, trying to find them");
                 
                 if (welcomeText != null && welcomeText.getScene() != null) {
@@ -375,6 +459,21 @@ public class MainController {
                         profileButtonContainer = (HBox) aboutButton.getScene().lookup("#profileButtonContainer");
                         if (profileButtonContainer != null) {
                             LOGGER.info("Found profileButtonContainer via aboutButton lookup");
+                        }
+                    }
+                }else if (admissionButton != null && admissionButton.getScene() != null) {
+                    // Try using another control as a reference
+                    if (loginButtonContainer == null) {
+                        loginButtonContainer = (HBox) admissionButton.getScene().lookup("#loginButtonContainer");
+                        if (loginButtonContainer != null) {
+                            LOGGER.info("Found loginButtonContainer via admissionButton lookup");
+                        }
+                    }
+
+                    if (profileButtonContainer == null) {
+                        profileButtonContainer = (HBox) admissionButton.getScene().lookup("#profileButtonContainer");
+                        if (profileButtonContainer != null) {
+                            LOGGER.info("Found profileButtonContainer via admissionButton lookup");
                         }
                     }
                 } else {

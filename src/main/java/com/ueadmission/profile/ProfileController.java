@@ -58,7 +58,7 @@ public class ProfileController {
     private MFXButton aboutButton;
     
     @FXML
-    private MFXButton admissionButton;
+    public MFXButton admissionButton;
     
     @FXML
     private MFXButton mockTestButton;
