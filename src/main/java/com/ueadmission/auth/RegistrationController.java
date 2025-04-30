@@ -4,6 +4,12 @@ import com.ueadmission.about.About;
 import com.ueadmission.auth.state.AuthStateManager;
 import com.ueadmission.auth.state.User;
 import com.ueadmission.utils.MFXNotifications;
+
+import io.github.palexdev.materialfx.controls.MFXButton;
+import io.github.palexdev.materialfx.controls.MFXCheckbox;
+import io.github.palexdev.materialfx.controls.MFXComboBox;
+import io.github.palexdev.materialfx.controls.MFXPasswordField;
+import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.animation.FadeTransition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -11,11 +17,6 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import io.github.palexdev.materialfx.controls.MFXButton;
-import io.github.palexdev.materialfx.controls.MFXCheckbox;
-import io.github.palexdev.materialfx.controls.MFXComboBox;
-import io.github.palexdev.materialfx.controls.MFXPasswordField;
-import io.github.palexdev.materialfx.controls.MFXTextField;
 
 
 public class RegistrationController {
@@ -182,15 +183,12 @@ public class RegistrationController {
             double y = currentStage.getY();
             boolean maximized = currentStage.isMaximized();
             
-            // In a real app, this would navigate to the admission screen
-            // For now, we'll just show an alert or log a message
-            System.out.println("Navigate to Admission (not implemented yet)");
-            
-            // Placeholder for future implementation
-            // Stage admissionWindow = Admission.prepareAdmissionWindow(width, height, x, y, maximized);
-            // if (admissionWindow != null) {
-            //     applyTransition(currentStage, admissionWindow);
-            // }
+            // Prepare the Admission window before closing current one
+            Stage admissionWindow = com.ueadmission.admission.Admission.prepareAdmissionWindow(width, height, x, y, maximized);
+            if (admissionWindow != null) {
+                // Apply smooth transition
+                applyTransition(currentStage, admissionWindow);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             System.err.println("Failed to navigate to admission: " + e.getMessage());

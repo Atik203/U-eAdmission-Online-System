@@ -1,34 +1,33 @@
 package com.ueadmission.admission;
 
-
-import javafx.application.HostServices;
-import javafx.fxml.FXML;
-
-
-import com.ueadmission.MainController;
-import com.ueadmission.auth.state.AuthState;
-import com.ueadmission.auth.state.AuthStateManager;
-import com.ueadmission.components.ProfileButton;
-import io.github.palexdev.materialfx.controls.MFXButton;
-import javafx.animation.FadeTransition;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
-import javafx.stage.Stage;
-import javafx.util.Duration;
 import java.awt.Desktop;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.function.Consumer;
 import java.util.logging.Logger;
+
+import com.ueadmission.auth.state.AuthState;
+import com.ueadmission.auth.state.AuthStateManager;
+import com.ueadmission.components.ProfileButton;
+
+import io.github.palexdev.materialfx.controls.MFXButton;
+import io.github.palexdev.materialfx.controls.MFXComboBox;
+import io.github.palexdev.materialfx.controls.MFXDatePicker;
+import io.github.palexdev.materialfx.controls.MFXTextField;
+import javafx.animation.FadeTransition;
+import javafx.application.HostServices;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-
-
+import javafx.stage.Stage;
+import javafx.util.Duration;
 
 public class AdmissionController {
     private HostServices hostServices;
@@ -66,7 +65,6 @@ public class AdmissionController {
     @FXML
     private ProfileButton profileButton;
 
-
     @FXML
     private VBox root;
 
@@ -90,6 +88,42 @@ public class AdmissionController {
 
     @FXML
     private VBox infoBox;
+
+    @FXML
+    private VBox applicationFormContainer;
+
+    @FXML
+    private MFXTextField firstNameField;
+
+    @FXML
+    private MFXTextField lastNameField;
+
+    @FXML
+    private MFXTextField emailField;
+
+    @FXML
+    private MFXTextField phoneField;
+
+    @FXML
+    private MFXDatePicker dobPicker;
+
+    @FXML
+    private MFXComboBox<String> programComboBox;
+
+    @FXML
+    private MFXTextField institutionField;
+
+    @FXML
+    private MFXTextField sscGpaField;
+
+    @FXML
+    private MFXTextField hscGpaField;
+
+    @FXML
+    private MFXComboBox<String> referenceComboBox;
+
+    @FXML
+    private MFXTextField commentsField;
 
     @FXML
     void handleApplyNow(ActionEvent event) {
@@ -136,6 +170,176 @@ public class AdmissionController {
         });
     }
 
+    @FXML
+    void openBBA(ActionEvent event) {
+        try {
+            Desktop.getDesktop().browse(new URI("https://www.uiu.ac.bd/program/bba/"));
+        } catch (IOException | URISyntaxException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    void openBBAAIS(ActionEvent event) {
+        try {
+            Desktop.getDesktop().browse(new URI("https://www.uiu.ac.bd/program/bba-in-ais/"));
+        } catch (IOException | URISyntaxException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    void openEconomics(ActionEvent event) {
+        try {
+            Desktop.getDesktop().browse(new URI("https://www.uiu.ac.bd/program/bsc-in-economics/"));
+        } catch (IOException | URISyntaxException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    void openCivil(ActionEvent event) {
+        try {
+            Desktop.getDesktop().browse(new URI("https://www.uiu.ac.bd/program/bsc-in-civil-engineering/"));
+        } catch (IOException | URISyntaxException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    void openCSE(ActionEvent event) {
+        try {
+            Desktop.getDesktop().browse(new URI("https://www.uiu.ac.bd/program/bsc-in-cse/"));
+        } catch (IOException | URISyntaxException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    void openDS(ActionEvent event) {
+        try {
+            Desktop.getDesktop().browse(new URI("https://www.uiu.ac.bd/program/bsc-in-data-science/"));
+        } catch (IOException | URISyntaxException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    void openEEE(ActionEvent event) {
+        try {
+            Desktop.getDesktop().browse(new URI("https://www.uiu.ac.bd/program/bsc-in-eee/"));
+        } catch (IOException | URISyntaxException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    void openEDS(ActionEvent event) {
+        try {
+            Desktop.getDesktop().browse(new URI("https://www.uiu.ac.bd/program/bss-in-environment-and-development-studies/"));
+        } catch (IOException | URISyntaxException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    void openMSJ(ActionEvent event) {
+        try {
+            Desktop.getDesktop().browse(new URI("https://www.uiu.ac.bd/program/bss-in-msj/"));
+        } catch (IOException | URISyntaxException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    void openEnglish(ActionEvent event) {
+        try {
+            Desktop.getDesktop().browse(new URI("https://www.uiu.ac.bd/program/ba-in-english/"));
+        } catch (IOException | URISyntaxException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    void openPharmacy(ActionEvent event) {
+        try {
+            Desktop.getDesktop().browse(new URI("https://www.uiu.ac.bd/program/bachelor-of-pharmacy/"));
+        } catch (IOException | URISyntaxException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    void openBiotech(ActionEvent event) {
+        try {
+            Desktop.getDesktop().browse(new URI("https://www.uiu.ac.bd/program/biotechnology-genetic-engineering/"));
+        } catch (IOException | URISyntaxException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    void showApplicationForm(ActionEvent event) {
+        applicationFormContainer.setVisible(true);
+        applicationFormContainer.setManaged(true);
+    }
+
+    @FXML
+    void hideApplicationForm(ActionEvent event) {
+        applicationFormContainer.setVisible(false);
+        applicationFormContainer.setManaged(false);
+    }
+
+    @FXML
+    void resetForm(ActionEvent event) {
+        // Clear all form fields
+        firstNameField.clear();
+        lastNameField.clear();
+        emailField.clear();
+        phoneField.clear();
+        dobPicker.clear();
+        programComboBox.clear();
+        institutionField.clear();
+        sscGpaField.clear();
+        hscGpaField.clear();
+        referenceComboBox.clear();
+        commentsField.clear();
+    }
+
+    @FXML
+    void submitForm(ActionEvent event) {
+        // Basic validation
+        if (firstNameField.getText().isEmpty() || 
+            lastNameField.getText().isEmpty() || 
+            emailField.getText().isEmpty()) {
+            
+            // Show error message or alert
+            javafx.scene.control.Alert alert = new javafx.scene.control.Alert(
+                javafx.scene.control.Alert.AlertType.ERROR,
+                "Please fill in all required fields.",
+                javafx.scene.control.ButtonType.OK
+            );
+            alert.setHeaderText("Form Validation Error");
+            alert.show();
+            return;
+        }
+        
+        // If validation passes, show success message
+        javafx.scene.control.Alert alert = new javafx.scene.control.Alert(
+            javafx.scene.control.Alert.AlertType.INFORMATION,
+            "Your application has been successfully submitted. We will contact you soon.",
+            javafx.scene.control.ButtonType.OK
+        );
+        alert.setHeaderText("Application Submitted");
+        alert.showAndWait();
+        
+        // Hide form after submission
+        hideApplicationForm(event);
+        
+        // Reset form for next use
+        resetForm(event);
+    }
+
     private void displayInfo(String schoolTitle, String[] items) {
         infoBox.getChildren().clear();
 
@@ -165,15 +369,11 @@ public class AdmissionController {
 
         // Configure other navigation buttons if they exist
         if (aboutButton != null) {
-            aboutButton.setOnAction(event -> System.out.println("Admission button clicked"));
-        }
-
-        if (mockTestButton != null) {
-            mockTestButton.setOnAction(event -> System.out.println("Mock Test button clicked"));
+            aboutButton.setOnAction(event -> navigateToAbout(event));
         }
 
         if (contactButton != null) {
-            contactButton.setOnAction(event -> System.out.println("Contact button clicked"));
+            contactButton.setOnAction(event -> navigateToContact(event));
         }
 
         // Subscribe to auth state changes
@@ -184,14 +384,29 @@ public class AdmissionController {
 
         // Call onSceneActive to ensure UI is updated when scene is shown
         javafx.application.Platform.runLater(this::onSceneActive);
+
+        // Initialize the program combo box
+        if (programComboBox != null) {
+            programComboBox.getItems().addAll(
+                "BBA", "BBA in AIS", "Economics", 
+                "Civil Engineering", "CSE", "Data Science", "EEE",
+                "EDS", "MSJ", "English",
+                "Pharmacy", "Biotech and Genetic Engineering"
+            );
+        }
+        
+        // Initialize the reference combo box
+        if (referenceComboBox != null) {
+            referenceComboBox.getItems().addAll(
+                "Friends/Family", "School Counselor", "Social Media",
+                "UIU Website", "Newspaper", "Education Fair", "Other"
+            );
+        }
     }
 
     /**
-     * Subscribe to authentication state changes
-     */
-    /**
      * Cleanup method to ensure any transitions are completed and opacity is reset
-     * Called before navigating away from the About screen
+     * Called before navigating away from the Admission screen
      */
     private void cleanup() {
         LOGGER.info("Cleaning up AdmissionController before navigation");
@@ -388,124 +603,111 @@ public class AdmissionController {
             double x = currentStage.getX();
             double y = currentStage.getY();
             boolean maximized = currentStage.isMaximized();
-
+            
             // Store current auth state
             AuthState currentAuthState = AuthStateManager.getInstance().getState();
             boolean isAuthenticated = (currentAuthState != null && currentAuthState.isAuthenticated());
             LOGGER.info("Navigating to home with auth state: " + (isAuthenticated ? "authenticated" : "not authenticated"));
-
+            
             // Prepare the Main window before closing current one
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com.ueadmission/main.fxml"));
             javafx.scene.Parent root = loader.load();
-
-            // Get the controller and pass auth state data
-            MainController mainController = loader.getController();
-
+            
             // Create new stage
             Stage mainStage = new Stage();
             javafx.scene.Scene scene = new javafx.scene.Scene(root, width, height);
             mainStage.setScene(scene);
             mainStage.setTitle("UeAdmission - Home");
-
+            
             // Set the position and size
             mainStage.setX(x);
             mainStage.setY(y);
             mainStage.setWidth(width);
             mainStage.setHeight(height);
             mainStage.setMaximized(maximized);
-
+            
             // Make the new stage ready but not visible yet
             mainStage.setOpacity(0.0);
             mainStage.show();
-
+            
             // Important: Force the scene to layout all nodes before accessing containers
             scene.getRoot().applyCss();
             scene.getRoot().layout();
-
-            // Ensure UI is updated with authentication state before displaying
-            mainController.refreshUI();
-
-            // Set up JavaFX logging to help troubleshoot UI issues
-            java.util.logging.Logger jfxLogger = java.util.logging.Logger.getLogger("javafx");
-            jfxLogger.setLevel(java.util.logging.Level.FINE);
-
+            
+            // Try to get the controller
+            Object controller = loader.getController();
+            if (controller != null) {
+                // Try to call refreshUI method if available
+                try {
+                    java.lang.reflect.Method refreshMethod = controller.getClass().getMethod("refreshUI");
+                    refreshMethod.invoke(controller);
+                    LOGGER.info("Called refreshUI on MainController");
+                } catch (Exception e) {
+                    LOGGER.warning("Could not call refreshUI: " + e.getMessage());
+                }
+                
+                // Try to call onSceneActive method if available
+                try {
+                    java.lang.reflect.Method method = controller.getClass().getMethod("onSceneActive");
+                    method.invoke(controller);
+                    LOGGER.info("Called onSceneActive on MainController");
+                } catch (Exception e) {
+                    LOGGER.warning("Could not call onSceneActive: " + e.getMessage());
+                }
+            }
+            
             // Use a fade transition for the new window
             FadeTransition fadeIn = new FadeTransition(Duration.millis(300), mainStage.getScene().getRoot());
             fadeIn.setFromValue(0.0);
             fadeIn.setToValue(1.0);
-
+            
             // Add a fade out transition for the current window
             FadeTransition fadeOut = new FadeTransition(Duration.millis(200), currentStage.getScene().getRoot());
             fadeOut.setFromValue(1.0);
             fadeOut.setToValue(0.0);
-
+            
             // Clean up before transition
             cleanup();
-
+            
             // Start the fade out, then hide current stage when done
             fadeOut.setOnFinished(e -> {
                 currentStage.hide();
                 mainStage.setOpacity(1.0);
                 fadeIn.play();
-
-                // Execute this after fade in to ensure UI is fully ready
-                fadeIn.setOnFinished(f -> {
-                    try {
-                        // Ensure profile is updated with current auth state after navigation
-                        LOGGER.info("Fade in complete, calling onSceneActive on MainController");
-                        mainController.onSceneActive();
-
-                        // Log the status of important controls
-                        LOGGER.info("Profile button in MainController: " +
-                                (mainController.findProfileButtonInScene() != null ? "found" : "not found"));
-                    } catch (Exception ex) {
-                        LOGGER.severe("Error in fade in completion: " + ex.getMessage());
-                        ex.printStackTrace();
-                    } finally {
-                        currentStage.close();
-                    }
-                });
+                
+                // Finally close the original stage after transition completes
+                fadeIn.setOnFinished(f -> currentStage.close());
             });
-
+            
             fadeOut.play();
-
+            
             LOGGER.info("Navigating to home screen with transition");
-
+            
         } catch (Exception e) {
-            LOGGER.severe("Failed to navigate to home: " + e.getMessage());
+            LOGGER.severe("Failed to navigate to Home: " + e.getMessage());
             e.printStackTrace();
-
+            
             // Clean up even if there's an error
             cleanup();
-
-            // Try direct navigation as fallback (much simpler approach)
+            
+            // Try direct navigation as fallback
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/com.ueadmission/main.fxml"));
                 javafx.scene.Parent root = loader.load();
-                MainController mainController = loader.getController();
-
+                
                 Stage stage = (Stage) homeButton.getScene().getWindow();
                 stage.setScene(new javafx.scene.Scene(root));
-                stage.setTitle("UeAdmission - home");
-
-                // Force layout before accessing UI elements
-                stage.getScene().getRoot().applyCss();
-                stage.getScene().getRoot().layout();
-
-                // Call refresh UI on the controller
-                mainController.refreshUI();
-
-                // Then call onSceneActive to ensure everything is properly updated
-                mainController.onSceneActive();
-
+                stage.setTitle("UeAdmission - Home");
+                
                 LOGGER.info("Navigated to home using fallback method");
             } catch (Exception ex) {
                 LOGGER.severe("Complete navigation failure: " + ex.getMessage());
             }
         }
     }
+
     /**
-     * Navigates to the home page with transition effects
+     * Navigates to the About page with transition effects
      * @param event The event that triggered this action
      */
     private void navigateToAbout(javafx.event.ActionEvent event) {
@@ -517,127 +719,227 @@ public class AdmissionController {
             double x = currentStage.getX();
             double y = currentStage.getY();
             boolean maximized = currentStage.isMaximized();
-
+            
             // Store current auth state
             AuthState currentAuthState = AuthStateManager.getInstance().getState();
             boolean isAuthenticated = (currentAuthState != null && currentAuthState.isAuthenticated());
-            LOGGER.info("Navigating to home with auth state: " + (isAuthenticated ? "authenticated" : "not authenticated"));
-
-            // Prepare the Main window before closing current one
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com.ueadmission/main.fxml"));
+            LOGGER.info("Navigating to about with auth state: " + (isAuthenticated ? "authenticated" : "not authenticated"));
+            
+            // Prepare the About window before closing current one
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/ueadmission/about/About.fxml"));
             javafx.scene.Parent root = loader.load();
-
-            // Get the controller and pass auth state data
-            MainController mainController = loader.getController();
-
+            
             // Create new stage
-            Stage mainStage = new Stage();
+            Stage aboutStage = new Stage();
             javafx.scene.Scene scene = new javafx.scene.Scene(root, width, height);
-            mainStage.setScene(scene);
-            mainStage.setTitle("UeAdmission - Home");
-
+            aboutStage.setScene(scene);
+            aboutStage.setTitle("About - UeAdmission");
+            
             // Set the position and size
-            mainStage.setX(x);
-            mainStage.setY(y);
-            mainStage.setWidth(width);
-            mainStage.setHeight(height);
-            mainStage.setMaximized(maximized);
-
+            aboutStage.setX(x);
+            aboutStage.setY(y);
+            aboutStage.setWidth(width);
+            aboutStage.setHeight(height);
+            aboutStage.setMaximized(maximized);
+            
             // Make the new stage ready but not visible yet
-            mainStage.setOpacity(0.0);
-            mainStage.show();
-
+            aboutStage.setOpacity(0.0);
+            aboutStage.show();
+            
             // Important: Force the scene to layout all nodes before accessing containers
             scene.getRoot().applyCss();
             scene.getRoot().layout();
-
-            // Ensure UI is updated with authentication state before displaying
-            mainController.refreshUI();
-
-            // Set up JavaFX logging to help troubleshoot UI issues
-            java.util.logging.Logger jfxLogger = java.util.logging.Logger.getLogger("javafx");
-            jfxLogger.setLevel(java.util.logging.Level.FINE);
-
+            
+            // Try to get the controller
+            Object controller = loader.getController();
+            if (controller != null) {
+                // Try to call refreshUI method if available
+                try {
+                    java.lang.reflect.Method refreshMethod = controller.getClass().getMethod("refreshUI");
+                    refreshMethod.invoke(controller);
+                    LOGGER.info("Called refreshUI on AboutController");
+                } catch (Exception e) {
+                    LOGGER.warning("Could not call refreshUI: " + e.getMessage());
+                }
+                
+                // Try to call onSceneActive method if available
+                try {
+                    java.lang.reflect.Method method = controller.getClass().getMethod("onSceneActive");
+                    method.invoke(controller);
+                    LOGGER.info("Called onSceneActive on AboutController");
+                } catch (Exception e) {
+                    LOGGER.warning("Could not call onSceneActive: " + e.getMessage());
+                }
+            }
+            
             // Use a fade transition for the new window
-            FadeTransition fadeIn = new FadeTransition(Duration.millis(300), mainStage.getScene().getRoot());
+            FadeTransition fadeIn = new FadeTransition(Duration.millis(300), aboutStage.getScene().getRoot());
             fadeIn.setFromValue(0.0);
             fadeIn.setToValue(1.0);
-
+            
             // Add a fade out transition for the current window
             FadeTransition fadeOut = new FadeTransition(Duration.millis(200), currentStage.getScene().getRoot());
             fadeOut.setFromValue(1.0);
             fadeOut.setToValue(0.0);
-
+            
             // Clean up before transition
             cleanup();
-
+            
             // Start the fade out, then hide current stage when done
             fadeOut.setOnFinished(e -> {
                 currentStage.hide();
-                mainStage.setOpacity(1.0);
+                aboutStage.setOpacity(1.0);
                 fadeIn.play();
-
-                // Execute this after fade in to ensure UI is fully ready
-                fadeIn.setOnFinished(f -> {
-                    try {
-                        // Ensure profile is updated with current auth state after navigation
-                        LOGGER.info("Fade in complete, calling onSceneActive on MainController");
-                        mainController.onSceneActive();
-
-                        // Log the status of important controls
-                        LOGGER.info("Profile button in MainController: " +
-                                (mainController.findProfileButtonInScene() != null ? "found" : "not found"));
-                    } catch (Exception ex) {
-                        LOGGER.severe("Error in fade in completion: " + ex.getMessage());
-                        ex.printStackTrace();
-                    } finally {
-                        currentStage.close();
-                    }
-                });
+                
+                // Finally close the original stage after transition completes
+                fadeIn.setOnFinished(f -> currentStage.close());
             });
-
+            
             fadeOut.play();
-
-            LOGGER.info("Navigating to home screen with transition");
-
+            
+            LOGGER.info("Navigating to about screen with transition");
+            
         } catch (Exception e) {
-            LOGGER.severe("Failed to navigate to home: " + e.getMessage());
+            LOGGER.severe("Failed to navigate to About: " + e.getMessage());
             e.printStackTrace();
-
+            
             // Clean up even if there's an error
             cleanup();
-
-            // Try direct navigation as fallback (much simpler approach)
+            
+            // Try direct navigation as fallback
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com.ueadmission/main.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/ueadmission/about/About.fxml"));
                 javafx.scene.Parent root = loader.load();
-                MainController mainController = loader.getController();
-
+                
                 Stage stage = (Stage) aboutButton.getScene().getWindow();
                 stage.setScene(new javafx.scene.Scene(root));
-                stage.setTitle("About-UIU");
-
-                // Force layout before accessing UI elements
-                stage.getScene().getRoot().applyCss();
-                stage.getScene().getRoot().layout();
-
-                // Call refresh UI on the controller
-                mainController.refreshUI();
-
-                // Then call onSceneActive to ensure everything is properly updated
-                mainController.onSceneActive();
-
-                LOGGER.info("Navigated to home using fallback method");
+                stage.setTitle("About - UeAdmission");
+                
+                LOGGER.info("Navigated to about using fallback method");
             } catch (Exception ex) {
                 LOGGER.severe("Complete navigation failure: " + ex.getMessage());
             }
         }
     }
 
-
+    /**
+     * Navigates to the Contact page with transition effects
+     * @param event The event that triggered this action
+     */
+    private void navigateToContact(javafx.event.ActionEvent event) {
+        try {
+            // Get current stage and its properties
+            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            double width = currentStage.getWidth();
+            double height = currentStage.getHeight();
+            double x = currentStage.getX();
+            double y = currentStage.getY();
+            boolean maximized = currentStage.isMaximized();
+            
+            // Store current auth state
+            AuthState currentAuthState = AuthStateManager.getInstance().getState();
+            boolean isAuthenticated = (currentAuthState != null && currentAuthState.isAuthenticated());
+            LOGGER.info("Navigating to contact with auth state: " + (isAuthenticated ? "authenticated" : "not authenticated"));
+            
+            // Prepare the Contact window before closing current one
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/ueadmission/contact/Contact.fxml"));
+            javafx.scene.Parent root = loader.load();
+            
+            // Create new stage
+            Stage contactStage = new Stage();
+            javafx.scene.Scene scene = new javafx.scene.Scene(root, width, height);
+            contactStage.setScene(scene);
+            contactStage.setTitle("Contact - UeAdmission");
+            
+            // Set the position and size
+            contactStage.setX(x);
+            contactStage.setY(y);
+            contactStage.setWidth(width);
+            contactStage.setHeight(height);
+            contactStage.setMaximized(maximized);
+            
+            // Make the new stage ready but not visible yet
+            contactStage.setOpacity(0.0);
+            contactStage.show();
+            
+            // Important: Force the scene to layout all nodes before accessing containers
+            scene.getRoot().applyCss();
+            scene.getRoot().layout();
+            
+            // Try to get the controller
+            Object controller = loader.getController();
+            if (controller != null) {
+                // Try to call refreshUI method if available
+                try {
+                    java.lang.reflect.Method refreshMethod = controller.getClass().getMethod("refreshUI");
+                    refreshMethod.invoke(controller);
+                    LOGGER.info("Called refreshUI on ContactController");
+                } catch (Exception e) {
+                    LOGGER.warning("Could not call refreshUI: " + e.getMessage());
+                }
+                
+                // Try to call onSceneActive method if available
+                try {
+                    java.lang.reflect.Method method = controller.getClass().getMethod("onSceneActive");
+                    method.invoke(controller);
+                    LOGGER.info("Called onSceneActive on ContactController");
+                } catch (Exception e) {
+                    LOGGER.warning("Could not call onSceneActive: " + e.getMessage());
+                }
+            }
+            
+            // Use a fade transition for the new window
+            FadeTransition fadeIn = new FadeTransition(Duration.millis(300), contactStage.getScene().getRoot());
+            fadeIn.setFromValue(0.0);
+            fadeIn.setToValue(1.0);
+            
+            // Add a fade out transition for the current window
+            FadeTransition fadeOut = new FadeTransition(Duration.millis(200), currentStage.getScene().getRoot());
+            fadeOut.setFromValue(1.0);
+            fadeOut.setToValue(0.0);
+            
+            // Clean up before transition
+            cleanup();
+            
+            // Start the fade out, then hide current stage when done
+            fadeOut.setOnFinished(e -> {
+                currentStage.hide();
+                contactStage.setOpacity(1.0);
+                fadeIn.play();
+                
+                // Finally close the original stage after transition completes
+                fadeIn.setOnFinished(f -> currentStage.close());
+            });
+            
+            fadeOut.play();
+            
+            LOGGER.info("Navigating to contact screen with transition");
+            
+        } catch (Exception e) {
+            LOGGER.severe("Failed to navigate to Contact: " + e.getMessage());
+            e.printStackTrace();
+            
+            // Clean up even if there's an error
+            cleanup();
+            
+            // Try direct navigation as fallback
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/ueadmission/contact/Contact.fxml"));
+                javafx.scene.Parent root = loader.load();
+                
+                Stage stage = (Stage) contactButton.getScene().getWindow();
+                stage.setScene(new javafx.scene.Scene(root));
+                stage.setTitle("Contact - UeAdmission");
+                
+                LOGGER.info("Navigated to contact using fallback method");
+            } catch (Exception ex) {
+                LOGGER.severe("Complete navigation failure: " + ex.getMessage());
+            }
+        }
+    }
 
     /**
-     * Navigates to the login page
+     * Navigates to the Login page with transition effects
      * @param event The event that triggered this action
      */
     private void navigateToLogin(javafx.event.ActionEvent event) {
@@ -649,57 +951,62 @@ public class AdmissionController {
             double x = currentStage.getX();
             double y = currentStage.getY();
             boolean maximized = currentStage.isMaximized();
-
+            
+            // Store current auth state
+            AuthState currentAuthState = AuthStateManager.getInstance().getState();
+            boolean isAuthenticated = (currentAuthState != null && currentAuthState.isAuthenticated());
+            LOGGER.info("Navigating to login with auth state: " + (isAuthenticated ? "authenticated" : "not authenticated"));
+            
             // Prepare the Login window before closing current one
             Stage loginStage = com.ueadmission.auth.Auth.prepareLoginWindow(width, height, x, y, maximized);
-
+            
             // Check if loginStage is null before proceeding
             if (loginStage == null) {
                 LOGGER.severe("Failed to create login stage. Login window couldn't be prepared.");
                 return;
             }
-
+            
             // Make the new stage ready but not visible yet
             loginStage.setOpacity(0.0);
             loginStage.show();
-
+            
             // Use a fade transition for the new window
             FadeTransition fadeIn = new FadeTransition(Duration.millis(300), loginStage.getScene().getRoot());
             fadeIn.setFromValue(0.0);
             fadeIn.setToValue(1.0);
-
+            
             // Add a fade out transition for the current window
             FadeTransition fadeOut = new FadeTransition(Duration.millis(200), currentStage.getScene().getRoot());
             fadeOut.setFromValue(1.0);
             fadeOut.setToValue(0.0);
-
+            
             // Clean up before transition
             cleanup();
-
+            
             // Start the fade out, then hide current stage when done
             fadeOut.setOnFinished(e -> {
                 currentStage.hide();
                 loginStage.setOpacity(1.0);
                 fadeIn.play();
-
+                
                 // Finally close the original stage after transition completes
                 fadeIn.setOnFinished(f -> currentStage.close());
             });
-
+            
             fadeOut.play();
-
+            
             LOGGER.info("Navigating to login screen with transition");
-
+            
         } catch (Exception e) {
             LOGGER.severe("Failed to navigate to login: " + e.getMessage());
             e.printStackTrace();
-
+            
             // Clean up even if there's an error
             cleanup();
-
+            
             // Try direct navigation as fallback
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com.ueadmission/auth/login.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com.ueadmission/auth/Auth.fxml"));
                 javafx.scene.Parent root = loader.load();
                 Stage stage = (Stage) loginButton.getScene().getWindow();
                 stage.setScene(new javafx.scene.Scene(root));
@@ -710,73 +1017,7 @@ public class AdmissionController {
             }
         }
     }
-
-    public void openBBA() {
-        openURL("https://admission.uiu.ac.bd/programs/bba");
-    }
-
-    public void openBBAAIS() {
-        openURL("https://admission.uiu.ac.bd/programs/bba-ais");
-    }
-
-    public void openEconomics() {
-        openURL("https://admission.uiu.ac.bd/programs/economics");
-    }
-
-    public void openCivil() {
-        openURL("https://admission.uiu.ac.bd/programs/ce");
-    }
-
-    public void openCSE() {
-        openURL("https://admission.uiu.ac.bd/programs/cse");
-    }
-
-    public void openDS() {
-        openURL("https://admission.uiu.ac.bd/programs/data-science");
-    }
-
-    public void openEEE() {
-        openURL("https://admission.uiu.ac.bd/programs/eee");
-    }
-
-    public void openEDS() {
-        openURL("https://admission.uiu.ac.bd/programs/eds");
-    }
-
-    public void openMSJ() {
-        openURL("https://admission.uiu.ac.bd/programs/msj");
-    }
-
-    public void openEnglish() {
-        openURL("https://admission.uiu.ac.bd/programs/english");
-    }
-
-    public void openPharmacy() {
-        openURL("https://admission.uiu.ac.bd/programs/pharmacy");
-    }
-
-    public void openBiotech() {
-        openURL("https://admission.uiu.ac.bd/programs/biotech-genetic-engineering");
-    }
-
-    public void openApply() {
-        openURL("https://admission.uiu.ac.bd/");
-    }
-
-    // Utility method to handle all URL openings
-    private void openURL(String url) {
-        try {
-            java.awt.Desktop.getDesktop().browse(new java.net.URI(url));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
 }
-/**
- * Navigates to the home page with transition effects
- * @param event The event that triggered this action
- */
 
 
 

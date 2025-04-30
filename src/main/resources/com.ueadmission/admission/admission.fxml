@@ -45,45 +45,6 @@
 
 
 
-
-
-
-
-        <!--        //merge here the fxml-->
-
-        <!--        &lt;!&ndash; 🎓 UIU Undergraduate Programs Section &ndash;&gt;-->
-        <!--        <VBox fx:id="mainContent" spacing="20" padding="20">-->
-        <!--            &lt;!&ndash; Header &ndash;&gt;-->
-        <!--            <Label fx:id="title" text="UIU Undergraduate Programs" styleClass="hero-title"/>-->
-
-        <!--            &lt;!&ndash; School Sections &ndash;&gt;-->
-        <!--            <VBox fx:id="soBeSection" spacing="10">-->
-        <!--                <Label text="School of Business and Economics (SoBE)" styleClass="section-title"/>-->
-        <!--                <FlowPane fx:id="soBeFlowPane" hgap="10" vgap="10"/>-->
-        <!--            </VBox>-->
-
-        <!--            <VBox fx:id="soSeSection" spacing="10">-->
-        <!--                <Label text="School of Science and Engineering (SoSE)" styleClass="section-title"/>-->
-        <!--                <FlowPane fx:id="soSeFlowPane" hgap="10" vgap="10"/>-->
-        <!--            </VBox>-->
-
-        <!--            <VBox fx:id="soHssSection" spacing="10">-->
-        <!--                <Label text="School of Humanities and Social Sciences (SoHSS)" styleClass="section-title"/>-->
-        <!--                <FlowPane fx:id="soHssFlowPane" hgap="10" vgap="10"/>-->
-        <!--            </VBox>-->
-
-        <!--            <VBox fx:id="soLsSection" spacing="10">-->
-        <!--                <Label text="School of Life Sciences (SoLS)" styleClass="section-title"/>-->
-        <!--                <FlowPane fx:id="soLsFlowPane" hgap="10" vgap="10"/>-->
-        <!--            </VBox>-->
-
-        <!--            &lt;!&ndash; Apply Now button &ndash;&gt;-->
-        <!--            <HBox alignment="CENTER" padding="30, 0, 30, 0">-->
-        <!--                <Button fx:id="applyNowButton" text="Apply Now" styleClass="uiu-button-primary"/>-->
-        <!--            </HBox>-->
-        <!--        </VBox>-->
-
-
         <!-- 🎓 Admission Header -->
         <VBox id="admission-header" alignment="CENTER" spacing="15">
             <padding>
@@ -96,8 +57,8 @@
 
 
 
-
-        <VBox styleClass="ux-root">
+ <!-- UG Programs -->
+        <VBox styleClass="ux-root" alignment="CENTER">
 
             <!-- Title -->
             <Text text="UIU Undergraduate Programs" styleClass="ux-hero-title">
@@ -107,9 +68,9 @@
             </Text>
 
             <!-- SoBE -->
-            <VBox styleClass="ux-section-box">
+            <VBox styleClass="ux-section-box" alignment="CENTER">
                 <Text text="School of Business and Economics (SoBE)" styleClass="ux-section-title"/>
-                <FlowPane styleClass="ux-flow">
+                <FlowPane styleClass="ux-flow" alignment="CENTER">
                     <MFXButton text="BBA" onAction="#openBBA" styleClass="ux-button-outline"/>
                     <MFXButton text="BBA in AIS" onAction="#openBBAAIS" styleClass="ux-button-outline"/>
                     <MFXButton text="Economics" onAction="#openEconomics" styleClass="ux-button-outline"/>
@@ -117,9 +78,9 @@
             </VBox>
 
             <!-- SoSE -->
-            <VBox styleClass="ux-section-box">
+            <VBox styleClass="ux-section-box" alignment="CENTER">
                 <Text text="School of Science and Engineering (SoSE)" styleClass="ux-section-title"/>
-                <FlowPane styleClass="ux-flow">
+                <FlowPane styleClass="ux-flow" alignment="CENTER">
                     <MFXButton text="Civil Engineering" onAction="#openCivil" styleClass="ux-button-outline"/>
                     <MFXButton text="CSE" onAction="#openCSE" styleClass="ux-button-outline"/>
                     <MFXButton text="Data Science" onAction="#openDS" styleClass="ux-button-outline"/>
@@ -128,9 +89,9 @@
             </VBox>
 
             <!-- SoHSS -->
-            <VBox styleClass="ux-section-box">
+            <VBox styleClass="ux-section-box" alignment="CENTER">
                 <Text text="School of Humanities and Social Sciences (SoHSS)" styleClass="ux-section-title"/>
-                <FlowPane styleClass="ux-flow">
+                <FlowPane styleClass="ux-flow" alignment="CENTER">
                     <MFXButton text="EDS" onAction="#openEDS" styleClass="ux-button-outline"/>
                     <MFXButton text="MSJ" onAction="#openMSJ" styleClass="ux-button-outline"/>
                     <MFXButton text="English" onAction="#openEnglish" styleClass="ux-button-outline"/>
@@ -138,9 +99,9 @@
             </VBox>
 
             <!-- SoLS -->
-            <VBox styleClass="ux-section-box">
+            <VBox styleClass="ux-section-box" alignment="CENTER">
                 <Text text="School of Life Sciences (SoLS)" styleClass="ux-section-title"/>
-                <FlowPane styleClass="ux-flow">
+                <FlowPane styleClass="ux-flow" alignment="CENTER">
                     <MFXButton text="Pharmacy" onAction="#openPharmacy" styleClass="ux-button-outline"/>
                     <MFXButton text="Biotech and Genetic Engineering" onAction="#openBiotech" styleClass="ux-button-outline"/>
                 </FlowPane>
@@ -148,9 +109,91 @@
 
             <!-- Apply Now -->
             <HBox styleClass="ux-center-box">
-                <MFXButton fx:id="applyNowBtn" text="Apply Now" onAction="#openApply" styleClass="ux-button-primary"/>
+                <MFXButton fx:id="applyNowBtn" text="Apply Now" onAction="#showApplicationForm" styleClass="ux-button-primary"/>
             </HBox>
 
+        </VBox>
+        
+        <!-- Application Form Section - Hidden by default -->
+        <VBox fx:id="applicationFormContainer" styleClass="form-container" visible="false" managed="false" alignment="CENTER">
+            <VBox styleClass="form-content">
+                <HBox styleClass="form-header" alignment="CENTER_LEFT">
+                    <Label text="Online Application Form" styleClass="form-title"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <MFXButton fx:id="closeFormButton" text="×" onAction="#hideApplicationForm" styleClass="close-button"/>
+                </HBox>
+                
+                <VBox styleClass="form-section">
+                    <Label text="Personal Information" styleClass="section-header"/>
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <VBox HBox.hgrow="ALWAYS">
+                            <Label text="First Name" styleClass="form-label"/>
+                            <io.github.palexdev.materialfx.controls.MFXTextField fx:id="firstNameField" 
+                                 floatMode="BORDER" prefWidth="200" styleClass="form-field"/>
+                        </VBox>
+                        <VBox HBox.hgrow="ALWAYS">
+                            <Label text="Last Name" styleClass="form-label"/>
+                            <io.github.palexdev.materialfx.controls.MFXTextField fx:id="lastNameField" 
+                                 floatMode="BORDER" prefWidth="200" styleClass="form-field"/>
+                        </VBox>
+                    </HBox>
+                    
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <VBox HBox.hgrow="ALWAYS">
+                            <Label text="Email Address" styleClass="form-label"/>
+                            <io.github.palexdev.materialfx.controls.MFXTextField fx:id="emailField" 
+                                 floatMode="BORDER" prefWidth="200" styleClass="form-field"/>
+                        </VBox>
+                        <VBox HBox.hgrow="ALWAYS">
+                            <Label text="Phone Number" styleClass="form-label"/>
+                            <io.github.palexdev.materialfx.controls.MFXTextField fx:id="phoneField" 
+                                 floatMode="BORDER" prefWidth="200" styleClass="form-field"/>
+                        </VBox>
+                    </HBox>
+                    
+                    <Label text="Date of Birth" styleClass="form-label"/>
+                    <io.github.palexdev.materialfx.controls.MFXDatePicker fx:id="dobPicker" prefWidth="200" styleClass="form-field"/>
+                </VBox>
+                
+                <VBox styleClass="form-section">
+                    <Label text="Academic Information" styleClass="section-header"/>
+                    <Label text="Select Program" styleClass="form-label"/>
+                    <io.github.palexdev.materialfx.controls.MFXComboBox fx:id="programComboBox" prefWidth="400" styleClass="form-field"/>
+                    
+                    <Label text="Previous Institution" styleClass="form-label"/>
+                    <io.github.palexdev.materialfx.controls.MFXTextField fx:id="institutionField" 
+                             floatMode="BORDER" prefWidth="400" styleClass="form-field"/>
+                             
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <VBox HBox.hgrow="ALWAYS">
+                            <Label text="SSC GPA" styleClass="form-label"/>
+                            <io.github.palexdev.materialfx.controls.MFXTextField fx:id="sscGpaField" 
+                                 floatMode="BORDER" prefWidth="200" styleClass="form-field"/>
+                        </VBox>
+                        <VBox HBox.hgrow="ALWAYS">
+                            <Label text="HSC GPA" styleClass="form-label"/>
+                            <io.github.palexdev.materialfx.controls.MFXTextField fx:id="hscGpaField" 
+                                 floatMode="BORDER" prefWidth="200" styleClass="form-field"/>
+                        </VBox>
+                    </HBox>
+                </VBox>
+                
+                <VBox styleClass="form-section">
+                    <Label text="Additional Information" styleClass="section-header"/>
+                    <Label text="How did you hear about UIU?" styleClass="form-label"/>
+                    <io.github.palexdev.materialfx.controls.MFXComboBox fx:id="referenceComboBox" prefWidth="400" styleClass="form-field"/>
+                    
+                    <Label text="Comments/Questions" styleClass="form-label"/>
+                    <io.github.palexdev.materialfx.controls.MFXTextField fx:id="commentsField" 
+                             floatMode="BORDER" prefWidth="400" prefHeight="60" styleClass="form-field"/>
+                </VBox>
+                
+                <HBox styleClass="form-footer" alignment="CENTER">
+                    <MFXButton fx:id="resetFormButton" text="Reset" onAction="#resetForm" styleClass="mfx-button-outline"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <MFXButton fx:id="submitButton" text="Submit Application" onAction="#submitForm" styleClass="mfx-button-primary"/>
+                </HBox>
+            </VBox>
         </VBox>
 
 
