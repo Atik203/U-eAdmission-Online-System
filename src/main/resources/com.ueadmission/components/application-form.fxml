@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import io.github.palexdev.materialfx.controls.MFXCheckbox?>
+<?import io.github.palexdev.materialfx.controls.MFXComboBox?>
+<?import io.github.palexdev.materialfx.controls.MFXDatePicker?>
+<?import io.github.palexdev.materialfx.controls.MFXTextField?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox prefHeight="939.0" prefWidth="1162.0" spacing="20" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+    <!-- Personal Information -->
+    <VBox prefHeight="209.0" prefWidth="1239.0" styleClass="form-section">
+        <Label prefHeight="60.0" prefWidth="401.0" styleClass="form-section-title" text="Personal Information" />
+        <GridPane hgap="15" vgap="10">
+            <columnConstraints>
+                <ColumnConstraints percentWidth="50" />
+                <ColumnConstraints percentWidth="50" />
+            </columnConstraints>
+            
+            <MFXTextField fx:id="firstNameField" floatingText="First Name *" promptText="Enter first name" styleClass="form-field" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                         
+            <MFXTextField fx:id="lastNameField" floatingText="Last Name *" promptText="Enter last name" styleClass="form-field" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                         
+            <MFXTextField fx:id="emailField" floatingText="Email Address *" promptText="Enter email address" styleClass="form-field" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                         
+            <MFXTextField fx:id="phoneField" floatingText="Phone Number *" promptText="Enter phone number" styleClass="form-field" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                         
+            <MFXDatePicker fx:id="dobPicker" floatingText="Date of Birth *" promptText="Select date of birth" styleClass="form-field" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                          
+            <MFXComboBox fx:id="genderCombo" floatingText="Gender *" promptText="Select gender" styleClass="form-field" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+         <rowConstraints>
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+         </rowConstraints>
+        </GridPane>
+    </VBox>
+    
+    <!-- Academic Information -->
+    <VBox styleClass="form-section">
+        <Label styleClass="form-section-title" text="Academic Information" />
+        <GridPane hgap="15" vgap="10">
+            <columnConstraints>
+                <ColumnConstraints percentWidth="50" />
+                <ColumnConstraints percentWidth="50" />
+            </columnConstraints>
+            
+            <MFXTextField fx:id="schoolNameField" floatingText="School/College Name *" promptText="Enter institution name" styleClass="form-field" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                        
+            <MFXComboBox fx:id="educationLevelCombo" floatingText="Education Level *" promptText="Select education level" styleClass="form-field" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                       
+            <MFXTextField fx:id="boardField" floatingText="Board *" promptText="Enter board name" styleClass="form-field" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                         
+            <MFXTextField fx:id="gpaField" floatingText="GPA/Grade *" promptText="Enter GPA or grade" styleClass="form-field" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        
+            <MFXTextField fx:id="passingYearField" floatingText="Passing Year *" promptText="Enter passing year" styleClass="form-field" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                        
+            <MFXTextField fx:id="rollNumberField" floatingText="Roll Number" promptText="Enter roll number" styleClass="form-field" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+         <rowConstraints>
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+         </rowConstraints>
+        </GridPane>
+    </VBox>
+    
+    <!-- Program Preferences -->
+    <VBox styleClass="form-section">
+        <Label styleClass="form-section-title" text="Program Preferences" />
+        <GridPane hgap="15" vgap="10">
+            <columnConstraints>
+                <ColumnConstraints percentWidth="50" />
+                <ColumnConstraints percentWidth="50" />
+            </columnConstraints>
+            
+            <MFXComboBox fx:id="firstChoiceCombo" floatingText="First Choice Program *" promptText="Select program" styleClass="form-field" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                      
+            <MFXComboBox fx:id="secondChoiceCombo" floatingText="Second Choice Program" promptText="Select program" styleClass="form-field" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                       
+            <MFXComboBox fx:id="thirdChoiceCombo" floatingText="Third Choice Program" promptText="Select program" styleClass="form-field" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                      
+            <MFXComboBox fx:id="semesterCombo" floatingText="Preferred Semester *" promptText="Select semester" styleClass="form-field" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+         <rowConstraints>
+            <RowConstraints />
+            <RowConstraints />
+         </rowConstraints>
+        </GridPane>
+    </VBox>
+    
+    <!-- Additional Information -->
+    <VBox styleClass="form-section">
+        <Label styleClass="form-section-title" text="Additional Information" />
+        <MFXTextField fx:id="referenceField" floatingText="Reference (if any)" promptText="Enter reference name" styleClass="form-field" />
+                    
+        <HBox alignment="CENTER_LEFT" spacing="20">
+            <padding>
+                <Insets top="10" />
+            </padding>
+            <MFXCheckbox fx:id="termsCheckbox" text="I agree to the terms and conditions *" />
+        </HBox>
+        
+        <HBox alignment="CENTER_LEFT" spacing="20">
+            <MFXCheckbox fx:id="newsletterCheckbox" selected="true" text="Subscribe to the newsletter and admission updates" />
+        </HBox>
+    </VBox>
+    
+    <Label style="-fx-font-size: 12px; -fx-text-fill: #888888;" text="* Required fields" />
+</VBox>

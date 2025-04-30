@@ -1,10 +1,13 @@
 package com.ueadmission.auth;
 
+import java.io.IOException;
+
 import com.ueadmission.about.About;
 import com.ueadmission.auth.state.AuthState;
 import com.ueadmission.auth.state.AuthStateManager;
 import com.ueadmission.auth.state.User;
 import com.ueadmission.utils.MFXNotifications;
+
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXPasswordField;
 import io.github.palexdev.materialfx.controls.MFXTextField;
@@ -20,8 +23,6 @@ import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-
-import java.io.IOException;
 
 public class LoginController extends BaseController {
     
@@ -62,9 +63,28 @@ public class LoginController extends BaseController {
     public void initialize() {
         // Hide error label initially
         errorLabel.setVisible(false);
+        
+        // Set up navigation buttons
+        if (homeButton != null) {
+            homeButton.setOnAction(event -> navigateToHome(event));
+        }
+        
+        if (aboutButton != null) {
+            aboutButton.setOnAction(event -> navigateToAbout(event));
+        }
+        
+        if (admissionButton != null) {
+            admissionButton.setOnAction(event -> navigateToAdmission(event));
+        }
+        
+        if (mockTestButton != null) {
+            mockTestButton.setOnAction(event -> navigateToMockTest(event));
+        }
+        
+        if (contactButton != null) {
+            contactButton.setOnAction(event -> navigateToContact(event));
+        }
     }
-    
-  
     
     // Add checkbox for remember me
     @FXML
@@ -401,6 +421,78 @@ public class LoginController extends BaseController {
             e.printStackTrace();
             System.err.println("Failed to navigate to about: " + e.getMessage());
         }
+    }
+    
+    /**
+     * Navigates to the Admission screen
+     */
+    @FXML
+    public void navigateToAdmission(ActionEvent event) {
+        try {
+            // Get current stage and its properties
+            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            double width = currentStage.getWidth();
+            double height = currentStage.getHeight();
+            double x = currentStage.getX();
+            double y = currentStage.getY();
+            boolean maximized = currentStage.isMaximized();
+            
+            // Prepare the Admission window before closing current one
+            Stage admissionStage = com.ueadmission.admission.Admission.prepareAdmissionWindow(width, height, x, y, maximized);
+            
+            if (admissionStage == null) {
+                System.err.println("Failed to create Admission window.");
+                return;
+            }
+            
+            // Make the new stage ready but not visible yet
+            admissionStage.setOpacity(0.0);
+            admissionStage.show();
+            
+            // Use a fade transition for the new window
+            FadeTransition fadeIn = new FadeTransition(Duration.millis(300), admissionStage.getScene().getRoot());
+            fadeIn.setFromValue(0.0);
+            fadeIn.setToValue(1.0);
+            
+            // Add a fade out transition for the current window
+            FadeTransition fadeOut = new FadeTransition(Duration.millis(200), currentStage.getScene().getRoot());
+            fadeOut.setFromValue(1.0);
+            fadeOut.setToValue(0.0);
+            
+            // Start the fade out, then hide current stage when done
+            fadeOut.setOnFinished(e -> {
+                currentStage.hide();
+                admissionStage.setOpacity(1.0);
+                fadeIn.play();
+                
+                // Finally close the original stage after transition completes
+                fadeIn.setOnFinished(f -> currentStage.close());
+            });
+            
+            fadeOut.play();
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println("Failed to navigate to admission: " + e.getMessage());
+        }
+    }
+    
+    /**
+     * Navigates to the Mock Test screen
+     */
+    @FXML
+    public void navigateToMockTest(ActionEvent event) {
+        // This is a placeholder for Mock Test navigation
+        System.out.println("Navigate to Mock Test (not implemented yet)");
+    }
+    
+    /**
+     * Navigates to the Contact screen
+     */
+    @FXML
+    public void navigateToContact(ActionEvent event) {
+        // This is a placeholder for Contact navigation
+        System.out.println("Navigate to Contact (not implemented yet)");
     }
     
     /**
