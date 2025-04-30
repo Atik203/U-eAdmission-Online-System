@@ -30,10 +30,10 @@ import javafx.scene.layout.VBox;
 
 
 
-public class admissionController {
+public class AdmissionController {
     private HostServices hostServices;
 
-    private static final Logger LOGGER = Logger.getLogger(admissionController.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(AdmissionController.class.getName());
     private Consumer<AuthState> authStateListener;
 
     @FXML
