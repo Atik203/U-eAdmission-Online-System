@@ -17,6 +17,8 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 
+
+
 <StackPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ueadmission.MainController">
     <MFXScrollPane fitToWidth="true">
         <VBox fx:id="mainContainer" spacing="0" stylesheets="@main.css">

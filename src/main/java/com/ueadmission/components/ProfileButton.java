@@ -1,5 +1,4 @@
 package com.ueadmission.components;
-
 import com.ueadmission.MainController;
 import com.ueadmission.auth.state.AuthState;
 import com.ueadmission.auth.state.AuthStateManager;
@@ -328,7 +327,7 @@ public class ProfileButton extends HBox {
         private void navigateTo(String screen) {
             System.out.println("Navigate to " + screen + " screen");
             try {
-                // Use the static navigate method instead of getInstance().navigateTo
+                // Use the static navigate method instead of getInstance().nonavigateTo
                 String fxmlPath = "/com.ueadmission/" + screen + ".fxml";
                 String title = "UeAdmission - " + screen.substring(0, 1).toUpperCase() + screen.substring(1);
                 com.ueadmission.navigation.NavigationManager.navigate(fxmlPath, title);

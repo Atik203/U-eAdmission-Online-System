@@ -1,9 +1,16 @@
 package com.ueadmission.about;
+import java.awt.Desktop;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.function.Consumer;
+import java.util.logging.Logger;
+
 import com.ueadmission.MainController;
-import com.ueadmission.auth.Auth;
 import com.ueadmission.auth.state.AuthState;
 import com.ueadmission.auth.state.AuthStateManager;
 import com.ueadmission.components.ProfileButton;
+
 import io.github.palexdev.materialfx.controls.MFXButton;
 import javafx.animation.FadeTransition;
 import javafx.fxml.FXML;
@@ -13,13 +20,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-
-import java.awt.Desktop;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.function.Consumer;
-import java.util.logging.Logger;
 
 public class AboutController {
     private static final Logger LOGGER = Logger.getLogger(AboutController.class.getName());
@@ -70,7 +70,7 @@ public class AboutController {
 
         // Configure other navigation buttons if they exist
         if (admissionButton != null) {
-            admissionButton.setOnAction(event -> System.out.println("Admission button clicked"));
+            admissionButton.setOnAction(event ->navigateToAdmission(event));//System.out.println("Admission button clicked"));
         }
 
         if (mockTestButton != null) {
@@ -409,6 +409,123 @@ public class AboutController {
             }
         }
     }
+
+
+    /**
+     * Navigates to the Admission page with transition effects
+     * @param event The event that triggered this action
+     */
+    private void navigateToAdmission(javafx.event.ActionEvent event) {
+        try {
+            // Get current stage and its properties
+            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            double width = currentStage.getWidth();
+            double height = currentStage.getHeight();
+            double x = currentStage.getX();
+            double y = currentStage.getY();
+            boolean maximized = currentStage.isMaximized();
+            
+            // Store current auth state
+            AuthState currentAuthState = AuthStateManager.getInstance().getState();
+            boolean isAuthenticated = (currentAuthState != null && currentAuthState.isAuthenticated());
+            LOGGER.info("Navigating to admission with auth state: " + (isAuthenticated ? "authenticated" : "not authenticated"));
+            
+            // Prepare the Admission window before closing current one
+            Stage admissionStage = com.ueadmission.admission.Admission.prepareAdmissionWindow(width, height, x, y, maximized);
+            
+            if (admissionStage == null) {
+                LOGGER.severe("Failed to create Admission window.");
+                return;
+            }
+            
+            // Make the new stage ready but not visible yet
+            admissionStage.setOpacity(0.0);
+            admissionStage.show();
+            
+            // Force layout before accessing UI elements
+            admissionStage.getScene().getRoot().applyCss();
+            admissionStage.getScene().getRoot().layout();
+            
+            // Try to get the controller
+            javafx.fxml.FXMLLoader loader = (javafx.fxml.FXMLLoader) admissionStage.getScene().getUserData();
+            if (loader != null) {
+                Object controller = loader.getController();
+                if (controller != null && controller instanceof com.ueadmission.admission.AdmissionController) {
+                    // Call refresh method if available
+                    try {
+                        ((com.ueadmission.admission.AdmissionController) controller).refreshUI();
+                        LOGGER.info("Refreshed UI in AdmissionController");
+                    } catch (Exception e) {
+                        LOGGER.warning("Could not call refreshUI: " + e.getMessage());
+                    }
+                    
+                    // Try to call onSceneActive
+                    try {
+                        java.lang.reflect.Method method = controller.getClass().getMethod("onSceneActive");
+                        method.invoke(controller);
+                        LOGGER.info("Called onSceneActive on AdmissionController");
+                    } catch (Exception e) {
+                        LOGGER.warning("Could not call onSceneActive: " + e.getMessage());
+                    }
+                }
+            }
+            
+            // Use a fade transition for the new window
+            FadeTransition fadeIn = new FadeTransition(Duration.millis(300), admissionStage.getScene().getRoot());
+            fadeIn.setFromValue(0.0);
+            fadeIn.setToValue(1.0);
+            
+            // Add a fade out transition for the current window
+            FadeTransition fadeOut = new FadeTransition(Duration.millis(200), currentStage.getScene().getRoot());
+            fadeOut.setFromValue(1.0);
+            fadeOut.setToValue(0.0);
+            
+            // Clean up before transition
+            cleanup();
+            
+            // Start the fade out, then hide current stage when done
+            fadeOut.setOnFinished(e -> {
+                currentStage.hide();
+                admissionStage.setOpacity(1.0);
+                fadeIn.play();
+                
+                // Finally close the original stage after transition completes
+                fadeIn.setOnFinished(f -> currentStage.close());
+            });
+            
+            fadeOut.play();
+            
+            LOGGER.info("Navigating to admission screen with transition");
+            
+        } catch (Exception e) {
+            LOGGER.severe("Failed to navigate to admission: " + e.getMessage());
+            e.printStackTrace();
+            
+            // Clean up even if there's an error
+            cleanup();
+            
+            // Try direct navigation as fallback
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com.ueadmission/admission/admission.fxml"));
+                javafx.scene.Parent root = loader.load();
+                
+                Stage stage = (Stage) admissionButton.getScene().getWindow();
+                stage.setScene(new javafx.scene.Scene(root));
+                stage.setTitle("Admission - UeAdmission");
+                
+                // Try to call refreshUI on the controller
+                Object controller = loader.getController();
+                if (controller != null && controller instanceof com.ueadmission.admission.AdmissionController) {
+                    ((com.ueadmission.admission.AdmissionController) controller).refreshUI();
+                }
+                
+                LOGGER.info("Navigated to admission using fallback method");
+            } catch (Exception ex) {
+                LOGGER.severe("Complete navigation failure: " + ex.getMessage());
+            }
+        }
+    }
+
 
     /**
      * Navigates to the login page
