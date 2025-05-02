@@ -8,15 +8,15 @@ import com.ueadmission.MainController;
 import com.ueadmission.auth.state.AuthState;
 import com.ueadmission.auth.state.AuthStateManager;
 import com.ueadmission.context.ApplicationContext;
+import com.ueadmission.utils.AuthUIUpdater;
+import com.ueadmission.utils.TransitionUtil;
 
-import javafx.animation.FadeTransition;
 import javafx.event.Event;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 
 /**
  * Unified navigation system for managing transitions between screens
@@ -26,11 +26,7 @@ import javafx.util.Duration;
 public class NavigationUtil {
     private static final Logger LOGGER = Logger.getLogger(NavigationUtil.class.getName());
     
-    // Duration constants for animations
-    private static final int FADE_IN_DURATION = 300;
-    private static final int FADE_OUT_DURATION = 200;
-    
-    // Static variable to hold main stage reference (migrated from NavigationManager)
+    // Static variable to hold main stage reference
     private static Stage mainStage;
     
     /**
@@ -118,8 +114,8 @@ public class NavigationUtil {
             // Ensure UI updates with the current auth state
             refreshControllerUI(controller, currentAuthState);
             
-            // Apply fade-in transition to the new scene
-            applyFadeInTransition(root);
+            // Apply fade-in transition using TransitionUtil
+            TransitionUtil.applyFadeInTransition(root);
             
             return true;
         } catch (IOException e) {
@@ -129,19 +125,6 @@ public class NavigationUtil {
             LOGGER.log(Level.SEVERE, "Failed to navigate: " + e.getMessage(), e);
             return false;
         }
-    }
-    
-    /**
-     * Apply a fade in transition to the given root element
-     * 
-     * @param root The root element to apply the transition to
-     */
-    private static void applyFadeInTransition(Parent root) {
-        root.setOpacity(0);
-        FadeTransition fadeIn = new FadeTransition(Duration.millis(FADE_IN_DURATION), root);
-        fadeIn.setFromValue(0);
-        fadeIn.setToValue(1);
-        fadeIn.play();
     }
     
     /**
@@ -160,11 +143,7 @@ public class NavigationUtil {
         
         try {
             // Save window properties
-            double width = oldStage.getWidth();
-            double height = oldStage.getHeight();
-            double x = oldStage.getX();
-            double y = oldStage.getY();
-            boolean maximized = oldStage.isMaximized();
+            WindowProperties props = captureWindowProperties(oldStage);
 
             // Get current auth state
             AuthState currentAuthState = AuthStateManager.getInstance().getState();
@@ -174,17 +153,11 @@ public class NavigationUtil {
             Parent root = loader.load();
 
             // Create new scene
-            Scene scene = new Scene(root, width, height);
+            Scene scene = new Scene(root, props.width, props.height);
 
-            // Create fade out transition for current scene
-            FadeTransition fadeOut = new FadeTransition(Duration.millis(FADE_OUT_DURATION), oldStage.getScene().getRoot());
-            fadeOut.setFromValue(1.0);
-            fadeOut.setToValue(0.0);
-
-            // Create fade in transition for new scene
-            FadeTransition fadeIn = new FadeTransition(Duration.millis(FADE_IN_DURATION), root);
-            fadeIn.setFromValue(0.0);
-            fadeIn.setToValue(1.0);
+            // Create transitions using TransitionUtil
+            javafx.animation.FadeTransition fadeOut = TransitionUtil.createFadeOutTransition(oldStage.getScene().getRoot());
+            javafx.animation.FadeTransition fadeIn = TransitionUtil.createFadeInTransition(root);
 
             // Get controller 
             Object controller = loader.getController();
@@ -196,11 +169,11 @@ public class NavigationUtil {
                 oldStage.setScene(scene);
 
                 // Restore window properties
-                oldStage.setX(x);
-                oldStage.setY(y);
-                oldStage.setWidth(width);
-                oldStage.setHeight(height);
-                oldStage.setMaximized(maximized);
+                oldStage.setX(props.x);
+                oldStage.setY(props.y);
+                oldStage.setWidth(props.width);
+                oldStage.setHeight(props.height);
+                oldStage.setMaximized(props.maximized);
 
                 // Refresh controller's UI with auth state
                 refreshControllerUI(controller, currentAuthState);
@@ -325,36 +298,8 @@ public class NavigationUtil {
      * @param newStage The stage to show
      */
     private static void applyTransition(Stage oldStage, Stage newStage) {
-        // Set new stage opacity to 0 initially
-        newStage.setOpacity(0);
-        newStage.show();
-        
-        // Force layout to ensure all controls are properly set up
-        newStage.getScene().getRoot().applyCss();
-        newStage.getScene().getRoot().layout();
-        
-        // Fade-in animation for new stage
-        FadeTransition fadeIn = new FadeTransition(Duration.millis(FADE_IN_DURATION), newStage.getScene().getRoot());
-        fadeIn.setFromValue(0);
-        fadeIn.setToValue(1);
-        
-        // Fade-out animation for old stage
-        FadeTransition fadeOut = new FadeTransition(Duration.millis(FADE_OUT_DURATION), oldStage.getScene().getRoot());
-        fadeOut.setFromValue(1);
-        fadeOut.setToValue(0);
-        
-        // Start the fade out, then hide old stage when done
-        fadeOut.setOnFinished(e -> {
-            oldStage.hide();
-            newStage.setOpacity(1.0);
-            fadeIn.play();
-            
-            // Close old stage when fade-in completes
-            fadeIn.setOnFinished(f -> oldStage.close());
-        });
-        
-        // Play fade-out animation
-        fadeOut.play();
+        // Use the new TransitionUtil class for stage transitions
+        TransitionUtil.applyStageTransition(oldStage, newStage);
     }
     
     /**
@@ -370,14 +315,21 @@ public class NavigationUtil {
         LOGGER.info("Refreshing UI for controller: " + controller.getClass().getSimpleName());
         
         try {
-            // First check if controller implements AuthStateAware
+            // First check if controller implements our new AuthStateAware interface
             if (controller instanceof AuthStateAware) {
                 ((AuthStateAware) controller).refreshUI();
                 LOGGER.info("Called refreshUI on AuthStateAware controller");
                 return;
             }
             
-            // Try refreshUI method (most common)
+            // Legacy compatibility with the old interface
+            if (controller instanceof NavigationUtil.AuthStateAware) {
+                ((NavigationUtil.AuthStateAware) controller).refreshUI();
+                LOGGER.info("Called refreshUI on legacy AuthStateAware controller");
+                return;
+            }
+            
+            // Try standard methods via reflection for backward compatibility
             try {
                 java.lang.reflect.Method refreshUIMethod = 
                     controller.getClass().getMethod("refreshUI");
@@ -388,7 +340,6 @@ public class NavigationUtil {
                 // Continue to next method
             }
             
-            // Try onSceneActive
             try {
                 java.lang.reflect.Method onSceneActiveMethod = 
                     controller.getClass().getMethod("onSceneActive");
@@ -399,7 +350,6 @@ public class NavigationUtil {
                 // Continue to next method
             }
             
-            // Try updateAuthUI
             try {
                 java.lang.reflect.Method updateAuthUIMethod = 
                     controller.getClass().getMethod("updateAuthUI", AuthState.class);
@@ -410,74 +360,46 @@ public class NavigationUtil {
                 // Continue to next approach
             }
             
-            // Try direct access to profileButton
+            // Try to use AuthUIUpdater if we can get the scene
             try {
-                java.lang.reflect.Field profileButtonField = 
-                    controller.getClass().getDeclaredField("profileButton");
-                profileButtonField.setAccessible(true);
-                Object profileBtn = profileButtonField.get(controller);
-                
-                if (profileBtn != null) {
-                    java.lang.reflect.Method updateUIMethod = 
-                        profileBtn.getClass().getMethod("updateUIFromAuthState", AuthState.class);
-                    updateUIMethod.invoke(profileBtn, authState);
-                    LOGGER.info("Updated ProfileButton directly");
+                java.lang.reflect.Method getSceneMethod = 
+                    controller.getClass().getMethod("getScene");
+                Scene scene = (Scene)getSceneMethod.invoke(controller);
+                if (scene != null) {
+                    AuthUIUpdater.refreshUI(scene);
+                    LOGGER.info("Used AuthUIUpdater to refresh UI");
                     return;
                 }
-            } catch (Exception e) {
+            } catch (NoSuchMethodException e) {
                 // Continue to next approach
             }
             
-            // Try updating containers directly as a last resort
+            // Fall back to direct container updates
             try {
-                updateContainersDirectly(controller, authState);
-                LOGGER.info("Updated containers directly");
+                // Let's use our AuthUIUpdater utility class
+                boolean isAuthenticated = (authState != null && authState.isAuthenticated());
+                
+                // Try to get containers via reflection
+                java.lang.reflect.Field loginContainerField = 
+                    controller.getClass().getDeclaredField("loginButtonContainer");
+                loginContainerField.setAccessible(true);
+                javafx.scene.layout.HBox loginContainer = 
+                    (javafx.scene.layout.HBox)loginContainerField.get(controller);
+                
+                java.lang.reflect.Field profileContainerField = 
+                    controller.getClass().getDeclaredField("profileButtonContainer");
+                profileContainerField.setAccessible(true);
+                javafx.scene.layout.HBox profileContainer = 
+                    (javafx.scene.layout.HBox)profileContainerField.get(controller);
+                
+                // Update container visibility
+                AuthUIUpdater.updateContainersVisibility(loginContainer, profileContainer, isAuthenticated);
+                LOGGER.info("Updated containers visibility directly");
             } catch (Exception e) {
-                LOGGER.warning("All UI update attempts failed: " + e.getMessage());
+                LOGGER.warning("Failed to update containers directly: " + e.getMessage());
             }
         } catch (Exception e) {
             LOGGER.warning("Error during UI refresh: " + e.getMessage());
-        }
-    }
-    
-    /**
-     * Helper method to update login/profile containers directly using reflection
-     * 
-     * @param controller The controller instance
-     * @param authState The current auth state
-     */
-    private static void updateContainersDirectly(Object controller, AuthState authState) throws Exception {
-        boolean isAuthenticated = (authState != null && authState.isAuthenticated());
-        
-        // Try to find loginButtonContainer and profileButtonContainer
-        java.lang.reflect.Field loginContainerField = 
-            controller.getClass().getDeclaredField("loginButtonContainer");
-        loginContainerField.setAccessible(true);
-        Object loginContainer = loginContainerField.get(controller);
-        
-        if (loginContainer != null) {
-            java.lang.reflect.Method setVisibleMethod = 
-                loginContainer.getClass().getMethod("setVisible", boolean.class);
-            setVisibleMethod.invoke(loginContainer, !isAuthenticated);
-            
-            java.lang.reflect.Method setManagedMethod = 
-                loginContainer.getClass().getMethod("setManaged", boolean.class);
-            setManagedMethod.invoke(loginContainer, !isAuthenticated);
-        }
-        
-        java.lang.reflect.Field profileContainerField = 
-            controller.getClass().getDeclaredField("profileButtonContainer");
-        profileContainerField.setAccessible(true);
-        Object profileContainer = profileContainerField.get(controller);
-        
-        if (profileContainer != null) {
-            java.lang.reflect.Method setVisibleMethod = 
-                profileContainer.getClass().getMethod("setVisible", boolean.class);
-            setVisibleMethod.invoke(profileContainer, isAuthenticated);
-            
-            java.lang.reflect.Method setManagedMethod = 
-                profileContainer.getClass().getMethod("setManaged", boolean.class);
-            setManagedMethod.invoke(profileContainer, isAuthenticated);
         }
     }
     
@@ -493,9 +415,11 @@ public class NavigationUtil {
     }
     
     /**
+     * @deprecated Use {@link com.ueadmission.auth.state.AuthStateAware} instead
      * Interface for controllers that can handle auth state changes
-     * Migrated from NavigationManager to maintain compatibility
+     * Kept for backward compatibility
      */
+    @Deprecated
     public interface AuthStateAware {
         /**
          * Refresh the UI based on current auth state

@@ -1,190 +1,87 @@
-/* Global Styles */
-.root {
-    -fx-font-family: 'Segoe UI', Arial, sans-serif;
-    -fx-background-color: white;
-}
-
-/* Color Variables for Consistency */
-* {
-    -primary-color: #FA4506;
-    -primary-light: #ff7339;
-    -primary-dark: #c02d00;
-    -secondary-color: #2E3B55;
-    -text-dark: #333333;
-    -text-light: #ffffff;
-    -bg-light: #f8f8f8;
-    -bg-dark: #222222;
-    -border-color: #e0e0e0;
-    -shadow-color: rgba(0,0,0,0.1);
-}
-
-/* Navbar Styles */
-#navbar {
-    -fx-background-color: -primary-color;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 4);
-}
-
-#title {
-    -fx-font-size: 20px;
-    -fx-font-weight: bold;
-    -fx-text-fill: -text-light;
-}
-
-/* MaterialFX Button Customization */
-.mfx-button {
-    -fx-background-color: transparent;
-    -fx-text-fill: white;
-    -fx-font-weight: bold;
-    -fx-padding: 10 15;
-    -fx-border-radius: 5;
-    -fx-background-radius: 5;
-    -mfx-ripple-color: rgba(255, 255, 255, 0.3);
-    -mfx-ripple-radius: 25;
-}
-
-.mfx-button:hover {
-    -fx-background-color: rgba(255, 255, 255, 0.2);
-}
-
-.mfx-button-login {
-    -fx-background-color: white;
-    -fx-text-fill: -primary-color;
-    -fx-font-weight: bold;
-    -fx-padding: 10 20;
-    -fx-border-radius: 5;
-    -fx-background-radius: 5;
-    -mfx-ripple-color: rgba(250, 69, 6, 0.2);
-}
-
-.mfx-button-login:hover {
-    -fx-background-color: #f0f0f0;
-}
-
-.mfx-button-primary {
-    -fx-background-color: -primary-color;
-    -fx-text-fill: white;
-    -fx-font-weight: bold;
-    -fx-padding: 12 25;
-    -fx-border-radius: 5;
-    -fx-background-radius: 5;
-    -mfx-ripple-color: rgba(255, 255, 255, 0.3);
-}
-
-.mfx-button-primary:hover {
-    -fx-background-color: -primary-dark;
-}
+/* Import common styles */
+@import "../common.css";
 
 /* Login Section Styles */
 .login-section {
-    -fx-background-color: -bg-light;
-    -fx-padding: 60 0;
+  -fx-background-color: -bg-light;
+  -fx-padding: 60 0;
 }
 
 /* Login Specific Styles */
 #login-box {
-    -fx-background-color: white;
-    -fx-background-radius: 10;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 15, 0, 0, 5);
-    -fx-padding: 40;
+  -fx-background-color: white;
+  -fx-background-radius: 10;
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 15, 0, 0, 5);
+  -fx-padding: 40;
 }
 
 #login-title {
-    -fx-font-size: 24px;
-    -fx-font-weight: bold;
-    -fx-text-fill: -text-dark;
+  -fx-font-size: 24px;
+  -fx-font-weight: bold;
+  -fx-text-fill: -text-dark;
 }
 
 #login-subtitle {
-    -fx-font-size: 14px;
-    -fx-text-fill: -text-dark;
-    -fx-opacity: 0.7;
-    -fx-padding: 0 0 10 0;
+  -fx-font-size: 14px;
+  -fx-text-fill: -text-dark;
+  -fx-opacity: 0.7;
+  -fx-padding: 0 0 10 0;
 }
 
 /* MFX TextField customization */
-.mfx-text-field, .mfx-password-field {
-    -fx-pref-width: 370;
-    -fx-pref-height: 50;
-    -fx-font-size: 14px;
+.mfx-text-field,
+.mfx-password-field {
+  -fx-pref-width: 370;
+  -fx-pref-height: 50;
+  -fx-font-size: 14px;
 }
 
 .auth-link {
-    -fx-text-fill: -primary-color;
-    -fx-font-weight: bold;
-    -fx-border-color: transparent;
-    -fx-underline: false;
+  -fx-text-fill: -primary-color;
+  -fx-font-weight: bold;
+  -fx-border-color: transparent;
+  -fx-underline: false;
 }
 
 .auth-link:hover {
-    -fx-text-fill: -primary-dark;
+  -fx-text-fill: -primary-dark;
 }
 
 .error-label {
-    -fx-text-fill: #d32f2f;
-    -fx-font-size: 14px;
-    -fx-padding: 5 0;
-    -fx-font-weight: bold;
+  -fx-text-fill: #d32f2f;
+  -fx-font-size: 14px;
+  -fx-padding: 5 0;
+  -fx-font-weight: bold;
 }
 
-/* Footer */
-#footer {
-    -fx-background-color: -bg-dark;
-}
-
-.footer-title {
-    -fx-font-size: 16px;
-    -fx-font-weight: bold;
-    -fx-text-fill: -text-light;
-    -fx-padding: 0 0 5 0;
-}
-
-.footer-text {
-    -fx-text-fill: #b0b0b0;
-    -fx-font-size: 14px;
-    -fx-line-spacing: 3;
-}
-
-.footer-link {
-    -fx-text-fill: #b0b0b0;
-    -fx-font-size: 14px;
-    -fx-padding: 2 0;
-    -fx-cursor: hand;
-}
-
-.footer-link:hover {
-    -fx-text-fill: -primary-light;
-}
-
-.copyright {
-    -fx-text-fill: #888888;
-    -fx-font-size: 12px;
-}
-
+/* Password Field Eye Icon Fix */
 .mfx-password-field .eye-icon {
-    -fx-translate-y: 0;
-    -fx-font-size: 16px;
-    -mfx-color: #4D4D4D;
-    -fx-min-width: 24px;
-    -fx-min-height: 24px;
-    -fx-max-width: 24px;
-    -fx-max-height: 24px;
+  -fx-translate-y: 0;
+  -fx-font-size: 16px;
+  -mfx-color: #4d4d4d;
+  -fx-min-width: 24px;
+  -fx-min-height: 24px;
+  -fx-max-width: 24px;
+  -fx-max-height: 24px;
 }
 
 .mfx-password-field .trailing-icon {
-    -fx-padding: 0 5 0 0;
-    -fx-alignment: center;
+  -fx-padding: 0 5 0 0;
+  -fx-alignment: center;
 }
 
 .mfx-password-field .mfx-icon-wrapper {
-    -fx-background-radius: 50;
-    -fx-min-width: 30px;
-    -fx-min-height: 30px;
-    -fx-max-width: 30px;
-    -fx-max-height: 30px;
-    -fx-alignment: center;
-    -fx-translate-y: 0;
-}.developer {
-     -fx-text-fill: -primary-color;
-     -fx-font-size: 12px;
-     -fx-font-weight: bold;
- }
+  -fx-background-radius: 50;
+  -fx-min-width: 30px;
+  -fx-min-height: 30px;
+  -fx-max-width: 30px;
+  -fx-max-height: 30px;
+  -fx-alignment: center;
+  -fx-translate-y: 0;
+}
+
+.developer {
+  -fx-text-fill: -primary-color;
+  -fx-font-size: 12px;
+  -fx-font-weight: bold;
+}
