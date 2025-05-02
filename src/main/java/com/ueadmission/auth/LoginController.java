@@ -2,7 +2,6 @@ package com.ueadmission.auth;
 
 import java.io.IOException;
 
-import com.ueadmission.about.About;
 import com.ueadmission.auth.state.AuthState;
 import com.ueadmission.auth.state.AuthStateManager;
 import com.ueadmission.auth.state.User;
@@ -11,7 +10,6 @@ import com.ueadmission.utils.MFXNotifications;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXPasswordField;
 import io.github.palexdev.materialfx.controls.MFXTextField;
-import javafx.animation.FadeTransition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -22,7 +20,6 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 
 public class LoginController extends BaseController {
     
@@ -314,65 +311,7 @@ public class LoginController extends BaseController {
      */
     @FXML
     public void navigateToHome(ActionEvent event) {
-        try {
-            // Get current stage and its properties
-            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            double width = currentStage.getWidth();
-            double height = currentStage.getHeight();
-            double x = currentStage.getX();
-            double y = currentStage.getY();
-            boolean maximized = currentStage.isMaximized();
-            
-            // Prepare the Main window before closing current one
-            Stage mainStage = Auth.prepareMainWindow(width, height, x, y, maximized);
-            
-            // Make the new stage ready but not visible yet
-            mainStage.setOpacity(0.0);
-            mainStage.show();
-            
-            // Use a fade transition for the new window
-            FadeTransition fadeIn = new FadeTransition(Duration.millis(300), mainStage.getScene().getRoot());
-            fadeIn.setFromValue(0.0);
-            fadeIn.setToValue(1.0);
-            
-            // Add a fade out transition for the current window
-            FadeTransition fadeOut = new FadeTransition(Duration.millis(200), currentStage.getScene().getRoot());
-            fadeOut.setFromValue(1.0);
-            fadeOut.setToValue(0.0);
-            
-            // Start the fade out, then hide current stage when done
-            fadeOut.setOnFinished(e -> {
-                currentStage.hide();
-                mainStage.setOpacity(1.0);
-                fadeIn.play();
-                
-                // Update any ProfileButton in new scene with current auth state
-                javafx.application.Platform.runLater(() -> {
-                    try {
-                        // Find ProfileButton in new scene
-                        for (javafx.scene.Node node : mainStage.getScene().getRoot().lookupAll("*")) {
-                            if (node instanceof com.ueadmission.components.ProfileButton) {
-                                com.ueadmission.components.ProfileButton profileButton = 
-                                    (com.ueadmission.components.ProfileButton) node;
-                                profileButton.updateUIFromAuthState(AuthStateManager.getInstance().getState());
-                                System.out.println("Updated ProfileButton after login navigation");
-                                break;
-                            }
-                        }
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    }
-                });
-                
-                // Finally close the original stage after transition completes
-                fadeIn.setOnFinished(f -> currentStage.close());
-            });
-            
-            fadeOut.play();
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println("Failed to navigate to home: " + e.getMessage());
-        }
+        com.ueadmission.navigation.NavigationUtil.navigateToHome(event);
     }
     
     /**
@@ -380,47 +319,7 @@ public class LoginController extends BaseController {
      */
     @FXML
     public void navigateToAbout(ActionEvent event) {
-        try {
-            // Get current stage and its properties
-            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            double width = currentStage.getWidth();
-            double height = currentStage.getHeight();
-            double x = currentStage.getX();
-            double y = currentStage.getY();
-            boolean maximized = currentStage.isMaximized();
-            
-            // Prepare the About window before closing current one
-            Stage aboutStage = About.prepareAboutWindow(width, height, x, y, maximized);
-            
-            // Make the new stage ready but not visible yet
-            aboutStage.setOpacity(0.0);
-            aboutStage.show();
-            
-            // Use a fade transition for the new window
-            FadeTransition fadeIn = new FadeTransition(Duration.millis(300), aboutStage.getScene().getRoot());
-            fadeIn.setFromValue(0.0);
-            fadeIn.setToValue(1.0);
-            
-            // Add a fade out transition for the current window
-            FadeTransition fadeOut = new FadeTransition(Duration.millis(200), currentStage.getScene().getRoot());
-            fadeOut.setFromValue(1.0);
-            fadeOut.setToValue(0.0);
-            
-            // Start the fade out, then hide current stage when done
-            fadeOut.setOnFinished(e -> {
-                currentStage.hide();
-                aboutStage.setOpacity(1.0);
-                fadeIn.play();
-                
-                // Finally close the original stage after transition completes
-                fadeIn.setOnFinished(f -> currentStage.close());
-            });
-            
-            fadeOut.play();
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println("Failed to navigate to about: " + e.getMessage());
-        }
+        com.ueadmission.navigation.NavigationUtil.navigateToAbout(event);
     }
     
     /**
@@ -428,53 +327,7 @@ public class LoginController extends BaseController {
      */
     @FXML
     public void navigateToAdmission(ActionEvent event) {
-        try {
-            // Get current stage and its properties
-            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            double width = currentStage.getWidth();
-            double height = currentStage.getHeight();
-            double x = currentStage.getX();
-            double y = currentStage.getY();
-            boolean maximized = currentStage.isMaximized();
-            
-            // Prepare the Admission window before closing current one
-            Stage admissionStage = com.ueadmission.admission.Admission.prepareAdmissionWindow(width, height, x, y, maximized);
-            
-            if (admissionStage == null) {
-                System.err.println("Failed to create Admission window.");
-                return;
-            }
-            
-            // Make the new stage ready but not visible yet
-            admissionStage.setOpacity(0.0);
-            admissionStage.show();
-            
-            // Use a fade transition for the new window
-            FadeTransition fadeIn = new FadeTransition(Duration.millis(300), admissionStage.getScene().getRoot());
-            fadeIn.setFromValue(0.0);
-            fadeIn.setToValue(1.0);
-            
-            // Add a fade out transition for the current window
-            FadeTransition fadeOut = new FadeTransition(Duration.millis(200), currentStage.getScene().getRoot());
-            fadeOut.setFromValue(1.0);
-            fadeOut.setToValue(0.0);
-            
-            // Start the fade out, then hide current stage when done
-            fadeOut.setOnFinished(e -> {
-                currentStage.hide();
-                admissionStage.setOpacity(1.0);
-                fadeIn.play();
-                
-                // Finally close the original stage after transition completes
-                fadeIn.setOnFinished(f -> currentStage.close());
-            });
-            
-            fadeOut.play();
-            
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println("Failed to navigate to admission: " + e.getMessage());
-        }
+        com.ueadmission.navigation.NavigationUtil.navigateToAdmission(event);
     }
     
     /**
@@ -500,103 +353,15 @@ public class LoginController extends BaseController {
      */
     @FXML
     public void navigateToRegistration(ActionEvent event) {
-        try {
-            // Get current stage and its properties
-            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            double width = currentStage.getWidth();
-            double height = currentStage.getHeight();
-            double x = currentStage.getX();
-            double y = currentStage.getY();
-            boolean maximized = currentStage.isMaximized();
-            
-            // Prepare the Registration window before closing current one
-            Stage registrationStage = Auth.prepareRegistrationWindow(width, height, x, y, maximized);
-            
-            // Make the new stage ready but not visible yet
-            registrationStage.setOpacity(0.0);
-            registrationStage.show();
-            
-            // Use a fade transition for the new window
-            FadeTransition fadeIn = new FadeTransition(Duration.millis(300), registrationStage.getScene().getRoot());
-            fadeIn.setFromValue(0.0);
-            fadeIn.setToValue(1.0);
-            
-            // Add a fade out transition for the current window
-            FadeTransition fadeOut = new FadeTransition(Duration.millis(200), currentStage.getScene().getRoot());
-            fadeOut.setFromValue(1.0);
-            fadeOut.setToValue(0.0);
-            
-            // Start the fade out, then hide current stage when done
-            fadeOut.setOnFinished(e -> {
-                currentStage.hide();
-                registrationStage.setOpacity(1.0);
-                fadeIn.play();
-                
-                // Finally close the original stage after transition completes
-                fadeIn.setOnFinished(f -> currentStage.close());
-            });
-            
-            fadeOut.play();
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println("Failed to navigate to registration: " + e.getMessage());
-        }
+        com.ueadmission.navigation.NavigationUtil.navigateToRegistration(event);
     }
+    
     /**
      * Opens the Login page
      * @param event The event that triggered this action
      */
     private void navigateToLogin(javafx.event.ActionEvent event) {
-        try {
-            // Get current stage and its properties
-            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            double width = currentStage.getWidth();
-            double height = currentStage.getHeight();
-            double x = currentStage.getX();
-            double y = currentStage.getY();
-            boolean maximized = currentStage.isMaximized();
-
-            // Prepare the Login window before closing current one
-            Stage loginStage = Auth.prepareLoginWindow(width, height, x, y, maximized);
-
-            // Check if loginStage is null before proceeding
-            if (loginStage == null) {
-                System.err.println("Failed to create login stage. Login window couldn't be prepared.");
-                return;
-            }
-
-            // Make the new stage ready but not visible yet
-            loginStage.setOpacity(0.0);
-            loginStage.show();
-
-            // Use a fade transition for the new window
-            javafx.animation.FadeTransition fadeIn = new javafx.animation.FadeTransition(
-                    javafx.util.Duration.millis(300), loginStage.getScene().getRoot());
-            fadeIn.setFromValue(0.0);
-            fadeIn.setToValue(1.0);
-
-            // Add a fade out transition for the current window
-            javafx.animation.FadeTransition fadeOut = new javafx.animation.FadeTransition(
-                    javafx.util.Duration.millis(200), currentStage.getScene().getRoot());
-            fadeOut.setFromValue(1.0);
-            fadeOut.setToValue(0.0);
-
-            // Start the fade out, then hide current stage when done
-            fadeOut.setOnFinished(e -> {
-                currentStage.hide();
-                loginStage.setOpacity(1.0);
-                fadeIn.play();
-
-                // Finally close the original stage after transition completes
-                fadeIn.setOnFinished(f -> currentStage.close());
-            });
-
-            fadeOut.play();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println("Failed to navigate to login: " + e.getMessage());
-        }
+        com.ueadmission.navigation.NavigationUtil.navigateToLogin(event);
     }
 
     /**

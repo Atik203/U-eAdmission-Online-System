@@ -1,23 +1,21 @@
 package com.ueadmission.profile;
 
-import com.ueadmission.auth.state.AuthState;
+import java.io.IOException;
+
 import com.ueadmission.auth.state.AuthStateManager;
 import com.ueadmission.auth.state.User;
 import com.ueadmission.components.ProfileButton;
+
+import io.github.palexdev.materialfx.controls.MFXButton;
+import javafx.animation.FadeTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import javafx.animation.FadeTransition;
-import io.github.palexdev.materialfx.controls.MFXButton;
-
-import java.io.IOException;
 
 /**
  * Controller for the profile page
@@ -74,10 +72,10 @@ public class ProfileController {
      */
     @FXML
     public void initialize() {
-        // Set up navigation button handlers
-        homeButton.setOnAction(e -> navigateTo("main.fxml", "UeAdmission - Home"));
-        aboutButton.setOnAction(e -> navigateTo("about/about.fxml", "About - UeAdmission"));
-        admissionButton.setOnAction(e -> System.out.println("Navigate to Admission page"));
+        // Set up navigation button handlers using NavigationUtil
+        homeButton.setOnAction(e -> com.ueadmission.navigation.NavigationUtil.navigateToHome(e));
+        aboutButton.setOnAction(e -> com.ueadmission.navigation.NavigationUtil.navigateToAbout(e));
+        admissionButton.setOnAction(e -> com.ueadmission.navigation.NavigationUtil.navigateToAdmission(e));
         mockTestButton.setOnAction(e -> System.out.println("Navigate to Mock Test page"));
         contactButton.setOnAction(e -> System.out.println("Navigate to Contact page"));
         

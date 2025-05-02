@@ -1,11 +1,16 @@
 package com.ueadmission;
 
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.ueadmission.auth.state.AuthState;
 import com.ueadmission.auth.state.AuthStateManager;
-import com.ueadmission.auth.state.User;
 import com.ueadmission.context.ApplicationContext;
 import com.ueadmission.db.DatabaseManager;
+import com.ueadmission.navigation.NavigationUtil;
 import com.ueadmission.utils.MFXNotifications;
+
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -15,10 +20,6 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class Main extends Application {
     private static final Logger LOGGER = Logger.getLogger(Main.class.getName());
@@ -52,8 +53,8 @@ public class Main extends Application {
             Image icon = new Image(getClass().getResourceAsStream("/com.ueadmission/uiu_logo_update.png"));
             primaryStage.getIcons().add(icon);
 
-            // Set the main stage in NavigationManager for future navigation
-            com.ueadmission.navigation.NavigationManager.setMainStage(primaryStage);
+            // Set the main stage in NavigationUtil for future navigation
+            NavigationUtil.setMainStage(primaryStage);
 
             // Configure the stage
             primaryStage.setMaximized(true);

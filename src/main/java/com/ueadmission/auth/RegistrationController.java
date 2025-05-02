@@ -1,6 +1,5 @@
 package com.ueadmission.auth;
 
-import com.ueadmission.about.About;
 import com.ueadmission.auth.state.AuthStateManager;
 import com.ueadmission.auth.state.User;
 import com.ueadmission.utils.MFXNotifications;
@@ -96,25 +95,7 @@ public class RegistrationController {
      */
     @FXML
     public void navigateToHome(ActionEvent event) {
-        try {
-            // Get current stage and its properties
-            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            double width = currentStage.getWidth();
-            double height = currentStage.getHeight();
-            double x = currentStage.getX();
-            double y = currentStage.getY();
-            boolean maximized = currentStage.isMaximized();
-            
-            // Prepare the Main window before closing current one
-            Stage mainWindow = Auth.prepareMainWindow(width, height, x, y, maximized);
-            if (mainWindow != null) {
-                // Apply smooth transition
-                applyTransition(currentStage, mainWindow);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println("Failed to navigate to home: " + e.getMessage());
-        }
+        com.ueadmission.navigation.NavigationUtil.navigateToHome(event);
     }
     
     /**
@@ -122,25 +103,7 @@ public class RegistrationController {
      */
     @FXML
     public void navigateToAbout(ActionEvent event) {
-        try {
-            // Get current stage and its properties
-            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            double width = currentStage.getWidth();
-            double height = currentStage.getHeight();
-            double x = currentStage.getX();
-            double y = currentStage.getY();
-            boolean maximized = currentStage.isMaximized();
-            
-            // Prepare the About window before closing current one
-            Stage aboutWindow = About.prepareAboutWindow(width, height, x, y, maximized);
-            if (aboutWindow != null) {
-                // Apply smooth transition
-                applyTransition(currentStage, aboutWindow);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println("Failed to navigate to about: " + e.getMessage());
-        }
+        com.ueadmission.navigation.NavigationUtil.navigateToAbout(event);
     }
     
     /**
@@ -148,25 +111,7 @@ public class RegistrationController {
      */
     @FXML
     public void navigateToLogin(ActionEvent event) {
-        try {
-            // Get current stage and its properties
-            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            double width = currentStage.getWidth();
-            double height = currentStage.getHeight();
-            double x = currentStage.getX();
-            double y = currentStage.getY();
-            boolean maximized = currentStage.isMaximized();
-            
-            // Prepare the Login window before closing current one
-            Stage loginWindow = Auth.prepareLoginWindow(width, height, x, y, maximized);
-            if (loginWindow != null) {
-                // Apply smooth transition
-                applyTransition(currentStage, loginWindow);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println("Failed to navigate to login: " + e.getMessage());
-        }
+        com.ueadmission.navigation.NavigationUtil.navigateToLogin(event);
     }
     
     /**
@@ -174,25 +119,7 @@ public class RegistrationController {
      */
     @FXML
     public void navigateToAdmission(ActionEvent event) {
-        try {
-            // Get current stage and its properties
-            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            double width = currentStage.getWidth();
-            double height = currentStage.getHeight();
-            double x = currentStage.getX();
-            double y = currentStage.getY();
-            boolean maximized = currentStage.isMaximized();
-            
-            // Prepare the Admission window before closing current one
-            Stage admissionWindow = com.ueadmission.admission.Admission.prepareAdmissionWindow(width, height, x, y, maximized);
-            if (admissionWindow != null) {
-                // Apply smooth transition
-                applyTransition(currentStage, admissionWindow);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println("Failed to navigate to admission: " + e.getMessage());
-        }
+        com.ueadmission.navigation.NavigationUtil.navigateToAdmission(event);
     }
     
     /**
