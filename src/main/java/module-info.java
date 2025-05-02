@@ -28,6 +28,8 @@ module com.u.eadmission.ueadmission {
     opens com.ueadmission.student to javafx.fxml;
     opens com.ueadmission.admin to javafx.fxml;
     opens com.ueadmission.components to javafx.fxml;
+    opens com.ueadmission.contact to javafx.fxml;
+    opens com.ueadmission.profile to javafx.fxml;
     
     exports com.ueadmission;
     exports com.ueadmission.about;
@@ -36,4 +38,6 @@ module com.u.eadmission.ueadmission {
     exports com.ueadmission.student;
     exports com.ueadmission.admin;
     exports com.ueadmission.components;
+    exports com.ueadmission.contact;
+    exports com.ueadmission.profile;
 }

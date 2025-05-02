@@ -1,0 +1,99 @@
+/* Import common styles */
+@import "../common.css";
+
+/* Contact Page Specific Styles */
+.contact-header {
+  -fx-background-color: #f0f0f0;
+  -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 10, 0, 0, 5);
+}
+
+.contact-card {
+  -fx-background-color: white;
+  -fx-background-radius: 8;
+  -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 5, 0, 0, 2);
+}
+
+.contact-title {
+  -fx-font-size: 20px;
+  -fx-font-weight: bold;
+  -fx-text-fill: #333333;
+}
+
+.contact-subtitle {
+  -fx-font-size: 16px;
+  -fx-font-weight: bold;
+  -fx-text-fill: #666666;
+}
+
+.contact-text {
+  -fx-font-size: 14px;
+  -fx-text-fill: #333333;
+}
+
+.contact-info {
+  -fx-font-size: 14px;
+  -fx-text-fill: #333333;
+}
+
+.contact-icon {
+  -fx-fill: #fa4506;
+}
+
+.map-container {
+  -fx-background-color: #f0f0f0;
+  -fx-background-radius: 8;
+  -fx-border-radius: 8;
+  -fx-border-color: #dddddd;
+  -fx-border-width: 1;
+}
+
+/* Contact Form Styles */
+.contact-form-field {
+  -fx-font-size: 14px;
+  -fx-background-color: white;
+  -fx-border-color: #dddddd;
+  -fx-border-radius: 5;
+  -fx-background-radius: 5;
+  -fx-padding: 8;
+  -fx-pref-width: 100%;
+  -fx-min-width: 250px;
+  -fx-pref-height: 40px;
+  -fx-prompt-text-fill: #999999;
+  -fx-border-width: 1;
+}
+
+.contact-form-field:focused {
+  -fx-border-color: #fa4506;
+  -fx-border-width: 2;
+  -fx-effect: dropshadow(three-pass-box, rgba(250, 69, 6, 0.2), 5, 0, 0, 0);
+}
+
+.contact-form-textarea {
+  -fx-font-size: 14px;
+  -fx-background-color: white;
+  -fx-border-color: #dddddd;
+  -fx-border-radius: 5;
+  -fx-background-radius: 5;
+  -fx-padding: 8;
+  -fx-pref-width: 100%;
+  -fx-min-width: 500px;
+  -fx-prompt-text-fill: #999999;
+  -fx-border-width: 1;
+}
+
+.contact-form-textarea:focused {
+  -fx-border-color: #fa4506;
+  -fx-border-width: 2;
+  -fx-effect: dropshadow(three-pass-box, rgba(250, 69, 6, 0.2), 5, 0, 0, 0);
+}
+
+.form-label {
+  -fx-font-size: 14px;
+  -fx-font-weight: bold;
+  -fx-text-fill: #333333;
+}
+
+.stats-container {
+  -fx-background-color: #fa4506;
+  -fx-padding: 30 20;
+}

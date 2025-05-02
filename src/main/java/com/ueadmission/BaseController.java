@@ -48,6 +48,15 @@ public abstract class BaseController {
     }
     
     /**
+     * Navigates to the Contact screen with cleanup
+     * @param event The event that triggered this action
+     */
+    protected void navigateToContact(ActionEvent event) {
+        cleanup();
+        NavigationUtil.navigateToContact(event);
+    }
+    
+    /**
      * Navigates to the Login screen with cleanup
      * @param event The event that triggered this action
      */
