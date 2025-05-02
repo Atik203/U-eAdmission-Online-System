@@ -87,8 +87,16 @@ public class AboutController {
     }
 
     /**
-     * Subscribe to authentication state changes
+     * Setup profile button click action
      */
+    private void setupProfileButtonAction() {
+        // The ProfileButton already has its internal click handlers
+        // No need to set an action explicitly, as it's handled internally
+        // in the ProfileButton.handleProfileClick() method
+        
+        // Call this method in initialize() to ensure the ProfileButton is properly set up
+    }
+
     /**
      * Cleanup method to ensure any transitions are completed and opacity is reset
      * Called before navigating away from the About screen
@@ -313,5 +321,15 @@ public class AboutController {
         // Call cleanup first to ensure proper resource disposal
         cleanup();
         com.ueadmission.navigation.NavigationUtil.navigateToContact(event);
+    }
+
+    /**
+     * Navigates to the Profile page with transition effects
+     * @param event The event that triggered this action
+     */
+    private void navigateToProfile(javafx.event.ActionEvent event) {
+        // Call cleanup first to ensure proper resource disposal
+        cleanup();
+        com.ueadmission.navigation.NavigationUtil.navigateToProfile(event);
     }
 }

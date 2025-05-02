@@ -125,6 +125,9 @@ public class LoginController extends BaseController {
                 userRecord.getLastName(), 
                 userRecord.getEmail(),
                 userRecord.getPhone(),
+                userRecord.getAddress(),
+                userRecord.getCity(),
+                userRecord.getCountry(),
                 userRecord.getRole()
             );
             
