@@ -568,8 +568,7 @@ public class AdmissionController {
     private void navigateToContact(javafx.event.ActionEvent event) {
         // Call cleanup first to ensure proper resource disposal
         cleanup();
-        // Contact page navigation is not yet fully implemented
-        System.out.println("Navigate to Contact (not implemented yet)");
+        com.ueadmission.navigation.NavigationUtil.navigateToContact(event);
     }
 
     /**

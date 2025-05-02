@@ -73,7 +73,7 @@ public class AboutController {
         }
 
         if (contactButton != null) {
-            contactButton.setOnAction(event -> System.out.println("Contact button clicked"));
+            contactButton.setOnAction(event -> navigateToContact(event));
         }
 
         // Subscribe to auth state changes
@@ -303,5 +303,15 @@ public class AboutController {
         // Call cleanup first to ensure proper resource disposal
         cleanup();
         com.ueadmission.navigation.NavigationUtil.navigateToLogin(event);
+    }
+
+    /**
+     * Navigates to the Contact page
+     * @param event The event that triggered this action
+     */
+    private void navigateToContact(javafx.event.ActionEvent event) {
+        // Call cleanup first to ensure proper resource disposal
+        cleanup();
+        com.ueadmission.navigation.NavigationUtil.navigateToContact(event);
     }
 }

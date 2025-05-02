@@ -344,8 +344,7 @@ public class LoginController extends BaseController {
      */
     @FXML
     public void navigateToContact(ActionEvent event) {
-        // This is a placeholder for Contact navigation
-        System.out.println("Navigate to Contact (not implemented yet)");
+        com.ueadmission.navigation.NavigationUtil.navigateToContact(event);
     }
     
     /**
