@@ -1,13 +1,14 @@
 package com.ueadmission;
 
-import com.ueadmission.about.About;
 import com.ueadmission.auth.Auth;
 import com.ueadmission.auth.state.AuthState;
 import com.ueadmission.auth.state.AuthStateManager;
+import com.ueadmission.navigation.NavigationUtil;
 
 import io.github.palexdev.materialfx.controls.MFXButton;
 import javafx.animation.FadeTransition;
 import javafx.application.HostServices;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -122,58 +123,13 @@ public class MainController {
 
 
 
+ private  void openAboutPage(ActionEvent event){
+    NavigationUtil.navigateToAbout(event);
+}
 
 
-    /**
-     * Opens the About page
-     * @param event The event that triggered this action
-     */
-    private void openAboutPage(javafx.event.ActionEvent event) {
-        try {
-            // Get current stage and its properties
-            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            double width = currentStage.getWidth();
-            double height = currentStage.getHeight();
-            double x = currentStage.getX();
-            double y = currentStage.getY();
-            boolean maximized = currentStage.isMaximized();
-            
-            // Prepare the About window before closing current one
-            Stage aboutStage = About.prepareAboutWindow(width, height, x, y, maximized);
-            
-            // Make the new stage ready but not visible yet
-            aboutStage.setOpacity(0.0);
-            aboutStage.show();
-            
-            // Use a fade transition for the new window
-            javafx.animation.FadeTransition fadeIn = new javafx.animation.FadeTransition(
-                    javafx.util.Duration.millis(300), aboutStage.getScene().getRoot());
-            fadeIn.setFromValue(0.0);
-            fadeIn.setToValue(1.0);
-            
-            // Add a fade out transition for the current window
-            javafx.animation.FadeTransition fadeOut = new javafx.animation.FadeTransition(
-                    javafx.util.Duration.millis(200), currentStage.getScene().getRoot());
-            fadeOut.setFromValue(1.0);
-            fadeOut.setToValue(0.0);
-            
-            // Start the fade out, then hide current stage when done
-            fadeOut.setOnFinished(e -> {
-                currentStage.hide();
-                aboutStage.setOpacity(1.0);
-                fadeIn.play();
-                
-                // Finally close the original stage after transition completes
-                fadeIn.setOnFinished(f -> currentStage.close());
-            });
-            
-            fadeOut.play();
-            
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println("Failed to navigate to about: " + e.getMessage());
-        }
-    }
+   
+    
     /**
      * Opens the Admission page with proper auth state tracking
      * @param event The event that triggered this action
@@ -568,7 +524,7 @@ public class MainController {
     
     /**
      * Called when scene becomes visible or active
-     * This method is called by NavigationManager when scene changes
+     * This method is called by NavigationUtil when scene changes
      */
     public void onSceneActive() {
         LOGGER.info("Main scene became active, refreshing auth UI");
