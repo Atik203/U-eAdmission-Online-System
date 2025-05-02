@@ -194,8 +194,8 @@
   -fx-border-radius: 8;
   -fx-padding: 20px;
   -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 15, 0, 0, 5);
-  -fx-max-width: 800px;
-  -fx-min-width: 650px;
+  -fx-max-width: 1200px;
+  -fx-min-width: 800px;
   -fx-spacing: 20;
 }
 

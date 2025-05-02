@@ -126,54 +126,9 @@ public class AdmissionController {
     private MFXTextField commentsField;
 
     @FXML
-    void handleApplyNow(ActionEvent event) {
-        try {
-            java.awt.Desktop.getDesktop().browse(new java.net.URI("https://admission.uiu.ac.bd/"));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @FXML
-    void showSoBE(ActionEvent event) {
-        displayInfo("School of Business and Economics (SoBE)", new String[]{
-                "BBA - https://www.uiu.ac.bd/program/bba/",
-                "BBA in AIS - https://www.uiu.ac.bd/program/bba-in-ais/",
-                "Economics - https://www.uiu.ac.bd/program/bsc-in-economics/"
-        });
-    }
-
-    @FXML
-    void showSoSE(ActionEvent event) {
-        displayInfo("School of Science and Engineering (SoSE)", new String[]{
-                "Civil Engineering - https://www.uiu.ac.bd/program/bsc-in-civil-engineering/",
-                "CSE - https://www.uiu.ac.bd/program/bsc-in-cse/",
-                "Data Science - https://www.uiu.ac.bd/program/bsc-in-data-science/",
-                "EEE - https://www.uiu.ac.bd/program/bsc-in-eee/"
-        });
-    }
-
-    @FXML
-    void showSoHSS(ActionEvent event) {
-        displayInfo("School of Humanities and Social Sciences (SoHSS)", new String[]{
-                "EDS - https://www.uiu.ac.bd/program/bss-in-environment-and-development-studies/",
-                "MSJ - https://www.uiu.ac.bd/program/bss-in-msj/",
-                "English - https://www.uiu.ac.bd/program/ba-in-english/"
-        });
-    }
-
-    @FXML
-    void showSoLS(ActionEvent event) {
-        displayInfo("School of Life Sciences (SoLS)", new String[]{
-                "Pharmacy - https://www.uiu.ac.bd/program/bachelor-of-pharmacy/",
-                "Biotech & Genetic Engineering - https://www.uiu.ac.bd/program/biotechnology-genetic-engineering/"
-        });
-    }
-
-    @FXML
     void openBBA(ActionEvent event) {
         try {
-            Desktop.getDesktop().browse(new URI("https://www.uiu.ac.bd/program/bba/"));
+            Desktop.getDesktop().browse(new URI("https://sobe.uiu.ac.bd/bba/"));
         } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
         }
@@ -182,7 +137,7 @@ public class AdmissionController {
     @FXML
     void openBBAAIS(ActionEvent event) {
         try {
-            Desktop.getDesktop().browse(new URI("https://www.uiu.ac.bd/program/bba-in-ais/"));
+            Desktop.getDesktop().browse(new URI("https://sobe.uiu.ac.bd/bba-in-ais/"));
         } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
         }
@@ -191,7 +146,7 @@ public class AdmissionController {
     @FXML
     void openEconomics(ActionEvent event) {
         try {
-            Desktop.getDesktop().browse(new URI("https://www.uiu.ac.bd/program/bsc-in-economics/"));
+            Desktop.getDesktop().browse(new URI("https://sobe.uiu.ac.bd/economics/"));
         } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
         }
@@ -200,7 +155,7 @@ public class AdmissionController {
     @FXML
     void openCivil(ActionEvent event) {
         try {
-            Desktop.getDesktop().browse(new URI("https://www.uiu.ac.bd/program/bsc-in-civil-engineering/"));
+            Desktop.getDesktop().browse(new URI("https://ce.uiu.ac.bd/"));
         } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
         }
@@ -209,7 +164,7 @@ public class AdmissionController {
     @FXML
     void openCSE(ActionEvent event) {
         try {
-            Desktop.getDesktop().browse(new URI("https://www.uiu.ac.bd/program/bsc-in-cse/"));
+            Desktop.getDesktop().browse(new URI("https://cse.uiu.ac.bd/"));
         } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
         }
@@ -218,7 +173,7 @@ public class AdmissionController {
     @FXML
     void openDS(ActionEvent event) {
         try {
-            Desktop.getDesktop().browse(new URI("https://www.uiu.ac.bd/program/bsc-in-data-science/"));
+            Desktop.getDesktop().browse(new URI("https://datascience.uiu.ac.bd/"));
         } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
         }
@@ -227,7 +182,7 @@ public class AdmissionController {
     @FXML
     void openEEE(ActionEvent event) {
         try {
-            Desktop.getDesktop().browse(new URI("https://www.uiu.ac.bd/program/bsc-in-eee/"));
+            Desktop.getDesktop().browse(new URI("https://eee.uiu.ac.bd/"));
         } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
         }
@@ -236,7 +191,7 @@ public class AdmissionController {
     @FXML
     void openEDS(ActionEvent event) {
         try {
-            Desktop.getDesktop().browse(new URI("https://www.uiu.ac.bd/program/bss-in-environment-and-development-studies/"));
+            Desktop.getDesktop().browse(new URI("https://eds.uiu.ac.bd/"));
         } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
         }
@@ -245,7 +200,7 @@ public class AdmissionController {
     @FXML
     void openMSJ(ActionEvent event) {
         try {
-            Desktop.getDesktop().browse(new URI("https://www.uiu.ac.bd/program/bss-in-msj/"));
+            Desktop.getDesktop().browse(new URI("https://msj.uiu.ac.bd/"));
         } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
         }
@@ -254,7 +209,7 @@ public class AdmissionController {
     @FXML
     void openEnglish(ActionEvent event) {
         try {
-            Desktop.getDesktop().browse(new URI("https://www.uiu.ac.bd/program/ba-in-english/"));
+            Desktop.getDesktop().browse(new URI("https://english.uiu.ac.bd/"));
         } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
         }
@@ -263,7 +218,7 @@ public class AdmissionController {
     @FXML
     void openPharmacy(ActionEvent event) {
         try {
-            Desktop.getDesktop().browse(new URI("https://www.uiu.ac.bd/program/bachelor-of-pharmacy/"));
+            Desktop.getDesktop().browse(new URI("https://pharmacy.uiu.ac.bd/"));
         } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
         }
@@ -272,7 +227,7 @@ public class AdmissionController {
     @FXML
     void openBiotech(ActionEvent event) {
         try {
-            Desktop.getDesktop().browse(new URI("https://www.uiu.ac.bd/program/biotechnology-genetic-engineering/"));
+            Desktop.getDesktop().browse(new URI("https://bge.uiu.ac.bd/"));
         } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
         }
@@ -726,7 +681,7 @@ public class AdmissionController {
             LOGGER.info("Navigating to about with auth state: " + (isAuthenticated ? "authenticated" : "not authenticated"));
             
             // Prepare the About window before closing current one
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/ueadmission/about/About.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com.ueadmission/about/about.fxml"));
             javafx.scene.Parent root = loader.load();
             
             // Create new stage

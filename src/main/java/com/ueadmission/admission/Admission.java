@@ -114,27 +114,27 @@ public class Admission {
         mainContent.getChildren().add(title);
 
         mainContent.getChildren().add(createSchoolSection("School of Business and Economics (SoBE)", new String[][]{
-                {"BBA", "https://www.uiu.ac.bd/program/bba/"},
-                {"BBA in AIS", "https://www.uiu.ac.bd/program/bba-in-ais/"},
-                {"Economics", "https://www.uiu.ac.bd/program/bsc-in-economics/"}
+                {"BBA", "https://sobe.uiu.ac.bd/bba/"},
+                {"BBA in AIS", "https://sobe.uiu.ac.bd/bba-in-ais/"},
+                {"Economics", "https://sobe.uiu.ac.bd/economics/"}
         }, hostServices));
 
         mainContent.getChildren().add(createSchoolSection("School of Science and Engineering (SoSE)", new String[][]{
-                {"Civil Engineering", "https://www.uiu.ac.bd/program/bsc-in-civil-engineering/"},
-                {"CSE", "https://www.uiu.ac.bd/program/bsc-in-cse/"},
-                {"Data Science", "https://www.uiu.ac.bd/program/bsc-in-data-science/"},
-                {"EEE", "https://www.uiu.ac.bd/program/bsc-in-eee/"}
+                {"Civil Engineering", "https://ce.uiu.ac.bd/"},
+                {"CSE", "https://cse.uiu.ac.bd/"},
+                {"Data Science", "https://datascience.uiu.ac.bd/"},
+                {"EEE", "https://eee.uiu.ac.bd/"}
         }, hostServices));
 
         mainContent.getChildren().add(createSchoolSection("School of Humanities and Social Sciences (SoHSS)", new String[][]{
-                {"EDS", "https://www.uiu.ac.bd/program/bss-in-environment-and-development-studies/"},
-                {"MSJ", "https://www.uiu.ac.bd/program/bss-in-msj/"},
-                {"English", "https://www.uiu.ac.bd/program/ba-in-english/"}
+                {"EDS", "https://eds.uiu.ac.bd/"},
+                {"MSJ", "https://msj.uiu.ac.bd/"},
+                {"English", "https://english.uiu.ac.bd/"}
         }, hostServices));
 
         mainContent.getChildren().add(createSchoolSection("School of Life Sciences (SoLS)", new String[][]{
-                {"Pharmacy", "https://www.uiu.ac.bd/program/bachelor-of-pharmacy/"},
-                {"Biotech & Genetic Engineering", "https://www.uiu.ac.bd/program/biotechnology-genetic-engineering/"}
+                {"Pharmacy", "https://pharmacy.uiu.ac.bd/"},
+                {"Biotech & Genetic Engineering", "https://bge.uiu.ac.bd/"}
         }, hostServices));
 
         Button applyNow = new Button("Apply Now");
