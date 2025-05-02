@@ -276,6 +276,90 @@ public class MainController {
     }
 
     /**
+     * Opens the Profile page with proper auth state tracking
+     * @param event The event that triggered this action
+     */
+    private void openProfilePage(javafx.event.ActionEvent event) {
+        try {
+            // Get current stage and its properties
+            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            double width = currentStage.getWidth();
+            double height = currentStage.getHeight();
+            double x = currentStage.getX();
+            double y = currentStage.getY();
+            boolean maximized = currentStage.isMaximized();
+
+            // Store current auth state
+            AuthState currentAuthState = AuthStateManager.getInstance().getState();
+            boolean isAuthenticated = (currentAuthState != null && currentAuthState.isAuthenticated());
+            
+            // Only allow navigation to profile if authenticated
+            if (!isAuthenticated) {
+                LOGGER.warning("Attempted to navigate to profile while not authenticated, redirecting to login");
+                openLoginPage(event);
+                return;
+            }
+
+            // Prepare the Profile window before closing current one
+            Stage profileStage = com.ueadmission.profile.Profile.prepareProfileWindow(width, height, x, y, maximized);
+
+            if (profileStage == null) {
+                LOGGER.severe("Failed to create Profile window.");
+                return;
+            }
+
+            // Make the new stage ready but not visible yet
+            profileStage.setOpacity(0.0);
+            profileStage.show();
+
+            // Force layout before accessing UI elements
+            profileStage.getScene().getRoot().applyCss();
+            profileStage.getScene().getRoot().layout();
+
+            // Try to get the controller
+            javafx.fxml.FXMLLoader loader = (javafx.fxml.FXMLLoader) profileStage.getScene().getUserData();
+            if (loader != null) {
+                Object controller = loader.getController();
+                if (controller != null && controller instanceof com.ueadmission.profile.ProfileController) {
+                    // Call refresh method if available
+                    try {
+                        ((com.ueadmission.profile.ProfileController) controller).refreshUI();
+                        LOGGER.info("Refreshed UI in ProfileController");
+                    } catch (Exception e) {
+                        LOGGER.warning("Could not call refreshUI: " + e.getMessage());
+                    }
+                }
+            }
+
+            // Use a fade transition for the new window
+            FadeTransition fadeIn = new FadeTransition(Duration.millis(300), profileStage.getScene().getRoot());
+            fadeIn.setFromValue(0.0);
+            fadeIn.setToValue(1.0);
+
+            // Add a fade out transition for the current window
+            FadeTransition fadeOut = new FadeTransition(Duration.millis(200), currentStage.getScene().getRoot());
+            fadeOut.setFromValue(1.0);
+            fadeOut.setToValue(0.0);
+
+            // Start the fade out, then hide current stage when done
+            fadeOut.setOnFinished(e -> {
+                currentStage.hide();
+                profileStage.setOpacity(1.0);
+                fadeIn.play();
+
+                // Finally close the original stage after transition completes
+                fadeIn.setOnFinished(f -> currentStage.close());
+            });
+
+            fadeOut.play();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            LOGGER.severe("Failed to open Profile Page: " + e.getMessage());
+        }
+    }
+
+    /**
      * Opens the Contact page
      * @param event The event that triggered this action
      */
