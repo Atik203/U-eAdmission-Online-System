@@ -2,6 +2,8 @@
 
 <?import io.github.palexdev.materialfx.controls.MFXButton?>
 <?import io.github.palexdev.materialfx.controls.MFXScrollPane?>
+<?import io.github.palexdev.materialfx.controls.MFXDatePicker?>
+<?import io.github.palexdev.materialfx.controls.MFXTextField?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.image.Image?>
@@ -13,6 +15,7 @@
 
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.control.Button?>
+<?import io.github.palexdev.materialfx.controls.MFXComboBox?>
 <MFXScrollPane fitToWidth="true" fitToHeight="true" prefViewportWidth="1280" prefViewportHeight="720" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ueadmission.admission.AdmissionController">
     <VBox spacing="0" stylesheets="@admission.css">
         <!-- 🔷 Navbar -->
@@ -62,9 +65,7 @@
 
             <!-- Title -->
             <Text text="UIU Undergraduate Programs" styleClass="ux-hero-title">
-                <!--                <font>-->
-                <!--                    <Font name="Segoe UI Semibold" size="26"/>-->
-                <!--                </font>-->
+
             </Text>
 
             <!-- SoBE -->
@@ -128,12 +129,12 @@
                     <HBox spacing="10" alignment="CENTER_LEFT">
                         <VBox HBox.hgrow="ALWAYS">
                             <Label text="First Name" styleClass="form-label"/>
-                            <io.github.palexdev.materialfx.controls.MFXTextField fx:id="firstNameField" 
+                            <MFXTextField fx:id="firstNameField"
                                  floatMode="BORDER" prefWidth="200" styleClass="form-field"/>
                         </VBox>
                         <VBox HBox.hgrow="ALWAYS">
                             <Label text="Last Name" styleClass="form-label"/>
-                            <io.github.palexdev.materialfx.controls.MFXTextField fx:id="lastNameField" 
+                            <MFXTextField fx:id="lastNameField"
                                  floatMode="BORDER" prefWidth="200" styleClass="form-field"/>
                         </VBox>
                     </HBox>
@@ -141,53 +142,42 @@
                     <HBox spacing="10" alignment="CENTER_LEFT">
                         <VBox HBox.hgrow="ALWAYS">
                             <Label text="Email Address" styleClass="form-label"/>
-                            <io.github.palexdev.materialfx.controls.MFXTextField fx:id="emailField" 
+                            <MFXTextField fx:id="emailField"
                                  floatMode="BORDER" prefWidth="200" styleClass="form-field"/>
                         </VBox>
                         <VBox HBox.hgrow="ALWAYS">
                             <Label text="Phone Number" styleClass="form-label"/>
-                            <io.github.palexdev.materialfx.controls.MFXTextField fx:id="phoneField" 
+                            <MFXTextField fx:id="phoneField"
                                  floatMode="BORDER" prefWidth="200" styleClass="form-field"/>
                         </VBox>
                     </HBox>
                     
                     <Label text="Date of Birth" styleClass="form-label"/>
-                    <io.github.palexdev.materialfx.controls.MFXDatePicker fx:id="dobPicker" prefWidth="200" styleClass="form-field"/>
+                    <MFXDatePicker fx:id="dobPicker" prefWidth="200" styleClass="form-field"/>
                 </VBox>
                 
                 <VBox styleClass="form-section">
                     <Label text="Academic Information" styleClass="section-header"/>
                     <Label text="Select Program" styleClass="form-label"/>
-                    <io.github.palexdev.materialfx.controls.MFXComboBox fx:id="programComboBox" prefWidth="400" styleClass="form-field"/>
+                    <MFXComboBox fx:id="programComboBox" prefWidth="400" styleClass="form-field"/>
                     
                     <Label text="Previous Institution" styleClass="form-label"/>
-                    <io.github.palexdev.materialfx.controls.MFXTextField fx:id="institutionField" 
+                    <MFXTextField fx:id="institutionField"
                              floatMode="BORDER" prefWidth="400" styleClass="form-field"/>
                              
                     <HBox spacing="10" alignment="CENTER_LEFT">
                         <VBox HBox.hgrow="ALWAYS">
                             <Label text="SSC GPA" styleClass="form-label"/>
-                            <io.github.palexdev.materialfx.controls.MFXTextField fx:id="sscGpaField" 
+                            <MFXTextField fx:id="sscGpaField"
                                  floatMode="BORDER" prefWidth="200" styleClass="form-field"/>
                         </VBox>
                         <VBox HBox.hgrow="ALWAYS">
                             <Label text="HSC GPA" styleClass="form-label"/>
-                            <io.github.palexdev.materialfx.controls.MFXTextField fx:id="hscGpaField" 
+                            <MFXTextField fx:id="hscGpaField"
                                  floatMode="BORDER" prefWidth="200" styleClass="form-field"/>
                         </VBox>
                     </HBox>
                 </VBox>
-                
-                <VBox styleClass="form-section">
-                    <Label text="Additional Information" styleClass="section-header"/>
-                    <Label text="How did you hear about UIU?" styleClass="form-label"/>
-                    <io.github.palexdev.materialfx.controls.MFXComboBox fx:id="referenceComboBox" prefWidth="400" styleClass="form-field"/>
-                    
-                    <Label text="Comments/Questions" styleClass="form-label"/>
-                    <io.github.palexdev.materialfx.controls.MFXTextField fx:id="commentsField" 
-                             floatMode="BORDER" prefWidth="400" prefHeight="60" styleClass="form-field"/>
-                </VBox>
-                
                 <HBox styleClass="form-footer" alignment="CENTER">
                     <MFXButton fx:id="resetFormButton" text="Reset" onAction="#resetForm" styleClass="mfx-button-outline"/>
                     <Region HBox.hgrow="ALWAYS"/>
