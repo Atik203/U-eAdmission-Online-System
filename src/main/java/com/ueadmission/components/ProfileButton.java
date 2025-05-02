@@ -1,29 +1,24 @@
 package com.ueadmission.components;
-import com.ueadmission.MainController;
+import java.util.function.Consumer;
+
 import com.ueadmission.auth.state.AuthState;
 import com.ueadmission.auth.state.AuthStateManager;
 import com.ueadmission.auth.state.User;
+
 import io.github.palexdev.materialfx.controls.MFXButton;
 import javafx.animation.FadeTransition;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-
-import java.io.IOException;
-import java.util.function.Consumer;
-import java.util.logging.Logger;
 
 /**
  * A reusable profile button component that displays the user's
@@ -327,10 +322,11 @@ public class ProfileButton extends HBox {
         private void navigateTo(String screen) {
             System.out.println("Navigate to " + screen + " screen");
             try {
-                // Use the static navigate method instead of getInstance().nonavigateTo
+                // Use NavigationUtil instead of NavigationManager
                 String fxmlPath = "/com.ueadmission/" + screen + ".fxml";
                 String title = "UeAdmission - " + screen.substring(0, 1).toUpperCase() + screen.substring(1);
-                com.ueadmission.navigation.NavigationManager.navigate(fxmlPath, title);
+                Stage currentStage = (Stage) this.getScene().getWindow();
+                com.ueadmission.navigation.NavigationUtil.navigateTo(currentStage, fxmlPath, title);
             } catch (Exception e) {
                 System.err.println("Error navigating to " + screen + ": " + e.getMessage());
                 e.printStackTrace();
@@ -393,8 +389,11 @@ public class ProfileButton extends HBox {
          */
         private void handleProfileClick() {
             try {
-                // Use NavigationManager to navigate to profile screen
-                com.ueadmission.navigation.NavigationManager.navigate("/com.ueadmission/profile/profile.fxml", "My Profile - UeAdmission");
+                // Use NavigationUtil instead of NavigationManager
+                Stage currentStage = (Stage) this.getScene().getWindow();
+                com.ueadmission.navigation.NavigationUtil.navigateTo(currentStage, 
+                                                                     "/com.ueadmission/profile/profile.fxml", 
+                                                                     "My Profile - UeAdmission");
                 System.out.println("Navigated to profile screen");
             } catch (Exception e) {
                 e.printStackTrace();
@@ -405,26 +404,24 @@ public class ProfileButton extends HBox {
         /**
          * Handle logout click
          */
-        // In handleLogoutClick()
         private void handleLogoutClick() {
             try {
                 System.out.println("Logout menu item clicked");
                 AuthStateManager.getInstance().logout();
 
-                // Navigate to home screen (main.fxml)
+                // Navigate to home screen using NavigationUtil
                 javafx.application.Platform.runLater(() -> {
                     try {
-                        com.ueadmission.navigation.NavigationManager.navigateToHome();
-
+                        Stage currentStage = (Stage) this.getScene().getWindow();
+                        com.ueadmission.navigation.NavigationUtil.navigateTo(
+                            currentStage, 
+                            "/com.ueadmission/main.fxml", 
+                            "UeAdmission - Home"
+                        );
                         System.out.println("User logged out and redirected to home");
                     } catch (Exception e) {
                         System.err.println("Failed to navigate to home screen after logout: " + e.getMessage());
                         e.printStackTrace();
-                        try {
-                            com.ueadmission.navigation.NavigationManager.navigateToHome();
-                        } catch (Exception ex) {
-                            System.err.println("Fallback navigation also failed: " + ex.getMessage());
-                        }
                     }
                 });
             } catch (Exception e) {
@@ -432,6 +429,7 @@ public class ProfileButton extends HBox {
                 e.printStackTrace();
             }
         }
+
     /**
      * Clean up resources when this component is no longer needed
      */
