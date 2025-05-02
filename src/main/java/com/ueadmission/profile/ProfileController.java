@@ -1,26 +1,32 @@
 package com.ueadmission.profile;
 
-import java.io.IOException;
+import java.util.concurrent.CompletableFuture;
+import java.util.logging.Logger;
 
+import com.ueadmission.auth.state.AuthState;
 import com.ueadmission.auth.state.AuthStateManager;
 import com.ueadmission.auth.state.User;
 import com.ueadmission.components.ProfileButton;
+import com.ueadmission.navigation.NavigationUtil;
 
 import io.github.palexdev.materialfx.controls.MFXButton;
+import io.github.palexdev.materialfx.controls.MFXSpinner;
 import javafx.animation.FadeTransition;
+import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
 import javafx.util.Duration;
 
 /**
  * Controller for the profile page
  */
 public class ProfileController {
+    
+    private static final Logger LOGGER = Logger.getLogger(ProfileController.class.getName());
     
     @FXML
     private Text initialsText;
@@ -47,6 +53,15 @@ public class ProfileController {
     private Label phoneLabel;
     
     @FXML
+    private Label addressLabel;
+    
+    @FXML
+    private Label cityLabel;
+    
+    @FXML
+    private Label countryLabel;
+    
+    @FXML
     private Label profileRoleLabel;
     
     @FXML
@@ -67,20 +82,89 @@ public class ProfileController {
     @FXML
     private ProfileButton profileButton;
     
+    @FXML
+    private MFXButton editProfileButton;
+    
+    @FXML
+    private StackPane loaderContainer;
+    
+    @FXML
+    private MFXSpinner spinner;
+    
+    @FXML
+    private GridPane userInfoGrid;
+    
     /**
      * Initialize the controller
      */
     @FXML
     public void initialize() {
         // Set up navigation button handlers using NavigationUtil
-        homeButton.setOnAction(e -> com.ueadmission.navigation.NavigationUtil.navigateToHome(e));
-        aboutButton.setOnAction(e -> com.ueadmission.navigation.NavigationUtil.navigateToAbout(e));
-        admissionButton.setOnAction(e -> com.ueadmission.navigation.NavigationUtil.navigateToAdmission(e));
-        mockTestButton.setOnAction(e -> System.out.println("Navigate to Mock Test page"));
-        contactButton.setOnAction(e -> com.ueadmission.navigation.NavigationUtil.navigateToContact(e));
+        homeButton.setOnAction(e -> navigateToHome(e));
+        aboutButton.setOnAction(e -> navigateToAbout(e));
+        admissionButton.setOnAction(e -> navigateToAdmission(e));
+        mockTestButton.setOnAction(e -> navigateToMockTest(e));
+        contactButton.setOnAction(e -> navigateToContact(e));
         
-        // Load user data
-        loadUserData();
+        editProfileButton.setOnAction(e -> handleEditProfile());
+        
+        // Make the user info grid initially hidden until data is loaded
+        userInfoGrid.setVisible(false);
+        userInfoGrid.setManaged(false);
+        
+        // Show loader and fetch user data
+        showLoader();
+        loadDataWithAnimation();
+    }
+    
+    /**
+     * Show the loader animation
+     */
+    private void showLoader() {
+        loaderContainer.setVisible(true);
+        loaderContainer.setManaged(true);
+        
+        FadeTransition fadeIn = new FadeTransition(Duration.millis(300), loaderContainer);
+        fadeIn.setFromValue(0);
+        fadeIn.setToValue(1);
+        fadeIn.play();
+        
+        LOGGER.info("Showing loader animation");
+    }
+    
+    /**
+     * Hide the loader spinner with animation
+     */
+    private void hideLoader() {
+        FadeTransition fadeOut = new FadeTransition(Duration.millis(200), loaderContainer);
+        fadeOut.setFromValue(1);
+        fadeOut.setToValue(0);
+        fadeOut.setOnFinished(e -> {
+            loaderContainer.setVisible(false);
+            loaderContainer.setManaged(false);
+        });
+        fadeOut.play();
+    }
+    
+    /**
+     * Simulate loading data from database with a delay
+     */
+    private void simulateDataLoading() {
+        CompletableFuture.runAsync(() -> {
+            try {
+                // Simulate a network delay
+                Thread.sleep(1500);
+                
+                // Load data on the JavaFX Application Thread
+                Platform.runLater(() -> {
+                    loadUserData();
+                    hideLoader();
+                });
+            } catch (InterruptedException e) {
+                LOGGER.warning("Data loading simulation interrupted: " + e.getMessage());
+                Thread.currentThread().interrupt();
+            }
+        });
     }
     
     /**
@@ -101,6 +185,12 @@ public class ProfileController {
             lastNameLabel.setText(user.getLastName());
             profileEmailLabel.setText(user.getEmail());
             phoneLabel.setText(user.getPhoneNumber());
+            
+            // Set additional address information
+            addressLabel.setText(user.getAddress());
+            cityLabel.setText(user.getCity());
+            countryLabel.setText(user.getCountry());
+            
             profileRoleLabel.setText(user.getRole());
             
             // Set initials for the avatar
@@ -112,37 +202,117 @@ public class ProfileController {
                 initials += user.getLastName().charAt(0);
             }
             initialsText.setText(initials.toUpperCase());
+            
+            // Show user info grid after data is loaded
+            userInfoGrid.setVisible(true);
+            userInfoGrid.setManaged(true);
+        } else {
+            // Handle case when user is null (should not happen normally)
+            LOGGER.severe("Failed to load user data: user object is null");
+            Profile.showProfileLoadingError();
         }
     }
     
     /**
-     * Navigate to a different page
+     * Load user data with animation effects
      */
-    private void navigateTo(String fxmlFile, String title) {
-        try {
-            // Get the current stage
-            Stage stage = (Stage) homeButton.getScene().getWindow();
-            
-            // Load the target screen
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com.ueadmission/" + fxmlFile));
-            Parent root = loader.load();
-            
-            // Create a new scene
-            Scene scene = new Scene(root, stage.getWidth(), stage.getHeight());
-            
-            // Set the scene to the stage
-            stage.setScene(scene);
-            stage.setTitle(title);
-            
-            // Apply fade-in transition
-            FadeTransition fadeIn = new FadeTransition(Duration.millis(300), root);
-            fadeIn.setFromValue(0.0);
-            fadeIn.setToValue(1.0);
-            fadeIn.play();
-            
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.err.println("Failed to navigate to " + fxmlFile + ": " + e.getMessage());
+    private void loadDataWithAnimation() {
+        // Hide the user info initially
+        userInfoGrid.setVisible(false);
+        userInfoGrid.setManaged(false);
+        
+        // Use simulateDataLoading to fetch data with a delay and animations
+        simulateDataLoading();
+        
+        LOGGER.info("Started loading user data with animation");
+    }
+    
+    /**
+     * Handle the edit profile button click
+     */
+    private void handleEditProfile() {
+        // This is a placeholder for the edit profile functionality
+        // In a real implementation, this would open an edit form
+        Profile.showProfileUpdateSuccess();
+    }
+    
+    /**
+     * Called when scene becomes visible or active
+     * This method is called by NavigationUtil when scene changes
+     */
+    public void onSceneActive() {
+        LOGGER.info("Profile scene became active, refreshing user data");
+        refreshUI();
+    }
+    
+    /**
+     * Refresh the UI with current auth state
+     */
+    public void refreshUI() {
+        AuthState authState = AuthStateManager.getInstance().getState();
+        if (authState != null && authState.isAuthenticated()) {
+            loadUserData();
+        } else {
+            LOGGER.warning("User not authenticated, redirecting to login");
+            // If somehow we got to the profile page without authentication, redirect to login
+            Platform.runLater(() -> {
+                if (homeButton.getScene() != null) {
+                    NavigationUtil.navigateToLogin(new ActionEvent(homeButton, null));
+                }
+            });
         }
+    }
+    
+    /**
+     * Cleanup resources before navigating away
+     */
+    private void cleanup() {
+        LOGGER.info("Cleaning up ProfileController before navigation");
+        // Reset opacity on the scene root if available
+        if (homeButton != null && homeButton.getScene() != null && 
+                homeButton.getScene().getRoot() != null) {
+            homeButton.getScene().getRoot().setOpacity(1.0);
+        }
+    }
+    
+    /**
+     * Navigates to the Home screen
+     */
+    private void navigateToHome(ActionEvent event) {
+        cleanup();
+        NavigationUtil.navigateToHome(event);
+    }
+    
+    /**
+     * Navigates to the About screen
+     */
+    private void navigateToAbout(ActionEvent event) {
+        cleanup();
+        NavigationUtil.navigateToAbout(event);
+    }
+    
+    /**
+     * Navigates to the Admission screen
+     */
+    private void navigateToAdmission(ActionEvent event) {
+        cleanup();
+        NavigationUtil.navigateToAdmission(event);
+    }
+    
+    /**
+     * Navigates to the Mock Test screen
+     */
+    private void navigateToMockTest(ActionEvent event) {
+        cleanup();
+        // This is a placeholder - Mock Test isn't fully implemented yet
+        System.out.println("Navigate to Mock Test page (not implemented yet)");
+    }
+    
+    /**
+     * Navigates to the Contact screen
+     */
+    private void navigateToContact(ActionEvent event) {
+        cleanup();
+        NavigationUtil.navigateToContact(event);
     }
 }

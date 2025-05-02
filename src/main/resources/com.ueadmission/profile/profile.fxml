@@ -2,112 +2,148 @@
 
 <?import io.github.palexdev.materialfx.controls.MFXButton?>
 <?import io.github.palexdev.materialfx.controls.MFXScrollPane?>
+<?import io.github.palexdev.materialfx.controls.MFXTextField?>
+<?import io.github.palexdev.materialfx.controls.MFXSpinner?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Tab?>
-<?import javafx.scene.control.TabPane?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
-<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Text?>
-<?import com.ueadmission.components.ProfileButton?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.RowConstraints?>
 
-<StackPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ueadmission.profile.ProfileController">
-    <MFXScrollPane fitToWidth="true">
-        <VBox spacing="0" stylesheets="@profile.css">
-
-            <!-- 🔷 Navbar - Copied from main.fxml -->
-            <HBox id="navbar" alignment="CENTER_LEFT" spacing="30" style="-fx-background-color: #FA4506;">
-                <padding>
-                    <Insets topRightBottomLeft="15" />
-                </padding>
-                <ImageView fitHeight="40" fitWidth="40">
-                    <image>
-                        <Image url="@../uiu_logo_update.png" />
-                    </image>
-                </ImageView>
-                <Label id="title" style="-fx-text-fill: white; -fx-font-weight: bold;" text="United International University" />
-                <Region fx:id="spacer" HBox.hgrow="ALWAYS" />
-                <MFXButton id="nav-button" fx:id="homeButton" styleClass="mfx-button" text="Home" />
-                <MFXButton id="nav-button" fx:id="aboutButton" styleClass="mfx-button" text="About" />
-                <MFXButton id="nav-button" fx:id="admissionButton" styleClass="mfx-button" text="Admission" />
-                <MFXButton id="nav-button" fx:id="mockTestButton" styleClass="mfx-button" text="Mock Test" />
-                <MFXButton id="nav-button" fx:id="contactButton" styleClass="mfx-button" text="Contact" />
-                <ProfileButton fx:id="profileButton" />
-            </HBox>
+<MFXScrollPane fitToWidth="true" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ueadmission.profile.ProfileController">
+    <VBox spacing="0" stylesheets="@profile.css">
+        <!-- 🔷 Navbar -->
+        <HBox id="navbar" alignment="CENTER_LEFT" spacing="30" style="-fx-background-color: #FA4506;">
+            <padding>
+                <Insets topRightBottomLeft="15" />
+            </padding>
+            <ImageView fitHeight="40" fitWidth="40">
+                <image>
+                    <Image url="@../uiu_logo_update.png" />
+                </image>
+            </ImageView>
+            <Label id="title" style="-fx-text-fill: white; -fx-font-weight: bold;" text="United International University" />
+            <Region fx:id="spacer" HBox.hgrow="ALWAYS" />
+            <MFXButton id="nav-button" fx:id="homeButton" styleClass="mfx-button" text="Home" />
+            <MFXButton id="nav-button" fx:id="aboutButton" styleClass="mfx-button" text="About" />
+            <MFXButton id="nav-button" fx:id="admissionButton" styleClass="mfx-button" text="Admission" />
+            <MFXButton id="nav-button" fx:id="mockTestButton" styleClass="mfx-button" text="Mock Test" />
+            <MFXButton id="nav-button" fx:id="contactButton" styleClass="mfx-button" text="Contact" />
             
-            <!-- Profile Content -->
-            <VBox styleClass="profile-container" spacing="30">
+            <!-- Profile button container - always visible on profile page -->
+            <HBox id="profileButtonContainer" alignment="CENTER">
+                <children>
+                    <com.ueadmission.components.ProfileButton fx:id="profileButton" styleClass="profile-button-container" />
+                </children>
+            </HBox>
+        </HBox>
+
+        <!-- Profile Header Section -->
+        <VBox id="profile-header" alignment="CENTER" spacing="20">
+            <padding>
+                <Insets top="40" right="20" bottom="30" left="20" />
+            </padding>
+            
+            <!-- Profile Avatar Circle with Initials -->
+            <StackPane alignment="CENTER">
+                <Circle id="avatar-circle" radius="50" fill="#2e3b55" />
+                <Text fx:id="initialsText" styleClass="avatar-text" text="JD" />
+            </StackPane>
+            
+            <!-- User Basic Info -->
+            <VBox alignment="CENTER" spacing="5">
+                <Label fx:id="nameLabel" styleClass="profile-name" text="John Doe" />
+                <Label fx:id="roleLabel" styleClass="profile-role" text="Student" />
+                <Label fx:id="emailLabel" styleClass="profile-email" text="johndoe@example.com" />
+            </VBox>
+        </VBox>
+        
+        <!-- Profile Content Section -->
+        <VBox id="profile-content" spacing="20">
+            <padding>
+                <Insets top="20" right="30" bottom="40" left="30" />
+            </padding>
+            
+            <!-- Personal Information Content -->
+            <VBox id="personal-info" spacing="20" styleClass="profile-content-panel" maxWidth="800" alignment="CENTER">
                 <padding>
-                    <Insets top="40" right="40" bottom="40" left="40" />
+                    <Insets top="25" right="30" bottom="25" left="30" />
                 </padding>
                 
-                <!-- Profile Header -->
-                <HBox styleClass="profile-header" spacing="30" alignment="CENTER_LEFT">
-                    <StackPane>
-                        <Circle radius="60" styleClass="profile-avatar" />
-                        <Text fx:id="initialsText" style="-fx-fill: white; -fx-font-size: 36px; -fx-font-weight: bold;" text="JD" />
-                    </StackPane>
-                    
-                    <VBox spacing="5" HBox.hgrow="ALWAYS">
-                        <Label fx:id="nameLabel" styleClass="profile-name" text="User Name" />
-                        <Label fx:id="roleLabel" styleClass="profile-role" text="Student" />
-                        <Label fx:id="emailLabel" styleClass="profile-email" text="user@example.com" />
-                    </VBox>
-                    
-                    <MFXButton text="Edit Profile" styleClass="mfx-button-outline" />
-                </HBox>
+                <!-- Section Title -->
+                <Label text="Personal Information" styleClass="section-title"/>
                 
-                <!-- Profile Tabs -->
-                <TabPane styleClass="profile-tabs" tabClosingPolicy="UNAVAILABLE">
-                    <Tab text="Personal Information">
-                        <VBox spacing="20" styleClass="profile-section">
-                            <GridPane hgap="20" vgap="15">
-                                <columnConstraints>
-                                    <javafx.scene.layout.ColumnConstraints percentWidth="30" />
-                                    <javafx.scene.layout.ColumnConstraints percentWidth="70" />
-                                </columnConstraints>
-                                
-                                <Label text="First Name:" styleClass="profile-field-label" GridPane.rowIndex="0" GridPane.columnIndex="0" />
-                                <Label fx:id="firstNameLabel" text="John" styleClass="profile-field-value" GridPane.rowIndex="0" GridPane.columnIndex="1" />
-                                
-                                <Label text="Last Name:" styleClass="profile-field-label" GridPane.rowIndex="1" GridPane.columnIndex="0" />
-                                <Label fx:id="lastNameLabel" text="Doe" styleClass="profile-field-value" GridPane.rowIndex="1" GridPane.columnIndex="1" />
-                                
-                                <Label text="Email:" styleClass="profile-field-label" GridPane.rowIndex="2" GridPane.columnIndex="0" />
-                                <Label fx:id="profileEmailLabel" text="john.doe@example.com" styleClass="profile-field-value" GridPane.rowIndex="2" GridPane.columnIndex="1" />
-                                
-                                <Label text="Phone:" styleClass="profile-field-label" GridPane.rowIndex="3" GridPane.columnIndex="0" />
-                                <Label fx:id="phoneLabel" text="+1234567890" styleClass="profile-field-value" GridPane.rowIndex="3" GridPane.columnIndex="1" />
-                                
-                                <Label text="Role:" styleClass="profile-field-label" GridPane.rowIndex="4" GridPane.columnIndex="0" />
-                                <Label fx:id="profileRoleLabel" text="Student" styleClass="profile-field-value" GridPane.rowIndex="4" GridPane.columnIndex="1" />
-                            </GridPane>
-                        </VBox>
-                    </Tab>
-                    <Tab text="Account Settings">
-                        <VBox spacing="20" styleClass="profile-section">
-                            <Label styleClass="section-title" text="Security Settings" />
-                            <MFXButton text="Change Password" styleClass="mfx-button-outline" />
-                            <MFXButton text="Enable Two-Factor Authentication" styleClass="mfx-button-outline" />
-                            
-                            <Label styleClass="section-title" text="Notification Preferences" />
-                            <HBox spacing="10" alignment="CENTER_LEFT">
-                                <MFXButton text="Email Notifications" styleClass="mfx-button-outline" />
-                                <MFXButton text="SMS Notifications" styleClass="mfx-button-outline" />
-                            </HBox>
-                        </VBox>
-                    </Tab>
-                </TabPane>
+                <!-- Loading Spinner (Hidden by default) -->
+                <StackPane fx:id="loaderContainer" visible="false" managed="false" styleClass="loader-container">
+                    <VBox alignment="CENTER" spacing="15">
+                        <ImageView fitHeight="80" fitWidth="80">
+                            <image>
+                                <Image url="@../loading.gif" />
+                            </image>
+                        </ImageView>
+                        <Label text="Loading user data..." styleClass="loader-text" />
+                    </VBox>
+                </StackPane>
+                
+                <!-- User Info Grid -->
+                <GridPane fx:id="userInfoGrid" hgap="20" vgap="15" styleClass="info-grid">
+                    <columnConstraints>
+                        <ColumnConstraints minWidth="150" prefWidth="180" />
+                        <ColumnConstraints hgrow="ALWAYS" />
+                    </columnConstraints>
+                    
+                    <!-- First Name -->
+                    <Label text="First Name:" styleClass="info-label" GridPane.rowIndex="0" GridPane.columnIndex="0" />
+                    <Label fx:id="firstNameLabel" text="John" styleClass="info-value" GridPane.rowIndex="0" GridPane.columnIndex="1" />
+                    
+                    <!-- Last Name -->
+                    <Label text="Last Name:" styleClass="info-label" GridPane.rowIndex="1" GridPane.columnIndex="0" />
+                    <Label fx:id="lastNameLabel" text="Doe" styleClass="info-value" GridPane.rowIndex="1" GridPane.columnIndex="1" />
+                    
+                    <!-- Email -->
+                    <Label text="Email:" styleClass="info-label" GridPane.rowIndex="2" GridPane.columnIndex="0" />
+                    <Label fx:id="profileEmailLabel" text="johndoe@example.com" styleClass="info-value" GridPane.rowIndex="2" GridPane.columnIndex="1" />
+                    
+                    <!-- Phone -->
+                    <Label text="Phone:" styleClass="info-label" GridPane.rowIndex="3" GridPane.columnIndex="0" />
+                    <Label fx:id="phoneLabel" text="+880 1234 567890" styleClass="info-value" GridPane.rowIndex="3" GridPane.columnIndex="1" />
+                    
+                    <!-- Address -->
+                    <Label text="Address:" styleClass="info-label" GridPane.rowIndex="4" GridPane.columnIndex="0" />
+                    <Label fx:id="addressLabel" text="123 Main Street" styleClass="info-value" GridPane.rowIndex="4" GridPane.columnIndex="1" />
+                    
+                    <!-- City -->
+                    <Label text="City:" styleClass="info-label" GridPane.rowIndex="5" GridPane.columnIndex="0" />
+                    <Label fx:id="cityLabel" text="Dhaka" styleClass="info-value" GridPane.rowIndex="5" GridPane.columnIndex="1" />
+                    
+                    <!-- Country -->
+                    <Label text="Country:" styleClass="info-label" GridPane.rowIndex="6" GridPane.columnIndex="0" />
+                    <Label fx:id="countryLabel" text="Bangladesh" styleClass="info-value" GridPane.rowIndex="6" GridPane.columnIndex="1" />
+                    
+                    <!-- Role -->
+                    <Label text="Role:" styleClass="info-label" GridPane.rowIndex="7" GridPane.columnIndex="0" />
+                    <Label fx:id="profileRoleLabel" text="Student" styleClass="info-value" GridPane.rowIndex="7" GridPane.columnIndex="1" />
+                </GridPane>
+                
+                <!-- Edit Profile Button -->
+                <HBox alignment="CENTER" styleClass="button-container">
+                    <MFXButton fx:id="editProfileButton" text="Edit Profile" styleClass="mfx-button-primary" />
+                </HBox>
             </VBox>
-
-            <!-- 🔚 Footer - Copied from main.fxml -->
-            <VBox id="footer" alignment="CENTER" spacing="30" style="-fx-background-color: #222222;">
+        </VBox>
+        
+        <!-- Footer -->
+       <VBox id="footer" alignment="CENTER" spacing="30" style="-fx-background-color: #222222;">
                 <padding>
                     <Insets top="50" right="20" bottom="30" left="20" />
                 </padding>
@@ -115,7 +151,7 @@
                     <VBox spacing="15" alignment="CENTER_LEFT" maxWidth="300">
                         <ImageView fitHeight="60" fitWidth="60">
                             <image>
-                                <Image url="@../uiu_logo_update.png" />
+                                <Image url="@uiu_logo_update.png" />
                             </image>
                         </ImageView>
                         <Label styleClass="footer-text" text="UIU is committed to providing quality education and preparing students for the global challenges through innovative teaching methods and research." wrapText="true" />
@@ -147,6 +183,5 @@
                 </HBox>
                 <Label styleClass="developer" text="Developed by PhantomDevs" style="-fx-text-fill: #FA4506;" />
             </VBox>
-        </VBox>
-    </MFXScrollPane>
-</StackPane>
+    </VBox>
+</MFXScrollPane>

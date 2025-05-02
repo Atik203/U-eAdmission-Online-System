@@ -133,23 +133,14 @@ public class ProfileButton extends HBox {
     private void createProfileMenu() {
         profileMenu = new ContextMenu();
         profileMenu.getStyleClass().add("profile-context-menu");
-
-        MenuItem profileMenuItem = new MenuItem("My Profile");
-        profileMenuItem.setStyle("-fx-text-fill: #2E3B55; -fx-font-weight: bold; -fx-padding: 8 15;");
-        profileMenuItem.setOnAction(e -> handleProfileClick());
-
-        // Role-based menu items will be added dynamically when user logs in
-
-        MenuItem logoutMenuItem = new MenuItem("Logout");
-        logoutMenuItem.setStyle("-fx-text-fill: #FF3B30; -fx-font-weight: bold; -fx-padding: 8 15;");  // Red text
-        logoutMenuItem.setOnAction(e -> handleLogoutClick());
-
-        // Add the basic items that all users have
-        profileMenu.getItems().addAll(profileMenuItem, logoutMenuItem);
-
+        
+        // Don't add any items here - we'll add them dynamically in updateMenuForUserRole
+        
         // Show menu on profile button click
         profileButton.setOnAction(e -> {
-            profileMenu.show(profileButton, javafx.geometry.Side.BOTTOM, 0, 10);
+            if (profileMenu != null) {
+                profileMenu.show(profileButton, javafx.geometry.Side.BOTTOM, 0, 10);
+            }
         });
     }
 
@@ -231,6 +222,8 @@ public class ProfileButton extends HBox {
          * Updates the profile menu based on user role
          */
         private void updateMenuForUserRole(String role) {
+            System.out.println("Updating menu for role: " + role);
+            
             // Clear existing menu items
             profileMenu.getItems().clear();
 
@@ -239,8 +232,12 @@ public class ProfileButton extends HBox {
             profileMenuItem.setStyle("-fx-text-fill: #2E3B55; -fx-font-weight: bold; -fx-padding: 8 15;");
             profileMenuItem.setOnAction(e -> handleProfileClick());
 
+            // Normalize role to lowercase for case-insensitive comparison
+            String normalizedRole = (role != null) ? role.toLowerCase().trim() : "";
+            
             // Add role-specific menu items with styling
-            if ("student".equalsIgnoreCase(role)) {
+            if (normalizedRole.equals("student")) {
+                System.out.println("Building student menu items");
                 // Student menu items
                 MenuItem applicationMenuItem = new MenuItem("Application");
                 applicationMenuItem.setStyle("-fx-text-fill: #2E3B55; -fx-padding: 8 15;");
@@ -260,7 +257,8 @@ public class ProfileButton extends HBox {
                     resultMenuItem,
                     examScheduleMenuItem
                 );
-            } else if ("admin".equalsIgnoreCase(role)) {
+            } else if (normalizedRole.equals("admin")) {
+                System.out.println("Building admin menu items");
                 // Admin menu items with styled menu items
                 MenuItem manageStudentMenuItem = new MenuItem("Manage Student");
                 manageStudentMenuItem.setStyle("-fx-text-fill: #2E3B55; -fx-padding: 8 15;");
@@ -301,6 +299,7 @@ public class ProfileButton extends HBox {
                     monitorExamMenuItem
                 );
             } else {
+                System.out.println("Unknown role: '" + role + "', using default menu");
                 // Default menu for unknown roles
                 profileMenu.getItems().add(profileMenuItem);
             }
@@ -314,6 +313,8 @@ public class ProfileButton extends HBox {
             logoutMenuItem.setStyle("-fx-text-fill: #FF3B30; -fx-font-weight: bold; -fx-padding: 8 15;");
             logoutMenuItem.setOnAction(e -> handleLogoutClick());
             profileMenu.getItems().add(logoutMenuItem);
+            
+            System.out.println("Menu updated. Total menu items: " + profileMenu.getItems().size());
         }
 
         /**

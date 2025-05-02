@@ -12,6 +12,9 @@ public class User implements Serializable {
     private String lastName;
     private String email;
     private String phoneNumber;
+    private String address;
+    private String city;
+    private String country;
     private String role;
     
     // Constructor without ID for new users
@@ -30,6 +33,20 @@ public class User implements Serializable {
         this.lastName = lastName;
         this.email = email;
         this.phoneNumber = phoneNumber;
+        this.role = role;
+    }
+    
+    // Constructor with address fields
+    public User(int id, String firstName, String lastName, String email, String phoneNumber, 
+                String address, String city, String country, String role) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.address = address;
+        this.city = city;
+        this.country = country;
         this.role = role;
     }
     
@@ -74,6 +91,30 @@ public class User implements Serializable {
         this.phoneNumber = phoneNumber;
     }
     
+    public String getAddress() {
+        return address != null ? address : "N/A";
+    }
+    
+    public void setAddress(String address) {
+        this.address = address;
+    }
+    
+    public String getCity() {
+        return city != null ? city : "N/A";
+    }
+    
+    public void setCity(String city) {
+        this.city = city;
+    }
+    
+    public String getCountry() {
+        return country != null ? country : "N/A";
+    }
+    
+    public void setCountry(String country) {
+        this.country = country;
+    }
+    
     public String getRole() {
         return role;
     }
@@ -93,9 +134,10 @@ public class User implements Serializable {
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
+                ", address='" + address + '\'' +
+                ", city='" + city + '\'' +
+                ", country='" + country + '\'' +
                 ", role='" + role + '\'' +
                 '}';
     }
-
-
 }

@@ -1,26 +1,27 @@
+/* Profile Page Specific Styles */
+
 /* Import common styles */
 @import "../common.css";
 
-/* Profile specific styles */
-.profile-container {
+/* Profile Header Section */
+#profile-header {
   -fx-background-color: white;
-  -fx-padding: 30px;
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 10, 0, 0, 2);
+  -fx-background-radius: 0 0 10 10;
+  -fx-alignment: center;
+  -fx-padding: 40 20 30 20;
 }
 
-.profile-header {
-  -fx-background-color: -bg-light;
-  -fx-padding: 30px;
-  -fx-background-radius: 10px;
-  -fx-effect: dropshadow(gaussian, -shadow-color, 10, 0, 0, 2);
+#avatar-circle {
+  -fx-stroke: -primary-color;
+  -fx-stroke-width: 3;
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 10, 0, 0, 2);
 }
 
-.profile-avatar {
-  -fx-background-radius: 100%;
-  -fx-border-radius: 100%;
-  -fx-background-color: -primary-color;
-  -fx-border-color: white;
-  -fx-border-width: 4px;
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 10, 0, 0, 0);
+.avatar-text {
+  -fx-fill: white;
+  -fx-font-size: 28px;
+  -fx-font-weight: bold;
 }
 
 .profile-name {
@@ -38,46 +39,104 @@
 .profile-email {
   -fx-font-size: 14px;
   -fx-text-fill: -text-dark;
-  -fx-opacity: 0.8;
+  -fx-opacity: 0.7;
 }
 
-.profile-section {
-  -fx-background-color: white;
-  -fx-padding: 20px;
-  -fx-border-color: -border-color;
-  -fx-border-radius: 8px;
-  -fx-background-radius: 8px;
-  -fx-effect: dropshadow(gaussian, -shadow-color, 5, 0, 0, 1);
-}
-
-.section-title {
-  -fx-font-size: 18px;
-  -fx-font-weight: bold;
-  -fx-text-fill: -text-dark;
-  -fx-padding: 0 0 10 0;
-}
-
-.profile-field-label {
-  -fx-font-size: 14px;
-  -fx-font-weight: bold;
-  -fx-text-fill: -secondary-color;
-}
-
-.profile-field-value {
-  -fx-font-size: 14px;
-  -fx-text-fill: -text-dark;
-}
-
-.profile-tabs .tab {
-  -fx-background-color: white;
-  -fx-padding: 10px 20px;
-}
-
-.profile-tabs .tab:selected {
-  -fx-background-color: -primary-light;
-  -fx-text-fill: white;
-}
-
-.profile-tabs .tab-header-background {
+/* Profile Content Section */
+#profile-content {
   -fx-background-color: -bg-light;
+  -fx-alignment: center;
+}
+
+/* Profile Content Panel */
+.profile-content-panel {
+  -fx-background-color: white;
+  -fx-background-radius: 8;
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 10, 0, 0, 3);
+  -fx-alignment: center;
+  -fx-max-width: 800px;
+  -fx-pref-width: 800px;
+}
+
+/* Section Title */
+.section-title {
+  -fx-font-size: 20px;
+  -fx-font-weight: bold;
+  -fx-text-fill: -primary-color;
+  -fx-padding: 0 0 15 0;
+  -fx-border-width: 0 0 2 0;
+  -fx-border-color: -primary-color;
+  -fx-alignment: center;
+}
+
+/* User Info Grid */
+.info-grid {
+  -fx-padding: 10 0;
+  -fx-alignment: center;
+  -fx-pref-width: 700px;
+}
+
+/* User Info Labels */
+.info-label {
+  -fx-font-size: 15px;
+  -fx-font-weight: bold;
+  -fx-text-fill: -text-dark;
+  -fx-opacity: 0.8;
+  -fx-alignment: center-right;
+}
+
+.info-value {
+  -fx-font-size: 15px;
+  -fx-text-fill: -text-dark;
+  -fx-padding: 0 0 0 10;
+}
+
+/* Button Container */
+.button-container {
+  -fx-padding: 15 0 0 0;
+}
+
+/* Edit Profile Button */
+#editProfileButton {
+  -fx-padding: 10 30;
+  -fx-font-size: 15px;
+  -fx-background-radius: 5;
+}
+
+/* Loading Spinner */
+.spinner {
+  -fx-progress-color: -primary-color;
+  -fx-progress-background-color: rgba(250, 69, 6, 0.2);
+}
+
+.loader-container {
+  -fx-padding: 30;
+  -fx-alignment: center;
+}
+
+.loader-text {
+  -fx-text-fill: -text-dark;
+  -fx-font-size: 14px;
+  -fx-padding: 50 0 0 0;
+}
+
+/* Apply animation to the spinner */
+.spinner .arc {
+  -fx-animation-duration: 1.5s;
+}
+
+/* Responsive layout adjustments */
+@media (max-width: 800px) {
+  #profile-content {
+    -fx-padding: 15 15 30 15;
+  }
+
+  #personal-info {
+    -fx-padding: 15;
+    -fx-pref-width: 100%;
+  }
+
+  .info-grid {
+    -fx-pref-width: 100%;
+  }
 }
