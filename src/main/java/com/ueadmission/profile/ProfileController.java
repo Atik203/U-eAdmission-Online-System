@@ -77,7 +77,7 @@ public class ProfileController {
         aboutButton.setOnAction(e -> com.ueadmission.navigation.NavigationUtil.navigateToAbout(e));
         admissionButton.setOnAction(e -> com.ueadmission.navigation.NavigationUtil.navigateToAdmission(e));
         mockTestButton.setOnAction(e -> System.out.println("Navigate to Mock Test page"));
-        contactButton.setOnAction(e -> System.out.println("Navigate to Contact page"));
+        contactButton.setOnAction(e -> com.ueadmission.navigation.NavigationUtil.navigateToContact(e));
         
         // Load user data
         loadUserData();

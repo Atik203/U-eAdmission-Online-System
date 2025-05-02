@@ -156,28 +156,7 @@ public class RegistrationController {
      */
     @FXML
     public void navigateToContact(ActionEvent event) {
-        try {
-            // Get current stage and its properties
-            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            double width = currentStage.getWidth();
-            double height = currentStage.getHeight();
-            double x = currentStage.getX();
-            double y = currentStage.getY();
-            boolean maximized = currentStage.isMaximized();
-            
-            // In a real app, this would navigate to the contact screen
-            // For now, we'll just show an alert or log a message
-            System.out.println("Navigate to Contact (not implemented yet)");
-            
-            // Placeholder for future implementation
-            // Stage contactWindow = Contact.prepareContactWindow(width, height, x, y, maximized);
-            // if (contactWindow != null) {
-            //     applyTransition(currentStage, contactWindow);
-            // }
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println("Failed to navigate to contact: " + e.getMessage());
-        }
+        com.ueadmission.navigation.NavigationUtil.navigateToContact(event);
     }
 
     /**
