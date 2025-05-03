@@ -2,8 +2,8 @@
 
 <?import io.github.palexdev.materialfx.controls.MFXButton?>
 <?import io.github.palexdev.materialfx.controls.MFXScrollPane?>
-<?import io.github.palexdev.materialfx.controls.MFXDatePicker?>
 <?import io.github.palexdev.materialfx.controls.MFXTextField?>
+<?import io.github.palexdev.materialfx.controls.MFXCheckbox?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.image.Image?>
@@ -16,6 +16,8 @@
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.control.Button?>
 <?import io.github.palexdev.materialfx.controls.MFXComboBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.control.DatePicker?>
 <MFXScrollPane fitToWidth="true" fitToHeight="true" prefViewportWidth="1280" prefViewportHeight="720" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ueadmission.admission.AdmissionController">
     <VBox spacing="0" stylesheets="@admission.css">
         <!-- 🔷 Navbar -->
@@ -45,9 +47,6 @@
             </HBox>
         </HBox>
 
-
-
-
         <!-- 🎓 Admission Header -->
         <VBox id="admission-header" alignment="CENTER" spacing="15">
             <padding>
@@ -58,14 +57,10 @@
             <MFXButton fx:id="visitWebsiteBtn" text="Visit Official Admission Website" styleClass="mfx-button-primary" />
         </VBox>
 
-
-
- <!-- UG Programs -->
+        <!-- UG Programs -->
         <VBox styleClass="ux-root" alignment="CENTER">
-
             <!-- Title -->
             <Text text="UIU Undergraduate Programs" styleClass="ux-hero-title">
-
             </Text>
 
             <!-- SoBE -->
@@ -112,82 +107,244 @@
             <HBox styleClass="ux-center-box">
                 <MFXButton fx:id="applyNowBtn" text="Apply Now" onAction="#showApplicationForm" styleClass="ux-button-primary"/>
             </HBox>
-
         </VBox>
-        
+
         <!-- Application Form Section - Hidden by default -->
-        <VBox fx:id="applicationFormContainer" styleClass="form-container" visible="false" managed="false" alignment="CENTER">
-            <VBox styleClass="form-content">
-                <HBox styleClass="form-header" alignment="CENTER_LEFT">
-                    <Label text="Online Application Form" styleClass="form-title"/>
-                    <Region HBox.hgrow="ALWAYS"/>
-                    <MFXButton fx:id="closeFormButton" text="×" onAction="#hideApplicationForm" styleClass="close-button"/>
-                </HBox>
-                
-                <VBox styleClass="form-section">
-                    <Label text="Personal Information" styleClass="section-header"/>
-                    <HBox spacing="10" alignment="CENTER_LEFT">
-                        <VBox HBox.hgrow="ALWAYS">
-                            <Label text="First Name" styleClass="form-label"/>
-                            <MFXTextField fx:id="firstNameField"
-                                 floatMode="BORDER" prefWidth="200" styleClass="form-field"/>
+        <StackPane alignment="CENTER">
+            <VBox fx:id="applicationFormContainer" styleClass="form-container" visible="false" managed="false" alignment="CENTER">
+                <MFXScrollPane fitToWidth="true" fitToHeight="true" minWidth="600" maxWidth="800" minHeight="700">
+                    <VBox styleClass="form-content" alignment="CENTER" spacing="20">
+                        <HBox styleClass="form-header" alignment="CENTER_LEFT">
+                            <Label text="Online Application Form" styleClass="form-title"/>
+                            <Region HBox.hgrow="ALWAYS"/>
+                            <MFXButton fx:id="closeFormButton" text="×" onAction="#hideApplicationForm" styleClass="close-button"/>
+                        </HBox>
+                        
+                        <!-- Form Instructions -->
+                        <VBox spacing="10" alignment="CENTER_LEFT">
+                            <Text styleClass="form-instructions" text="Please complete all required fields marked with *. Ensure information is accurate before submission."/>
                         </VBox>
-                        <VBox HBox.hgrow="ALWAYS">
-                            <Label text="Last Name" styleClass="form-label"/>
-                            <MFXTextField fx:id="lastNameField"
-                                 floatMode="BORDER" prefWidth="200" styleClass="form-field"/>
+                        
+                        <!-- Personal Information Section -->
+                        <VBox styleClass="form-section" alignment="CENTER">
+                            <Label text="Personal Information" styleClass="section-header"/>
+                            
+                            <HBox spacing="15" alignment="CENTER">
+                                <VBox HBox.hgrow="ALWAYS">
+                                    <HBox alignment="CENTER_LEFT">
+                                        <Label text="First Name" styleClass="form-label"/>
+                                        <Label text="*" styleClass="required-field"/>
+                                    </HBox>
+                                    <MFXTextField fx:id="firstNameField" promptText="Enter your first name"
+                                         prefWidth="200" styleClass="mfx-text-field"/>
+                                </VBox>
+                                <VBox HBox.hgrow="ALWAYS">
+                                    <HBox alignment="CENTER_LEFT">
+                                        <Label text="Last Name" styleClass="form-label"/>
+                                        <Label text="*" styleClass="required-field"/>
+                                    </HBox>
+                                    <MFXTextField fx:id="lastNameField" promptText="Enter your last name"
+                                         prefWidth="200" styleClass="mfx-text-field"/>
+                                </VBox>
+                            </HBox>
+                            
+                            <HBox spacing="15" alignment="CENTER">
+                                <VBox HBox.hgrow="ALWAYS">
+                                    <HBox alignment="CENTER_LEFT">
+                                        <Label text="Email Address" styleClass="form-label"/>
+                                        <Label text="*" styleClass="required-field"/>
+                                    </HBox>
+                                    <MFXTextField fx:id="emailField" promptText="example@email.com"
+                                         prefWidth="200" styleClass="mfx-text-field"/>
+                                    <Label text="Your email will be used for communication" styleClass="form-helper-text"/>
+                                </VBox>
+                                <VBox HBox.hgrow="ALWAYS">
+                                    <HBox alignment="CENTER_LEFT">
+                                        <Label text="Phone Number" styleClass="form-label"/>
+                                        <Label text="*" styleClass="required-field"/>
+                                    </HBox>
+                                    <MFXTextField fx:id="phoneField" promptText="+880 1XXXXXXXXX"
+                                         prefWidth="200" styleClass="mfx-text-field"/>
+                                </VBox>
+                            </HBox>
+                            
+                            <HBox spacing="15" alignment="CENTER">
+                                <VBox HBox.hgrow="ALWAYS">
+                                    <HBox alignment="CENTER_LEFT">
+                                        <Label text="Date of Birth" styleClass="form-label"/>
+                                        <Label text="*" styleClass="required-field"/>
+                                    </HBox>
+                                    <DatePicker fx:id="dobPicker" prefWidth="200" styleClass="date-picker" 
+                                        promptText="MM/DD/YYYY"/>
+                                </VBox>
+                                <VBox HBox.hgrow="ALWAYS">
+                                    <HBox alignment="CENTER_LEFT">
+                                        <Label text="Gender" styleClass="form-label"/>
+                                        <Label text="*" styleClass="required-field"/>
+                                    </HBox>
+                                    <MFXComboBox fx:id="genderComboBox" prefWidth="200" styleClass="mfx-combo-box"
+                                        promptText="Select Gender"/>
+                                </VBox>
+                            </HBox>
+                            
+                            <VBox spacing="5" alignment="CENTER_LEFT">
+                                <HBox alignment="CENTER_LEFT">
+                                    <Label text="Present Address" styleClass="form-label"/>
+                                    <Label text="*" styleClass="required-field"/>
+                                </HBox>
+                                <MFXTextField fx:id="addressField" promptText="Enter your full address"
+                                     prefWidth="420" styleClass="mfx-text-field"/>
+                            </VBox>
+                            
+                            <HBox spacing="15" alignment="CENTER">
+                                <VBox HBox.hgrow="ALWAYS">
+                                    <Label text="City" styleClass="form-label"/>
+                                    <MFXTextField fx:id="cityField" promptText="City"
+                                         prefWidth="200" styleClass="mfx-text-field"/>
+                                </VBox>
+                                <VBox HBox.hgrow="ALWAYS">
+                                    <Label text="Zip/Postal Code" styleClass="form-label"/>
+                                    <MFXTextField fx:id="postalCodeField" promptText="Postal Code"
+                                         prefWidth="200" styleClass="mfx-text-field"/>
+                                </VBox>
+                            </HBox>
                         </VBox>
-                    </HBox>
-                    
-                    <HBox spacing="10" alignment="CENTER_LEFT">
-                        <VBox HBox.hgrow="ALWAYS">
-                            <Label text="Email Address" styleClass="form-label"/>
-                            <MFXTextField fx:id="emailField"
-                                 floatMode="BORDER" prefWidth="200" styleClass="form-field"/>
+                        
+                        <!-- Guardian Information Section -->
+                        <VBox styleClass="form-section" alignment="CENTER">
+                            <Label text="Guardian Information" styleClass="section-header"/>
+                            
+                            <HBox spacing="15" alignment="CENTER">
+                                <VBox HBox.hgrow="ALWAYS">
+                                    <HBox alignment="CENTER_LEFT">
+                                        <Label text="Father's Name" styleClass="form-label"/>
+                                        <Label text="*" styleClass="required-field"/>
+                                    </HBox>
+                                    <MFXTextField fx:id="fatherNameField" promptText="Enter father's full name"
+                                         prefWidth="200" styleClass="mfx-text-field"/>
+                                </VBox>
+                                <VBox HBox.hgrow="ALWAYS">
+                                    <Label text="Father's Occupation" styleClass="form-label"/>
+                                    <MFXTextField fx:id="fatherOccupationField" promptText="Father's occupation"
+                                         prefWidth="200" styleClass="mfx-text-field"/>
+                                </VBox>
+                            </HBox>
+                            
+                            <HBox spacing="15" alignment="CENTER">
+                                <VBox HBox.hgrow="ALWAYS">
+                                    <HBox alignment="CENTER_LEFT">
+                                        <Label text="Mother's Name" styleClass="form-label"/>
+                                        <Label text="*" styleClass="required-field"/>
+                                    </HBox>
+                                    <MFXTextField fx:id="motherNameField" promptText="Enter mother's full name"
+                                         prefWidth="200" styleClass="mfx-text-field"/>
+                                </VBox>
+                                <VBox HBox.hgrow="ALWAYS">
+                                    <Label text="Mother's Occupation" styleClass="form-label"/>
+                                    <MFXTextField fx:id="motherOccupationField" promptText="Mother's occupation"
+                                         prefWidth="200" styleClass="mfx-text-field"/>
+                                </VBox>
+                            </HBox>
+                            
+                            <HBox spacing="15" alignment="CENTER">
+                                <VBox HBox.hgrow="ALWAYS">
+                                    <HBox alignment="CENTER_LEFT">
+                                        <Label text="Guardian's Phone" styleClass="form-label"/>
+                                        <Label text="*" styleClass="required-field"/>
+                                    </HBox>
+                                    <MFXTextField fx:id="guardianPhoneField" promptText="+880 1XXXXXXXXX"
+                                         prefWidth="200" styleClass="mfx-text-field"/>
+                                </VBox>
+                                <VBox HBox.hgrow="ALWAYS">
+                                    <Label text="Guardian's Email" styleClass="form-label"/>
+                                    <MFXTextField fx:id="guardianEmailField" promptText="guardian@email.com"
+                                         prefWidth="200" styleClass="mfx-text-field"/>
+                                </VBox>
+                            </HBox>
                         </VBox>
-                        <VBox HBox.hgrow="ALWAYS">
-                            <Label text="Phone Number" styleClass="form-label"/>
-                            <MFXTextField fx:id="phoneField"
-                                 floatMode="BORDER" prefWidth="200" styleClass="form-field"/>
+                        
+                        <!-- Academic Information Section -->
+                        <VBox styleClass="form-section" alignment="CENTER">
+                            <Label text="Academic Information" styleClass="section-header"/>
+                            
+                            <HBox alignment="CENTER">
+                                <VBox HBox.hgrow="ALWAYS">
+                                    <HBox alignment="CENTER_LEFT">
+                                        <Label text="Select Program" styleClass="form-label"/>
+                                        <Label text="*" styleClass="required-field"/>
+                                    </HBox>
+                                    <MFXComboBox fx:id="programComboBox" prefWidth="420" promptText="Select your preferred program"
+                                        styleClass="mfx-combo-box"/>
+                                </VBox>
+                            </HBox>
+                            
+                            <HBox alignment="CENTER">
+                                <VBox HBox.hgrow="ALWAYS">
+                                    <HBox alignment="CENTER_LEFT">
+                                        <Label text="Previous Institution" styleClass="form-label"/>
+                                        <Label text="*" styleClass="required-field"/>
+                                    </HBox>
+                                    <MFXTextField fx:id="institutionField" promptText="Enter your previous institution name"
+                                         prefWidth="420" styleClass="mfx-text-field"/>
+                                </VBox>
+                            </HBox>
+                                 
+                            <HBox spacing="15" alignment="CENTER">
+                                <VBox HBox.hgrow="ALWAYS">
+                                    <HBox alignment="CENTER_LEFT">
+                                        <Label text="SSC GPA" styleClass="form-label"/>
+                                        <Label text="*" styleClass="required-field"/>
+                                    </HBox>
+                                    <MFXTextField fx:id="sscGpaField" promptText="Enter SSC GPA (out of 5.0)"
+                                         prefWidth="200" styleClass="mfx-text-field"/>
+                                </VBox>
+                                <VBox HBox.hgrow="ALWAYS">
+                                    <HBox alignment="CENTER_LEFT">
+                                        <Label text="HSC GPA" styleClass="form-label"/>
+                                        <Label text="*" styleClass="required-field"/>
+                                    </HBox>
+                                    <MFXTextField fx:id="hscGpaField" promptText="Enter HSC GPA (out of 5.0)"
+                                         prefWidth="200" styleClass="mfx-text-field"/>
+                                </VBox>
+                            </HBox>
+                            
+                            <HBox spacing="15" alignment="CENTER">
+                                <VBox HBox.hgrow="ALWAYS">
+                                    <Label text="SSC Passing Year" styleClass="form-label"/>
+                                    <MFXTextField fx:id="sscYearField" promptText="YYYY"
+                                         prefWidth="200" styleClass="mfx-text-field"/>
+                                </VBox>
+                                <VBox HBox.hgrow="ALWAYS">
+                                    <Label text="HSC Passing Year" styleClass="form-label"/>
+                                    <MFXTextField fx:id="hscYearField" promptText="YYYY"
+                                         prefWidth="200" styleClass="mfx-text-field"/>
+                                </VBox>
+                            </HBox>
                         </VBox>
-                    </HBox>
-                    
-                    <Label text="Date of Birth" styleClass="form-label"/>
-                    <MFXDatePicker fx:id="dobPicker" prefWidth="200" styleClass="form-field"/>
-                </VBox>
-                
-                <VBox styleClass="form-section">
-                    <Label text="Academic Information" styleClass="section-header"/>
-                    <Label text="Select Program" styleClass="form-label"/>
-                    <MFXComboBox fx:id="programComboBox" prefWidth="400" styleClass="form-field"/>
-                    
-                    <Label text="Previous Institution" styleClass="form-label"/>
-                    <MFXTextField fx:id="institutionField"
-                             floatMode="BORDER" prefWidth="400" styleClass="form-field"/>
-                             
-                    <HBox spacing="10" alignment="CENTER_LEFT">
-                        <VBox HBox.hgrow="ALWAYS">
-                            <Label text="SSC GPA" styleClass="form-label"/>
-                            <MFXTextField fx:id="sscGpaField"
-                                 floatMode="BORDER" prefWidth="200" styleClass="form-field"/>
+                        
+                        <!-- Declaration Section -->
+                        <VBox styleClass="form-section" alignment="CENTER_LEFT">
+                            <Label text="Declaration" styleClass="section-header"/>
+                            
+                            <VBox spacing="10" alignment="CENTER_LEFT">
+                                <Text text="I hereby declare that the information provided in this form is true, complete and accurate to the best of my knowledge. I understand that any false statement may lead to the cancellation of my application or admission." wrappingWidth="700" styleClass="form-instructions"/>
+                                
+                                <HBox spacing="10" alignment="CENTER_LEFT">
+                                    <MFXCheckbox fx:id="declarationCheckbox" text="I agree to the terms and conditions" styleClass="mfx-checkbox"/>
+                                </HBox>
+                            </VBox>
                         </VBox>
-                        <VBox HBox.hgrow="ALWAYS">
-                            <Label text="HSC GPA" styleClass="form-label"/>
-                            <MFXTextField fx:id="hscGpaField"
-                                 floatMode="BORDER" prefWidth="200" styleClass="form-field"/>
-                        </VBox>
-                    </HBox>
-                </VBox>
-                <HBox styleClass="form-footer" alignment="CENTER">
-                    <MFXButton fx:id="resetFormButton" text="Reset" onAction="#resetForm" styleClass="mfx-button-outline"/>
-                    <Region HBox.hgrow="ALWAYS"/>
-                    <MFXButton fx:id="submitButton" text="Submit Application" onAction="#submitForm" styleClass="mfx-button-primary"/>
-                </HBox>
+                        
+                        <!-- Form Footer -->
+                        <HBox styleClass="form-footer" alignment="CENTER" spacing="30">
+                            <MFXButton fx:id="resetFormButton" text="Reset Form" onAction="#resetForm" styleClass="mfx-button-outline"/>
+                            <Region HBox.hgrow="ALWAYS"/>
+                            <MFXButton fx:id="submitButton" text="Submit Application" onAction="#submitForm" styleClass="mfx-button-primary"/>
+                        </HBox>
+                    </VBox>
+                </MFXScrollPane>
             </VBox>
-        </VBox>
-
-
-
+        </StackPane>
 
         <!-- Programs Section -->
         <VBox spacing="15.0" style="-fx-background-color: white;">
