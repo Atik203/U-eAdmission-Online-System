@@ -1,6 +1,8 @@
 /* Import common styles */
 @import "../common.css";
 
+/* ============ ADMISSION PAGE STYLES ============ */
+
 /* Admission-specific styles */
 #admission-section {
   -fx-background-color: white;
@@ -50,88 +52,7 @@
   -fx-opacity: 0.8;
 }
 
-/* Application Form Styles */
-.form-container {
-  -fx-background-color: rgba(0, 0, 0, 0.5);
-  -fx-padding: 40px;
-  -fx-alignment: center;
-  -fx-pref-width: 100%;
-  -fx-pref-height: 100%;
-  -fx-position: absolute;
-  -fx-z-index: 1000;
-}
-
-.form-content {
-  -fx-background-color: white;
-  -fx-background-radius: 8;
-  -fx-border-radius: 8;
-  -fx-padding: 20px;
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 15, 0, 0, 5);
-  -fx-max-width: 1200px;
-  -fx-min-width: 800px;
-  -fx-spacing: 20;
-}
-
-.form-header {
-  -fx-padding: 10 15 20 15;
-  -fx-border-color: transparent transparent #e0e0e0 transparent;
-  -fx-border-width: 0 0 1 0;
-}
-
-.form-title {
-  -fx-font-size: 24px;
-  -fx-font-weight: bold;
-  -fx-text-fill: -primary-color;
-}
-
-.close-button {
-  -fx-background-color: transparent;
-  -fx-text-fill: #888888;
-  -fx-font-size: 22px;
-  -fx-padding: 0 8 5 8;
-  -fx-cursor: hand;
-}
-
-.close-button:hover {
-  -fx-background-color: #f5f5f5;
-  -fx-text-fill: -primary-dark;
-}
-
-.form-section {
-  -fx-spacing: 15;
-  -fx-padding: 10 5;
-}
-
-.section-header {
-  -fx-font-size: 18px;
-  -fx-font-weight: bold;
-  -fx-text-fill: -secondary-color;
-  -fx-padding: 5 0 10 0;
-  -fx-border-color: transparent transparent #f0f0f0 transparent;
-  -fx-border-width: 0 0 1 0;
-}
-
-.form-label {
-  -fx-font-size: 14px;
-  -fx-font-weight: bold;
-  -fx-text-fill: #555555;
-  -fx-padding: 5 0 3 0;
-}
-
-.form-field {
-  -fx-font-size: 14px;
-  -fx-padding: 8 12;
-  -mfx-main-color: -primary-color;
-  -mfx-float-color: -primary-color;
-}
-
-.form-footer {
-  -fx-padding: 20 0 10 0;
-  -fx-border-color: #e0e0e0 transparent transparent transparent;
-  -fx-border-width: 1 0 0 0;
-  -fx-spacing: 15;
-}
-
+/* ============ PROGRAM LAYOUT STYLES ============ */
 /* Root container spacing and padding */
 .ux-root {
   -fx-spacing: 24px;
@@ -208,4 +129,432 @@
 
 .ux-button-primary:hover {
   -fx-background-color: #ef6c00;
+}
+
+/* ============ APPLICATION FORM STYLES ============ */
+/* Form container and overlay styles */
+.form-container {
+  -fx-background-color: linear-gradient(
+    to bottom right,
+    rgba(46, 59, 85, 0.9),
+    rgba(250, 69, 6, 0.8)
+  );
+  -fx-padding: 40px;
+  -fx-alignment: center;
+  -fx-pref-height: 100%;
+  -fx-min-height: 1000px;
+  -fx-content-display: center;
+}
+
+.form-content {
+  -fx-background-color: white;
+  -fx-background-radius: 8;
+  -fx-border-radius: 8;
+  -fx-padding: 20px;
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 15, 0, 0, 5);
+  -fx-max-width: 800px;
+  -fx-min-width: 700px;
+  -fx-spacing: 20;
+  -fx-alignment: center;
+}
+
+/* Application form specific */
+#application-form {
+  -fx-background-color: white;
+  -fx-background-radius: 10;
+  -fx-border-radius: 10;
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 20, 0, 0, 10);
+  -fx-max-width: 800px;
+  -fx-min-width: 700px;
+  -fx-min-height: 700px;
+  -fx-alignment: center;
+}
+
+.form-header {
+  -fx-padding: 10 15 20 15;
+  -fx-border-color: transparent transparent #e0e0e0 transparent;
+  -fx-border-width: 0 0 1 0;
+}
+
+.form-title,
+#form-title {
+  -fx-font-size: 24px;
+  -fx-font-weight: bold;
+  -fx-text-fill: -primary-color;
+}
+
+/* Form instructions */
+.form-instructions {
+  -fx-font-size: 16px;
+  -fx-fill: #333333;
+  -fx-opacity: 0.8;
+}
+
+/* Ensure all text in the form is black */
+.form-label {
+  -fx-font-size: 14px;
+  -fx-font-weight: bold;
+  -fx-text-fill: #000000;
+  -fx-padding: 5 0 3 0;
+}
+
+.form-section {
+  -fx-spacing: 15;
+  -fx-padding: 10 5;
+  -fx-alignment: center;
+}
+
+.section-header {
+  -fx-font-size: 18px;
+  -fx-font-weight: bold;
+  -fx-text-fill: -secondary-color;
+  -fx-padding: 5 0 10 0;
+  -fx-border-color: transparent transparent #f0f0f0 transparent;
+  -fx-border-width: 0 0 1 0;
+}
+
+.mfx-text-field {
+  -fx-background-color: white;
+  -fx-background-radius: 5;
+  -fx-border-color: #e0e0e0;
+  -fx-border-radius: 5;
+  -fx-font-size: 14px;
+  -fx-pref-height: 40px;
+  -mfx-focus-color: #fa4506;
+  -mfx-unfocus-color: #e0e0e0;
+  -fx-alignment: center;
+  -fx-text-fill: #000000;
+}
+
+.mfx-text-field:focused {
+  -fx-border-color: #fa4506;
+}
+
+/* Standard DatePicker styling */
+.date-picker {
+  -fx-background-color: white;
+  -fx-background-radius: 5;
+  -fx-border-color: #e0e0e0;
+  -fx-border-radius: 5;
+  -fx-font-size: 14px;
+  -fx-pref-height: 40px;
+  -fx-alignment: center;
+}
+
+.date-picker:focused {
+  -fx-border-color: #fa4506;
+}
+
+.date-picker .arrow-button {
+  -fx-background-color: #f0f0f0;
+  -fx-background-radius: 0 5 5 0;
+}
+
+.date-picker .arrow-button:hover {
+  -fx-background-color: #e0e0e0;
+}
+
+.date-picker .text-field {
+  -fx-background-color: white;
+  -fx-text-fill: #000000;
+  -fx-font-size: 14px;
+}
+
+.date-picker-popup {
+  -fx-background-color: white;
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 10, 0, 0, 5);
+}
+
+.date-picker-popup .month-year-pane {
+  -fx-background-color: #fa4506;
+}
+
+.date-picker-popup .month-year-pane .label {
+  -fx-text-fill: white;
+}
+
+.date-picker-popup .week-number-cell {
+  -fx-text-fill: #909090;
+}
+
+.date-picker-popup .day-cell {
+  -fx-text-fill: #000000;
+}
+
+.date-picker-popup .day-cell:hover {
+  -fx-background-color: #f0f0f0;
+}
+
+.date-picker-popup .selected {
+  -fx-background-color: #fa4506;
+  -fx-text-fill: white;
+}
+
+.mfx-combo-box {
+  -fx-background-color: white;
+  -fx-background-radius: 5;
+  -fx-border-color: #e0e0e0;
+  -fx-border-radius: 5;
+  -fx-font-size: 14px;
+  -fx-pref-height: 40px;
+  -mfx-focus-color: #fa4506;
+  -mfx-unfocus-color: #e0e0e0;
+  -fx-alignment: center;
+  -fx-text-fill: #000000;
+}
+
+/* Ensure combobox and items text is black */
+.mfx-combo-box .mfx-label {
+  -fx-text-fill: #000000;
+}
+
+.mfx-combo-box * {
+  -fx-text-fill: #000000;
+}
+
+.mfx-combo-box .virtual-flow .mfx-list-cell {
+  -fx-text-fill: #000000;
+}
+
+.mfx-combo-box .virtual-flow .mfx-list-cell:hover {
+  -fx-background-color: #f0f0f0;
+}
+
+.mfx-combo-box .virtual-flow .mfx-list-cell:selected {
+  -fx-background-color: #fa4506;
+  -fx-text-fill: white;
+}
+
+.mfx-combo-box .caret .mfx-font-icon {
+  -fx-fill: #000000;
+}
+
+/* Checkbox with black text */
+.mfx-checkbox {
+  -fx-font-size: 16px;
+  -fx-text-fill: #000000;
+  -mfx-main: #fa4506;
+  -mfx-secondary: white;
+}
+
+/* Form helper text */
+.form-helper-text {
+  -fx-font-size: 12px;
+  -fx-text-fill: #000000;
+  -fx-font-style: italic;
+}
+
+/* Required field indicator */
+.required-field {
+  -fx-text-fill: #d32f2f;
+  -fx-font-weight: bold;
+}
+
+/* Section dividers */
+.form-divider {
+  -fx-background-color: #e0e0e0;
+  -fx-pref-height: 1;
+  -fx-opacity: 0.6;
+}
+
+/* Help text */
+.form-helper-text {
+  -fx-font-size: 12px;
+  -fx-text-fill: #757575;
+  -fx-font-style: italic;
+}
+
+/* ============ MaterialFX CONTROL STYLES ============ */
+
+/* MaterialFX TextField styling */
+.mfx-text-field {
+  -fx-background-color: white;
+  -fx-background-radius: 5;
+  -fx-border-color: #e0e0e0;
+  -fx-border-radius: 5;
+  -fx-font-size: 14px;
+  -fx-pref-height: 40px;
+  -mfx-focus-color: #fa4506;
+  -mfx-unfocus-color: #e0e0e0;
+  -fx-alignment: center;
+  -fx-text-fill: #000000;
+}
+
+.mfx-text-field:focused {
+  -fx-border-color: #fa4506;
+}
+
+/* MaterialFX DatePicker styling */
+.mfx-date-picker {
+  -fx-background-color: white;
+  -fx-background-radius: 5;
+  -fx-border-color: #e0e0e0;
+  -fx-border-radius: 5;
+  -fx-font-size: 14px;
+  -fx-pref-height: 40px;
+  -mfx-focus-color: #fa4506;
+  -mfx-unfocus-color: #e0e0e0;
+  -fx-alignment: center;
+  -fx-text-fill: #000000;
+}
+
+.mfx-date-picker:focused {
+  -fx-border-color: #fa4506;
+}
+
+.mfx-date-picker .date-picker-popup {
+  -fx-background-color: white;
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 10, 0, 0, 5);
+}
+
+.mfx-date-picker .date-picker-popup * {
+  -fx-background-color: white;
+}
+
+.mfx-date-picker .date-picker-popup .calendar-grid {
+  -fx-background-color: white;
+}
+
+.mfx-date-picker .mfx-text-field {
+  -fx-text-fill: #000000;
+}
+
+/* MaterialFX ComboBox styling */
+.mfx-combo-box {
+  -fx-background-color: white;
+  -fx-background-radius: 5;
+  -fx-border-color: #e0e0e0;
+  -fx-border-radius: 5;
+  -fx-font-size: 14px;
+  -fx-pref-height: 40px;
+  -mfx-focus-color: #fa4506;
+  -mfx-unfocus-color: #e0e0e0;
+  -fx-alignment: center;
+  -fx-text-fill: #000000;
+}
+
+/* Ensure combobox and items text is visible */
+.mfx-combo-box .mfx-label {
+  -fx-text-fill: #000000;
+}
+
+.mfx-combo-box .virtual-flow .mfx-list-cell {
+  -fx-text-fill: #000000;
+}
+
+.mfx-combo-box:focused {
+  -fx-border-color: #fa4506;
+}
+
+/* Checkbox Styles */
+.mfx-checkbox {
+  -fx-font-size: 16px;
+  -fx-text-fill: #000000;
+  -mfx-main: #fa4506;
+  -mfx-secondary: white;
+}
+
+.mfx-checkbox:selected .box {
+  -fx-background-color: #fa4506;
+  -fx-border-color: #fa4506;
+}
+
+.mfx-checkbox .ripple-container .mfx-ripple-generator {
+  -mfx-ripple-color: rgba(250, 69, 6, 0.3);
+}
+
+/* Form scroll pane */
+.mfx-scroll-pane {
+  -fx-background-color: transparent;
+  -fx-background: transparent;
+  -fx-border-color: transparent;
+  -fx-fit-to-width: true;
+  -fx-fit-to-height: true;
+  -fx-hbar-policy: never;
+  -fx-vbar-policy: as-needed;
+  -fx-alignment: center;
+}
+
+.mfx-scroll-pane > .viewport {
+  -fx-background-color: transparent;
+}
+
+.mfx-scroll-pane .scroll-bar:vertical {
+  -fx-background-color: transparent;
+  -fx-pref-width: 12;
+}
+
+.mfx-scroll-pane .scroll-bar:vertical .thumb {
+  -fx-background-color: rgba(250, 69, 6, 0.6);
+  -fx-background-radius: 6;
+}
+
+/* Close button for the form */
+.mfx-button-close {
+  -fx-background-color: transparent;
+  -fx-text-fill: #333333;
+  -fx-font-weight: bold;
+  -fx-font-size: 20px;
+  -fx-min-width: 30;
+  -fx-min-height: 30;
+  -fx-max-width: 30;
+  -fx-max-height: 30;
+  -fx-padding: 0;
+  -fx-background-radius: 15;
+  -fx-border-radius: 15;
+}
+
+.mfx-button-close:hover {
+  -fx-background-color: #f0f0f0;
+}
+
+/* MaterialFX buttons */
+.mfx-button-primary {
+  -fx-background-color: #fa4506;
+  -fx-text-fill: white;
+  -fx-font-weight: bold;
+  -fx-font-size: 14px;
+  -fx-background-radius: 5;
+  -fx-pref-height: 40px;
+  -fx-min-width: 150px;
+}
+
+.mfx-button-primary:hover {
+  -fx-background-color: #e64005;
+}
+
+.mfx-button-outline {
+  -fx-background-color: transparent;
+  -fx-border-color: #fa4506;
+  -fx-text-fill: #fa4506;
+  -fx-border-width: 1.5px;
+  -fx-font-size: 14px;
+  -fx-background-radius: 5;
+  -fx-border-radius: 5;
+  -fx-pref-height: 40px;
+  -fx-min-width: 100px;
+}
+
+.mfx-button-outline:hover {
+  -fx-background-color: rgba(250, 69, 6, 0.1);
+}
+
+/* Close button for the form */
+.close-button {
+  -fx-background-color: transparent;
+  -fx-text-fill: #333333;
+  -fx-font-weight: bold;
+  -fx-font-size: 24px;
+  -fx-min-width: 30;
+  -fx-min-height: 30;
+  -fx-max-width: 30;
+  -fx-max-height: 30;
+  -fx-padding: 0;
+  -fx-background-radius: 15;
+  -fx-border-radius: 15;
+}
+
+.close-button:hover {
+  -fx-background-color: #f0f0f0;
+  -fx-text-fill: #fa4506;
 }
