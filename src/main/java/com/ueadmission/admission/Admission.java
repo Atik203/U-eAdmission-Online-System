@@ -1,6 +1,11 @@
 package com.ueadmission.admission;
 
+import java.io.IOException;
+
+import org.jetbrains.annotations.Nullable;
+
 import com.ueadmission.about.About;
+
 import javafx.animation.FadeTransition;
 import javafx.application.HostServices;
 import javafx.fxml.FXMLLoader;
@@ -11,12 +16,11 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
-import javafx.scene.layout.*;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import org.jetbrains.annotations.Nullable;
-
-import java.io.IOException;
 
 public class Admission {
 

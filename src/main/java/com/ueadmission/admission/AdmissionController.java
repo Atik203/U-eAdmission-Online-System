@@ -4,6 +4,7 @@ import java.awt.Desktop;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.format.DateTimeFormatter;
 import java.util.function.Consumer;
 import java.util.logging.Logger;
 
@@ -12,14 +13,15 @@ import com.ueadmission.auth.state.AuthStateManager;
 import com.ueadmission.components.ProfileButton;
 
 import io.github.palexdev.materialfx.controls.MFXButton;
+import io.github.palexdev.materialfx.controls.MFXCheckbox;
 import io.github.palexdev.materialfx.controls.MFXComboBox;
-import io.github.palexdev.materialfx.controls.MFXDatePicker;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.application.HostServices;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
@@ -88,6 +90,7 @@ public class AdmissionController {
     @FXML
     private VBox applicationFormContainer;
 
+    // Personal Information Fields
     @FXML
     private MFXTextField firstNameField;
 
@@ -101,8 +104,40 @@ public class AdmissionController {
     private MFXTextField phoneField;
 
     @FXML
-    private MFXDatePicker dobPicker;
+    private DatePicker dobPicker;
+    
+    @FXML
+    private MFXComboBox<String> genderComboBox;
+    
+    @FXML
+    private MFXTextField addressField;
+    
+    @FXML
+    private MFXTextField cityField;
+    
+    @FXML
+    private MFXTextField postalCodeField;
 
+    // Guardian Information Fields
+    @FXML
+    private MFXTextField fatherNameField;
+    
+    @FXML
+    private MFXTextField fatherOccupationField;
+    
+    @FXML
+    private MFXTextField motherNameField;
+    
+    @FXML
+    private MFXTextField motherOccupationField;
+    
+    @FXML
+    private MFXTextField guardianPhoneField;
+    
+    @FXML
+    private MFXTextField guardianEmailField;
+
+    // Academic Information Fields
     @FXML
     private MFXComboBox<String> programComboBox;
 
@@ -114,12 +149,15 @@ public class AdmissionController {
 
     @FXML
     private MFXTextField hscGpaField;
-
+    
     @FXML
-    private MFXComboBox<String> referenceComboBox;
-
+    private MFXTextField sscYearField;
+    
     @FXML
-    private MFXTextField commentsField;
+    private MFXTextField hscYearField;
+    
+    @FXML
+    private MFXCheckbox declarationCheckbox;
 
     @FXML
     void openBBA(ActionEvent event) {
@@ -233,28 +271,49 @@ public class AdmissionController {
     void showApplicationForm(ActionEvent event) {
         applicationFormContainer.setVisible(true);
         applicationFormContainer.setManaged(true);
+        applicationFormContainer.toFront();
     }
 
     @FXML
     void hideApplicationForm(ActionEvent event) {
         applicationFormContainer.setVisible(false);
         applicationFormContainer.setManaged(false);
+        applicationFormContainer.toBack();
     }
 
     @FXML
     void resetForm(ActionEvent event) {
-        // Clear all form fields
+        // Clear all form fields - Personal Information
         firstNameField.clear();
         lastNameField.clear();
         emailField.clear();
         phoneField.clear();
-        dobPicker.clear();
+        dobPicker.setValue(null); // Changed for standard DatePicker
+        genderComboBox.clear();
+        addressField.clear();
+        cityField.clear();
+        postalCodeField.clear();
+        
+        // Clear Guardian Information
+        fatherNameField.clear();
+        fatherOccupationField.clear();
+        motherNameField.clear();
+        motherOccupationField.clear();
+        guardianPhoneField.clear();
+        guardianEmailField.clear();
+        
+        // Clear Academic Information
         programComboBox.clear();
         institutionField.clear();
         sscGpaField.clear();
         hscGpaField.clear();
-        referenceComboBox.clear();
-        commentsField.clear();
+        sscYearField.clear();
+        hscYearField.clear();
+        
+        // Uncheck declaration
+        if (declarationCheckbox != null) {
+            declarationCheckbox.setSelected(false);
+        }
     }
 
     @FXML
@@ -262,15 +321,76 @@ public class AdmissionController {
         // Basic validation
         if (firstNameField.getText().isEmpty() || 
             lastNameField.getText().isEmpty() || 
-            emailField.getText().isEmpty()) {
+            emailField.getText().isEmpty() ||
+            phoneField.getText().isEmpty() ||
+            dobPicker.getValue() == null ||
+            genderComboBox.getValue() == null ||
+            addressField.getText().isEmpty() ||
+            fatherNameField.getText().isEmpty() ||
+            motherNameField.getText().isEmpty() ||
+            guardianPhoneField.getText().isEmpty() ||
+            programComboBox.getValue() == null ||
+            institutionField.getText().isEmpty() ||
+            sscGpaField.getText().isEmpty() ||
+            hscGpaField.getText().isEmpty()) {
             
             // Show error message or alert
             javafx.scene.control.Alert alert = new javafx.scene.control.Alert(
                 javafx.scene.control.Alert.AlertType.ERROR,
-                "Please fill in all required fields.",
+                "Please fill in all required fields marked with *.",
                 javafx.scene.control.ButtonType.OK
             );
             alert.setHeaderText("Form Validation Error");
+            alert.show();
+            return;
+        }
+        
+        // Check if declaration is checked
+        if (declarationCheckbox != null && !declarationCheckbox.isSelected()) {
+            javafx.scene.control.Alert alert = new javafx.scene.control.Alert(
+                javafx.scene.control.Alert.AlertType.ERROR,
+                "You must agree to the terms and conditions to submit the application.",
+                javafx.scene.control.ButtonType.OK
+            );
+            alert.setHeaderText("Declaration Required");
+            alert.show();
+            return;
+        }
+        
+        // Validate email format
+        if (!isValidEmail(emailField.getText())) {
+            javafx.scene.control.Alert alert = new javafx.scene.control.Alert(
+                javafx.scene.control.Alert.AlertType.ERROR,
+                "Please enter a valid email address.",
+                javafx.scene.control.ButtonType.OK
+            );
+            alert.setHeaderText("Invalid Email");
+            alert.show();
+            return;
+        }
+        
+        // Validate GPA values
+        try {
+            double sscGpa = Double.parseDouble(sscGpaField.getText());
+            double hscGpa = Double.parseDouble(hscGpaField.getText());
+            
+            if (sscGpa < 0 || sscGpa > 5 || hscGpa < 0 || hscGpa > 5) {
+                javafx.scene.control.Alert alert = new javafx.scene.control.Alert(
+                    javafx.scene.control.Alert.AlertType.ERROR,
+                    "GPA values must be between 0 and 5.",
+                    javafx.scene.control.ButtonType.OK
+                );
+                alert.setHeaderText("Invalid GPA");
+                alert.show();
+                return;
+            }
+        } catch (NumberFormatException e) {
+            javafx.scene.control.Alert alert = new javafx.scene.control.Alert(
+                javafx.scene.control.Alert.AlertType.ERROR,
+                "GPA values must be numeric.",
+                javafx.scene.control.ButtonType.OK
+            );
+            alert.setHeaderText("Invalid GPA Format");
             alert.show();
             return;
         }
@@ -289,6 +409,14 @@ public class AdmissionController {
         
         // Reset form for next use
         resetForm(event);
+    }
+    
+    /**
+     * Simple email validation method
+     */
+    private boolean isValidEmail(String email) {
+        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+        return email.matches(emailRegex);
     }
 
     private void displayInfo(String schoolTitle, String[] items) {
@@ -346,12 +474,41 @@ public class AdmissionController {
             );
         }
         
-        // Initialize the reference combo box
-        if (referenceComboBox != null) {
-            referenceComboBox.getItems().addAll(
-                "Friends/Family", "School Counselor", "Social Media",
-                "UIU Website", "Newspaper", "Education Fair", "Other"
-            );
+        // Initialize gender combo box
+        if (genderComboBox != null) {
+            genderComboBox.getItems().addAll("Male", "Female", "Other");
+        }
+        
+        // Configure DatePicker format
+        if (dobPicker != null) {
+            // Set the prompt text and converter for the standard DatePicker
+            dobPicker.setPromptText("MM/DD/YYYY");
+            // You can also set a converter to format the displayed date
+            dobPicker.setConverter(new javafx.util.StringConverter<java.time.LocalDate>() {
+                private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+
+                @Override
+                public String toString(java.time.LocalDate date) {
+                    if (date != null) {
+                        return dateFormatter.format(date);
+                    } else {
+                        return "";
+                    }
+                }
+
+                @Override
+                public java.time.LocalDate fromString(String string) {
+                    if (string != null && !string.isEmpty()) {
+                        try {
+                            return java.time.LocalDate.parse(string, dateFormatter);
+                        } catch (Exception e) {
+                            return null;
+                        }
+                    } else {
+                        return null;
+                    }
+                }
+            });
         }
     }
 
