@@ -19,6 +19,33 @@ import javafx.scene.layout.HBox;
 public abstract class BaseController {
     protected static final Logger LOGGER = Logger.getLogger(BaseController.class.getName());
     protected Consumer<AuthState> authStateListener;
+    
+    // Map to hold singleton instances of controllers
+    private static final java.util.Map<Class<?>, Object> controllerInstances = new java.util.HashMap<>();
+
+    /**
+     * Get or create a controller instance
+     * @param controllerClass The class of the controller to get
+     * @return The controller instance
+     */
+    public static Object getControllerInstance(Class<?> controllerClass) {
+        // Check if we already have an instance
+        if (controllerInstances.containsKey(controllerClass)) {
+            LOGGER.fine("Returning existing controller instance for " + controllerClass.getSimpleName());
+            return controllerInstances.get(controllerClass);
+        }
+        
+        // Create a new instance
+        try {
+            Object instance = controllerClass.getDeclaredConstructor().newInstance();
+            controllerInstances.put(controllerClass, instance);
+            LOGGER.info("Created new controller instance for " + controllerClass.getSimpleName());
+            return instance;
+        } catch (Exception e) {
+            LOGGER.severe("Failed to create controller instance for " + controllerClass.getSimpleName() + ": " + e.getMessage());
+            return null;
+        }
+    }
 
     /**
      * Navigates to the Home screen with cleanup
@@ -81,6 +108,15 @@ public abstract class BaseController {
     protected void navigateToProfile(ActionEvent event) {
         cleanup();
         NavigationUtil.navigateToProfile(event);
+    }
+    
+    /**
+     * Navigates to the Applications screen with cleanup
+     * @param event The event that triggered this action
+     */
+    protected void navigateToApplications(ActionEvent event) {
+        cleanup();
+        NavigationUtil.navigateToApplications(event);
     }
     
     /**
