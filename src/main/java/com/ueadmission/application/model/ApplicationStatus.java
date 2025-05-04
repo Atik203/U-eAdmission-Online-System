@@ -5,10 +5,7 @@ package com.ueadmission.application.model;
  */
 public enum ApplicationStatus {
     PENDING("Pending", "status-pending"),
-    UNDER_REVIEW("Under Review", "status-under-review"),
-    APPROVED("Approved", "status-approved"),
-    REJECTED("Rejected", "status-rejected"),
-    INCOMPLETE("Incomplete", "status-incomplete");
+    APPROVED("Approved", "status-approved");
     
     private final String displayName;
     private final String styleClass;

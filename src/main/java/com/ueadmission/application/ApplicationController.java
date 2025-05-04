@@ -27,7 +27,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.Accordion;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -38,7 +37,6 @@ import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
-import javafx.scene.control.TitledPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -94,12 +92,9 @@ public class ApplicationController {
     private MFXButton trackStatusButton;
     
     @FXML
-    private Accordion applicationDetailsAccordion;
-    
-    @FXML
     private MFXSpinner<?> spinner;
     
-    // Application details labels
+    // Application details labels - removing applicationDetailsAccordion reference
     @FXML private Label programLabel;
     @FXML private Label nameLabel;
     @FXML private Label emailLabel;
@@ -253,6 +248,7 @@ public class ApplicationController {
                 
                 if (empty || app == null) {
                     setGraphic(null);
+                    setText(null);
                 } else {
                     // Update the labels with application data
                     nameLabel.setText(app.getApplicantName());
@@ -279,11 +275,15 @@ public class ApplicationController {
                     } else {
                         // Configure payment button for this specific cell
                         paymentButton.setText("Make Payment");
-                        paymentButton.setOnAction(e -> showPaymentDialog(app));
+                        paymentButton.setOnAction(e -> {
+                            e.consume(); // Prevent event from reaching the list cell
+                            showPaymentDialog(app);
+                        });
                         paymentContainer.getChildren().add(paymentButton);
                     }
                     
                     setGraphic(container);
+                    setText(null);
                 }
             }
         };
@@ -356,29 +356,11 @@ public class ApplicationController {
      * Update the application details panel with the selected application
      */
     private void updateApplicationDetails(Application application) {
-        // First check if applicationDetailsAccordion exists
-        if (applicationDetailsAccordion == null) {
-            LOGGER.warning("applicationDetailsAccordion is null in FXML. UI element not found with required ID.");
-            return;
-        }
-        
         if (application == null) {
-            applicationDetailsAccordion.setVisible(false);
-            applicationDetailsAccordion.setManaged(false);
             return;
         }
         
-        // Make the accordion visible
-        applicationDetailsAccordion.setVisible(true);
-        applicationDetailsAccordion.setManaged(true);
-        
-        // Expand the first pane
-        if (!applicationDetailsAccordion.getPanes().isEmpty()) {
-            TitledPane pane = applicationDetailsAccordion.getPanes().get(0);
-            pane.setExpanded(true);
-        }
-        
-        // Only update labels if they exist
+        // Update labels if they exist
         if (programLabel != null) programLabel.setText(application.getProgramName());
         if (nameLabel != null) nameLabel.setText(application.getApplicantName());
         if (emailLabel != null) emailLabel.setText(application.getEmail());
@@ -436,9 +418,7 @@ public class ApplicationController {
         
         // Add null checks to prevent NullPointerException
         if (makePaymentButton != null) {
-            makePaymentButton.setDisable(!hasSelection || 
-                                    (hasSelection && application.isPaymentComplete()) || 
-                                    (hasSelection && application.getStatus() == ApplicationStatus.REJECTED));
+            makePaymentButton.setDisable(!hasSelection || application.isPaymentComplete());
         }
         
         if (trackStatusButton != null) {
@@ -459,11 +439,7 @@ public class ApplicationController {
             showInfoAlert("Payment Complete", "This application has already been fully paid.");
             return;
         }
-        
-        if (application.getStatus() == ApplicationStatus.REJECTED) {
-            showInfoAlert("Payment Not Allowed", "Payment is not allowed for rejected applications.");
-            return;
-        }
+
         
         // Directly process the payment without confirmation dialog
         processPayment(application);
@@ -629,14 +605,8 @@ public class ApplicationController {
         ApplicationStatus status = application.getStatus();
         if (status == ApplicationStatus.PENDING) {
             content.append("Your application is pending review. Please ensure your payment is complete to proceed further.");
-        } else if (status == ApplicationStatus.UNDER_REVIEW) {
-            content.append("Your application is currently under review by our admissions team. You will be notified once the review is complete.");
         } else if (status == ApplicationStatus.APPROVED) {
             content.append("Congratulations! Your application has been approved. Please check your email for further instructions.");
-        } else if (status == ApplicationStatus.REJECTED) {
-            content.append("We regret to inform you that your application has been rejected. Please contact our admissions office for more information.");
-        } else if (status == ApplicationStatus.INCOMPLETE) {
-            content.append("Your application is incomplete. Please provide all required information and documents.");
         } else {
             content.append("Status information not available.");
         }
