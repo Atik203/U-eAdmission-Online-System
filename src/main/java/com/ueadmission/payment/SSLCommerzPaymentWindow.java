@@ -101,7 +101,7 @@ public class SSLCommerzPaymentWindow {
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.initStyle(StageStyle.DECORATED);
         stage.setMinWidth(900);  // Reduced from 1024
-        stage.setMinHeight(650); // Reduced from 700
+        stage.setMinHeight(580); // Further reduced from 650
         
         // Create the main layout
         BorderPane borderPane = new BorderPane();
@@ -176,14 +176,14 @@ public class SSLCommerzPaymentWindow {
      * Create the main content with payment details and form
      */
     private VBox createContent() {
-        VBox content = new VBox(20);
-        content.setPadding(new Insets(25));
+        VBox content = new VBox(15); // Reduced from 20
+        content.setPadding(new Insets(20)); // Reduced from 25
         content.getStyleClass().add("payment-content");
         
         // Payment Summary
-        VBox summaryBox = new VBox(10);
+        VBox summaryBox = new VBox(8); // Reduced from 10
         summaryBox.getStyleClass().add("payment-summary");
-        summaryBox.setPadding(new Insets(15));
+        summaryBox.setPadding(new Insets(12)); // Reduced from 15
         
         Label summaryTitle = new Label("Payment Summary");
         summaryTitle.getStyleClass().add("section-title");
@@ -232,9 +232,9 @@ public class SSLCommerzPaymentWindow {
         summaryBox.getChildren().addAll(summaryTitle, summaryGrid);
         
         // Payment Options
-        VBox paymentOptionsBox = new VBox(15);
+        VBox paymentOptionsBox = new VBox(12); // Reduced from 15
         paymentOptionsBox.getStyleClass().add("payment-options");
-        paymentOptionsBox.setPadding(new Insets(15));
+        paymentOptionsBox.setPadding(new Insets(12)); // Reduced from 15
         
         Label paymentOptionsTitle = new Label("Payment Method");
         paymentOptionsTitle.getStyleClass().add("section-title");
@@ -249,9 +249,9 @@ public class SSLCommerzPaymentWindow {
         paymentMethodCombo.setPrefWidth(300);
         
         // Card details form
-        VBox cardDetailsBox = new VBox(15);
+        VBox cardDetailsBox = new VBox(10); // Reduced from 15
         cardDetailsBox.getStyleClass().add("card-details");
-        cardDetailsBox.setPadding(new Insets(15, 0, 0, 0));
+        cardDetailsBox.setPadding(new Insets(10, 0, 0, 0)); // Reduced from 15
         
         Label cardDetailsTitle = new Label("Card Details");
         cardDetailsTitle.getStyleClass().add("subsection-title");
@@ -282,7 +282,7 @@ public class SSLCommerzPaymentWindow {
         
         // Bank logos
         HBox bankLogos = new HBox(15);
-        bankLogos.setPadding(new Insets(20, 0, 0, 0));
+        bankLogos.setPadding(new Insets(15, 0, 0, 0)); // Reduced from 20
         bankLogos.setAlignment(Pos.CENTER_LEFT);
         
         // These would be actual card brand logos in a real app
@@ -322,7 +322,7 @@ public class SSLCommerzPaymentWindow {
      */
     private HBox createFooter() {
         HBox footer = new HBox(15);
-        footer.setPadding(new Insets(15, 25, 25, 25));
+        footer.setPadding(new Insets(12, 25, 20, 25)); // Reduced padding from (15, 25, 25, 25)
         footer.setAlignment(Pos.CENTER_RIGHT);
         footer.getStyleClass().add("payment-footer");
         
