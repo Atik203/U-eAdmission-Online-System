@@ -1,6 +1,7 @@
 package com.ueadmission.auth.state;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * User model class to store authenticated user information
@@ -16,6 +17,9 @@ public class User implements Serializable {
     private String city;
     private String country;
     private String role;
+    private String ipAddress;
+    private LocalDateTime lastLoginTime;
+    private boolean isLoggedIn;
     
     // Constructor without ID for new users
     public User(String firstName, String lastName, String email, String phoneNumber, String role) {
@@ -48,6 +52,24 @@ public class User implements Serializable {
         this.city = city;
         this.country = country;
         this.role = role;
+    }
+    
+    // Extended constructor with login tracking fields
+    public User(int id, String firstName, String lastName, String email, String phoneNumber, 
+                String address, String city, String country, String role, 
+                String ipAddress, LocalDateTime lastLoginTime, boolean isLoggedIn) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.address = address;
+        this.city = city;
+        this.country = country;
+        this.role = role;
+        this.ipAddress = ipAddress;
+        this.lastLoginTime = lastLoginTime;
+        this.isLoggedIn = isLoggedIn;
     }
     
     // Getters and Setters
@@ -123,6 +145,30 @@ public class User implements Serializable {
         this.role = role;
     }
     
+    public String getIpAddress() {
+        return ipAddress;
+    }
+    
+    public void setIpAddress(String ipAddress) {
+        this.ipAddress = ipAddress;
+    }
+    
+    public LocalDateTime getLastLoginTime() {
+        return lastLoginTime;
+    }
+    
+    public void setLastLoginTime(LocalDateTime lastLoginTime) {
+        this.lastLoginTime = lastLoginTime;
+    }
+    
+    public boolean isLoggedIn() {
+        return isLoggedIn;
+    }
+    
+    public void setLoggedIn(boolean loggedIn) {
+        isLoggedIn = loggedIn;
+    }
+    
     public String getFullName() {
         return firstName + " " + lastName;
     }
@@ -138,6 +184,9 @@ public class User implements Serializable {
                 ", city='" + city + '\'' +
                 ", country='" + country + '\'' +
                 ", role='" + role + '\'' +
+                ", ipAddress='" + ipAddress + '\'' +
+                ", lastLoginTime=" + lastLoginTime +
+                ", isLoggedIn=" + isLoggedIn +
                 '}';
     }
 }

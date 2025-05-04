@@ -16,6 +16,9 @@ CREATE TABLE IF NOT EXISTS users (
     country VARCHAR(50) NOT NULL,
     password VARCHAR(255) NOT NULL,
     role ENUM('student', 'admin') NOT NULL DEFAULT 'student',
+    last_login_time TIMESTAMP NULL,
+    ip_address VARCHAR(45) NULL,
+    is_logged_in BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );

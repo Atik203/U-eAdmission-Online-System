@@ -1,13 +1,12 @@
 package com.ueadmission.auth.state;
 
-import com.ueadmission.auth.session.SessionManager;
-import com.ueadmission.context.ApplicationContext;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.logging.Logger;
-import java.util.prefs.Preferences;
+
+import com.ueadmission.auth.session.SessionManager;
+import com.ueadmission.context.ApplicationContext;
 
 /**
  * A global authentication state manager that works like Redux/Zustand
@@ -157,9 +156,26 @@ public class AuthStateManager {
      * Logout the current user
      */
     public void logout() {
+        // Get the current user ID before resetting state
+        int userId = 0;
+        if (state != null && state.isAuthenticated() && state.getUser() != null) {
+            userId = state.getUser().getId();
+        }
+        
         // Reset to unauthenticated state
         AuthState newState = new AuthState();
         updateState(newState);
+        
+        // Update login status in database if we have a valid user ID
+        if (userId > 0) {
+            try {
+                // Update database to mark user as logged out
+                com.ueadmission.auth.UserDAO.logoutUser(userId);
+                LOGGER.info("Updated user ID " + userId + " login status to logged out in database");
+            } catch (Exception e) {
+                LOGGER.warning("Failed to update login status in database: " + e.getMessage());
+            }
+        }
         
         // Update ApplicationContext
         ApplicationContext.getInstance().setAuthState(newState);
