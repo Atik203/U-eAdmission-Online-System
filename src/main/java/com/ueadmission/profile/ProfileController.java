@@ -86,6 +86,9 @@ public class ProfileController {
     private MFXButton editProfileButton;
     
     @FXML
+    private MFXButton myApplicationsButton;
+    
+    @FXML
     private StackPane loaderContainer;
     
     @FXML
@@ -117,6 +120,13 @@ public class ProfileController {
         contactButton.setOnAction(e -> navigateToContact(e));
         
         editProfileButton.setOnAction(e -> handleEditProfile());
+        
+        // Set up My Applications button action - check if it exists first
+        if (myApplicationsButton != null) {
+            myApplicationsButton.setOnAction(e -> navigateToApplications(e));
+        } else {
+            LOGGER.info("myApplicationsButton is null in the FXML file - this element might have been removed");
+        }
         
         // Make the user info grid initially hidden until data is loaded
         userInfoGrid.setVisible(false);
@@ -332,5 +342,13 @@ public class ProfileController {
     private void navigateToLogin(ActionEvent event) {
         cleanup();
         NavigationUtil.navigateToLogin(event);
+    }
+    
+    /**
+     * Navigates to the Applications screen
+     */
+    private void navigateToApplications(ActionEvent event) {
+        cleanup();
+        NavigationUtil.navigateToApplications(event);
     }
 }
