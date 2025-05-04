@@ -1,10 +1,12 @@
 package com.ueadmission.auth;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 import com.ueadmission.auth.state.AuthState;
 import com.ueadmission.auth.state.AuthStateManager;
 import com.ueadmission.auth.state.User;
+import com.ueadmission.utils.IPAddressUtil;
 import com.ueadmission.utils.MFXNotifications;
 
 import io.github.palexdev.materialfx.controls.MFXButton;
@@ -110,8 +112,26 @@ public class LoginController extends BaseController {
         Registration userRecord = UserDAO.authenticateUser(email, password);
         
         if (userRecord != null) {
+            // Check if user is already logged in
+            if (userRecord.isAlreadyLoggedIn()) {
+                errorLabel.setText("This account is already logged in from another device!");
+                errorLabel.setVisible(true);
+                
+                // Show error notification
+                MFXNotifications.showError("Login Failed", 
+                    "This account is already active on another device or browser. " +
+                    "Please log out from other sessions or contact support.");
+                
+                // Log to console
+                System.err.println("Login prevented - user " + email + " is already logged in");
+                return;
+            }
+            
+            // Get client IP address
+            String ipAddress = IPAddressUtil.getClientIPAddress();
+            
             // Create User object for AuthStateManager
-            // Use a default ID if not available (0 is often used as a sentinel value for unset IDs)
+            // Use a default ID if not available
             int userId = 0;
             try {
                 userId = userRecord.getId();
@@ -119,6 +139,13 @@ public class LoginController extends BaseController {
                 System.err.println("Warning: Could not get user ID, using default: " + e.getMessage());
             }
             
+            // Update the user's login status in the database first
+            boolean statusUpdated = UserDAO.updateLoginStatus(userId, ipAddress, true);
+            if (!statusUpdated) {
+                System.err.println("Warning: Failed to update login status in database");
+            }
+            
+            // Create the User object with login tracking information
             User user = new User(
                 userId,
                 userRecord.getFirstName(), 
@@ -128,7 +155,10 @@ public class LoginController extends BaseController {
                 userRecord.getAddress(),
                 userRecord.getCity(),
                 userRecord.getCountry(),
-                userRecord.getRole()
+                userRecord.getRole(),
+                ipAddress,
+                LocalDateTime.now(),
+                true
             );
             
             // Update global auth state
@@ -136,11 +166,12 @@ public class LoginController extends BaseController {
             
             // Show success notification
             MFXNotifications.showSuccess("Login Successful",
-                "Welcome back, " + user.getFirstName() + "! You've successfully logged in.");
+                "Welcome back, " + user.getFirstName() + "! You've successfully logged in from " + ipAddress);
             
             // Log to console
             System.out.println("Login successful for " + user.getFullName() + 
-                             " (" + user.getEmail() + ") with role: " + user.getRole());
+                             " (" + user.getEmail() + ") with role: " + user.getRole() + 
+                             " from IP: " + ipAddress);
             
             // Log the authentication state before navigation
             System.out.println("Authentication state before navigation: " + 
@@ -204,6 +235,15 @@ public class LoginController extends BaseController {
                 System.out.println("Authentication state after scene setup: " + 
                                   AuthStateManager.getInstance().isAuthenticated());
                 
+                // Add stage close handler to properly log out when window is closed
+                currentStage.setOnCloseRequest(windowEvent -> {
+                    // Log out the user when the application is closed
+                    if (user != null && AuthStateManager.getInstance().isAuthenticated()) {
+                        System.out.println("Application closing, logging out user: " + user.getEmail());
+                        UserDAO.logoutUser(user.getId());
+                    }
+                });
+                
                 // Show the stage
                 currentStage.show();
                 
@@ -225,6 +265,7 @@ public class LoginController extends BaseController {
             System.err.println("Login failed for email: " + email);
         }
     }
+    
     protected void onInitialize() {
         // Add any initialization logic here if needed
     }

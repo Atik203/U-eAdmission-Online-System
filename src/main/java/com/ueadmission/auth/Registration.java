@@ -15,10 +15,12 @@ public class Registration {
     private String country;
     private String password;
     private String role;
+    private boolean alreadyLoggedIn;
     
     public Registration() {
         // Default constructor
         this.role = "student"; // Default role is student
+        this.alreadyLoggedIn = false;
     }
     
     public Registration(String firstName, String lastName, String email, String phone, 
@@ -32,6 +34,7 @@ public class Registration {
         this.country = country;
         this.password = password;
         this.role = "student"; // Default role is student
+        this.alreadyLoggedIn = false;
     }
     
     public Registration(String firstName, String lastName, String email, String phone, 
@@ -45,6 +48,7 @@ public class Registration {
         this.country = country;
         this.password = password;
         this.role = role;
+        this.alreadyLoggedIn = false;
     }
     
     // Getters and setters
@@ -120,12 +124,19 @@ public class Registration {
         this.role = role;
     }
 
-
     public int getId() {
         return id;
     }
     
     public void setId(int id) {
         this.id = id;
+    }
+    
+    public boolean isAlreadyLoggedIn() {
+        return alreadyLoggedIn;
+    }
+    
+    public void setAlreadyLoggedIn(boolean alreadyLoggedIn) {
+        this.alreadyLoggedIn = alreadyLoggedIn;
     }
 }
