@@ -1,12 +1,15 @@
 package com.ueadmission.auth;
 
-import com.ueadmission.db.DatabaseConnection;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import com.ueadmission.db.DatabaseConnection;
 
 /**
  * Data Access Object for user management operations
@@ -84,6 +87,14 @@ public class UserDAO {
                 user.setCity(rs.getString("city"));
                 user.setCountry(rs.getString("country"));
                 user.setRole(rs.getString("role"));
+                
+                // Check if the user is already logged in
+                boolean isLoggedIn = rs.getBoolean("is_logged_in");
+                if (isLoggedIn) {
+                    LOGGER.warning("User " + email + " is already logged in from another location");
+                    user.setAlreadyLoggedIn(true);
+                }
+                
                 return user;
             }
             
@@ -92,6 +103,127 @@ public class UserDAO {
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, "Error authenticating user", e);
             return null;
+        } finally {
+            DatabaseConnection.closeResources(ps, rs);
+        }
+    }
+    
+    /**
+     * Update the user's login status and record IP address and timestamp
+     * @param userId The user's ID
+     * @param ipAddress The user's IP address
+     * @param isLoggingIn True if logging in, false if logging out
+     * @return true if update successful, false otherwise
+     */
+    public static boolean updateLoginStatus(int userId, String ipAddress, boolean isLoggingIn) {
+        String sql;
+        
+        if (isLoggingIn) {
+            sql = "UPDATE users SET is_logged_in = ?, ip_address = ?, last_login_time = ? WHERE id = ?";
+        } else {
+            sql = "UPDATE users SET is_logged_in = ? WHERE id = ?";
+        }
+        
+        Connection conn = null;
+        PreparedStatement ps = null;
+        
+        try {
+            conn = DatabaseConnection.getConnection();
+            ps = conn.prepareStatement(sql);
+            
+            if (isLoggingIn) {
+                ps.setBoolean(1, true);
+                ps.setString(2, ipAddress);
+                ps.setTimestamp(3, Timestamp.valueOf(LocalDateTime.now()));
+                ps.setInt(4, userId);
+            } else {
+                ps.setBoolean(1, false);
+                ps.setInt(2, userId);
+            }
+            
+            int rowsAffected = ps.executeUpdate();
+            
+            if (rowsAffected > 0) {
+                LOGGER.info("Updated login status for user ID " + userId + " to " + 
+                           (isLoggingIn ? "logged in from " + ipAddress : "logged out"));
+                return true;
+            } else {
+                LOGGER.warning("No rows affected when updating login status for user ID " + userId);
+                return false;
+            }
+            
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error updating login status", e);
+            return false;
+        } finally {
+            DatabaseConnection.closeResources(ps, null);
+        }
+    }
+    
+    /**
+     * Logs out a user by setting their is_logged_in status to false
+     * @param userId The user's ID
+     * @return true if successful, false otherwise
+     */
+    public static boolean logoutUser(int userId) {
+        return updateLoginStatus(userId, null, false);
+    }
+    
+    /**
+     * Force logout of all users - useful for admin operations or system resets
+     * @return true if successful, false otherwise
+     */
+    public static boolean forceLogoutAllUsers() {
+        String sql = "UPDATE users SET is_logged_in = false";
+        
+        Connection conn = null;
+        PreparedStatement ps = null;
+        
+        try {
+            conn = DatabaseConnection.getConnection();
+            ps = conn.prepareStatement(sql);
+            
+            int rowsAffected = ps.executeUpdate();
+            LOGGER.info("Force logged out " + rowsAffected + " users");
+            return true;
+            
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error force logging out all users", e);
+            return false;
+        } finally {
+            DatabaseConnection.closeResources(ps, null);
+        }
+    }
+    
+    /**
+     * Checks if a user is currently logged in
+     * @param userId The user's ID
+     * @return true if logged in, false otherwise
+     */
+    public static boolean isUserLoggedIn(int userId) {
+        String sql = "SELECT is_logged_in FROM users WHERE id = ?";
+        
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        
+        try {
+            conn = DatabaseConnection.getConnection();
+            ps = conn.prepareStatement(sql);
+            
+            ps.setInt(1, userId);
+            
+            rs = ps.executeQuery();
+            
+            if (rs.next()) {
+                return rs.getBoolean("is_logged_in");
+            }
+            
+            return false;
+            
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error checking if user is logged in", e);
+            return false;
         } finally {
             DatabaseConnection.closeResources(ps, rs);
         }
