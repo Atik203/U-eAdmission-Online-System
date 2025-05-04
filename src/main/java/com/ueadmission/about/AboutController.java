@@ -65,7 +65,14 @@ public class AboutController {
 
         // Configure other navigation buttons if they exist
         if (admissionButton != null) {
-            admissionButton.setOnAction(event ->navigateToAdmission(event));//System.out.println("Admission button clicked"));
+            admissionButton.setOnAction(event -> {
+                if (AuthStateManager.getInstance().isAuthenticated()) {
+                    navigateToAdmission(event);
+                } else {
+                    // Redirect to login page if not authenticated
+                    navigateToLogin(event);
+                }
+            });
         }
 
         if (mockTestButton != null) {

@@ -6,7 +6,6 @@ import com.ueadmission.utils.MFXNotifications;
 
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXCheckbox;
-import io.github.palexdev.materialfx.controls.MFXComboBox;
 import io.github.palexdev.materialfx.controls.MFXPasswordField;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.animation.FadeTransition;
@@ -38,8 +37,8 @@ public class RegistrationController {
     @FXML
     private MFXTextField cityField;
     
-    @FXML
-    private MFXComboBox<String> countryComboBox;
+    // Remove the country combo box and create a field to store the country value
+    private final String country = "Bangladesh";
     
     @FXML
     private MFXPasswordField passwordField;
@@ -75,14 +74,18 @@ public class RegistrationController {
     
     @FXML
     public void initialize() {
-        // Initialize the country dropdown with some common countries
-        countryComboBox.getItems().addAll(
-            "Bangladesh", "India", "Pakistan", "Sri Lanka", "Nepal", "Bhutan", "Maldives",
-            "USA", "UK", "Canada", "Australia", "Germany", "France", "Japan", "China"
-        );
+        // Remove country dropdown initialization
         
         // Set up button actions for navigation
-        admissionButton.setOnAction(event -> navigateToAdmission(event));
+        admissionButton.setOnAction(event -> {
+            if (AuthStateManager.getInstance().isAuthenticated()) {
+                navigateToAdmission(event);
+            } else {
+                // Show error message or redirect to login
+                errorLabel.setText("Please complete registration or login to access Admission!");
+                errorLabel.setVisible(true);
+            }
+        });
         mockTestButton.setOnAction(event -> navigateToMockTest(event));
         contactButton.setOnAction(event -> navigateToContact(event));
         
@@ -224,7 +227,7 @@ public class RegistrationController {
                 phoneField.getText(),
                 addressField.getText(),
                 cityField.getText(),
-                countryComboBox.getValue(),
+                country, // Use the hardcoded country value
                 passwordField.getText(),
                 "student" // Role is always student for registrations
             );
@@ -293,7 +296,6 @@ public class RegistrationController {
             isEmpty(phoneField.getText()) ||
             isEmpty(addressField.getText()) ||
             isEmpty(cityField.getText()) ||
-            countryComboBox.getValue() == null ||
             isEmpty(passwordField.getText()) ||
             isEmpty(confirmPasswordField.getText())) {
             

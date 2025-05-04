@@ -117,8 +117,8 @@
                                     <MFXTextField fx:id="cityField" styleClass="form-field-small" />
                                 </VBox>
                                 <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                                    <Label text="Country *" styleClass="field-label" />
-                                    <MFXComboBox fx:id="countryComboBox" prefHeight="50" prefWidth="150" />
+                                    <Label text="Country" styleClass="field-label" />
+                                    <Label text="Bangladesh" styleClass="country-value" />
                                 </VBox>
                             </GridPane>
                         </VBox>

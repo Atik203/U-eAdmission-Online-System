@@ -73,7 +73,15 @@ public class LoginController extends BaseController {
         }
         
         if (admissionButton != null) {
-            admissionButton.setOnAction(event -> navigateToAdmission(event));
+            admissionButton.setOnAction(event -> {
+                if (AuthStateManager.getInstance().isAuthenticated()) {
+                    navigateToAdmission(event);
+                } else {
+                    // Already on login page, so no need to navigate
+                    errorLabel.setText("Please login to access Admission!");
+                    errorLabel.setVisible(true);
+                }
+            });
         }
         
         if (mockTestButton != null) {
