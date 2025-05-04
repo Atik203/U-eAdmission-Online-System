@@ -1,0 +1,196 @@
+/* SSLCommerz Payment Window Styles */
+.ssl-commerz-root {
+  -fx-background-color: white;
+}
+
+.payment-window {
+  -fx-background-color: #ffffff;
+}
+
+.payment-header {
+  -fx-background-color: -primary-color;
+  -fx-padding: 15px;
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 5, 0, 0, 3);
+}
+
+.logo-text {
+  -fx-font-size: 24px;
+  -fx-font-weight: bold;
+  -fx-text-fill: -text-light;
+}
+
+.transaction-id {
+  -fx-font-size: 14px;
+  -fx-font-weight: bold;
+  -fx-text-fill: -text-light;
+}
+
+.transaction-date {
+  -fx-font-size: 12px;
+  -fx-text-fill: rgba(255, 255, 255, 0.9);
+}
+
+/* Scroll pane styles */
+.payment-scroll-pane {
+  -fx-background-color: transparent;
+  -fx-padding: 0;
+  -fx-border-width: 0;
+}
+
+.payment-scroll-pane > .viewport {
+  -fx-background-color: transparent;
+}
+
+.payment-content {
+  -fx-background-color: -bg-light;
+  -fx-padding: 20px;
+}
+
+.payment-summary,
+.payment-options {
+  -fx-background-color: white;
+  -fx-border-color: -border-color;
+  -fx-border-width: 1px;
+  -fx-border-radius: 8px;
+  -fx-background-radius: 8px;
+  -fx-effect: dropshadow(gaussian, -shadow-color, 5, 0, 0, 2);
+  -fx-padding: 20px;
+  -fx-spacing: 15px;
+}
+
+/* Button Styles */
+.pay-button {
+  -fx-background-color: -primary-color;
+  -fx-text-fill: white;
+  -fx-font-weight: bold;
+  -fx-padding: 12 20;
+  -fx-background-radius: 5px;
+  -fx-cursor: hand;
+  -fx-pref-width: 200px;
+  -mfx-ripple-color: rgba(255, 255, 255, 0.3);
+  -mfx-ripple-radius: 25;
+}
+
+.pay-button:hover {
+  -fx-background-color: -primary-dark;
+}
+
+.cancel-button {
+  -fx-background-color: #f0f0f0;
+  -fx-text-fill: #333333;
+  -fx-font-weight: bold;
+  -fx-padding: 12 20;
+  -fx-background-radius: 5px;
+  -fx-border-radius: 5px;
+  -fx-cursor: hand;
+  -fx-pref-width: 120px;
+  -mfx-ripple-color: rgba(0, 0, 0, 0.1);
+}
+
+.cancel-button:hover {
+  -fx-background-color: #e0e0e0;
+}
+
+/* Form Styles */
+.mfx-text-field {
+  -fx-background-color: white;
+  -fx-border-color: #ced4da;
+  -fx-border-width: 1px;
+  -fx-background-radius: 5px;
+  -fx-border-radius: 5px;
+  -fx-padding: 10px;
+}
+
+.mfx-text-field:focused {
+  -fx-border-color: -primary-color;
+  -fx-border-width: 1.5px;
+}
+
+.mfx-combo-box {
+  -fx-background-color: white;
+  -fx-border-color: #ced4da;
+  -fx-border-width: 1px;
+  -fx-background-radius: 5px;
+  -fx-border-radius: 5px;
+  -fx-padding: 10px;
+}
+
+.mfx-combo-box:focused {
+  -fx-border-color: -primary-color;
+  -fx-border-width: 1.5px;
+}
+
+/* Section Styles */
+.payment-section {
+  -fx-background-color: white;
+  -fx-background-radius: 8px;
+  -fx-padding: 20px;
+  -fx-spacing: 15px;
+}
+
+.section-title {
+  -fx-font-size: 18px;
+  -fx-font-weight: bold;
+  -fx-text-fill: -primary-color;
+  -fx-padding: 0 0 10px 0;
+}
+
+.subsection-title {
+  -fx-font-size: 16px;
+  -fx-font-weight: bold;
+  -fx-text-fill: -text-dark;
+}
+
+.summary-label {
+  -fx-font-size: 14px;
+  -fx-font-weight: bold;
+  -fx-text-fill: #555555;
+}
+
+.summary-value {
+  -fx-font-size: 14px;
+  -fx-text-fill: -text-dark;
+}
+
+/* Loading Indicator */
+.loading-indicator {
+  -fx-padding: 20px;
+  -fx-alignment: center;
+}
+
+/* Security Badges */
+.security-badge {
+  -fx-font-size: 12px;
+  -fx-font-weight: bold;
+  -fx-text-fill: #28a745;
+  -fx-padding: 5px;
+}
+
+.card-logo {
+  -fx-font-size: 12px;
+  -fx-font-weight: bold;
+  -fx-background-color: rgba(250, 69, 6, 0.1);
+  -fx-text-fill: -primary-color;
+  -fx-padding: 8 15;
+  -fx-border-radius: 5px;
+  -fx-background-radius: 5px;
+}
+
+.payment-footer {
+  -fx-background-color: -bg-light;
+  -fx-border-color: -border-color;
+  -fx-border-width: 1px 0 0 0;
+  -fx-padding: 20px;
+}
+
+/* Card details section */
+.card-details {
+  -fx-spacing: 15px;
+  -fx-padding: 15px 0 0 0;
+}
+
+/* Separator styling */
+.separator {
+  -fx-padding: 10 0;
+  -fx-opacity: 0.6;
+}
