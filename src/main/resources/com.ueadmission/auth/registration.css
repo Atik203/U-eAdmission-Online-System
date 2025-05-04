@@ -64,6 +64,18 @@
 }
 
 /* Password Field Eye Icon Fix */
+.country-value {
+  -fx-font-size: 14px;
+  -fx-text-fill: -text-dark;
+  -fx-padding: 12 15;
+  -fx-background-color: rgba(0, 0, 0, 0.03);
+  -fx-background-radius: 5;
+  -fx-border-color: -border-color;
+  -fx-border-radius: 5;
+  -fx-pref-height: 50;
+  -fx-alignment: center-left;
+}
+
 .mfx-password-field .eye-icon {
   -fx-translate-y: 0;
   -fx-font-size: 16px;

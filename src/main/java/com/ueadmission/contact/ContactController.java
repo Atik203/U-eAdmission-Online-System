@@ -49,7 +49,17 @@ public class ContactController {
         // Set up event handlers for navigation buttons
         homeButton.setOnAction(this::navigateToHome);
         aboutButton.setOnAction(this::navigateToAbout);
-        admissionButton.setOnAction(this::navigateToAdmission);
+        
+        // Add authentication check before navigating to admission
+        admissionButton.setOnAction(event -> {
+            if (AuthStateManager.getInstance().isAuthenticated()) {
+                navigateToAdmission(event);
+            } else {
+                // Redirect to login if not authenticated
+                navigateToLogin(event);
+            }
+        });
+        
         mockTestButton.setOnAction(this::navigateToMockTest);
         contactButton.setOnAction(event -> {}); // Already on contact page
         loginButton.setOnAction(this::navigateToLogin);
