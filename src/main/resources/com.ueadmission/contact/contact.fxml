@@ -89,7 +89,7 @@
                                 </HBox>
                             </VBox>
                             <Region VBox.vgrow="ALWAYS" />
-                            <MFXButton text="View on Map" styleClass="mfx-button-outline" />
+                            <MFXButton fx:id="viewMapButton" text="View on Map" styleClass="mfx-button-outline" />
                         </VBox>
                         
                         <!-- Admission Office Card -->
@@ -112,7 +112,7 @@
                                 </HBox>
                             </VBox>
                             <Region VBox.vgrow="ALWAYS" />
-                            <MFXButton text="Apply Now" styleClass="mfx-button-primary" />
+                            <MFXButton fx:id="applyNowButton" text="Apply Now" styleClass="mfx-button-primary" />
                         </VBox>
                     </HBox>
                     
@@ -137,7 +137,7 @@
                                 </HBox>
                             </VBox>
                             <Region VBox.vgrow="ALWAYS" />
-                            <MFXButton text="Academic Calendar" styleClass="mfx-button-outline" />
+                            <MFXButton fx:id="academicCalendarButton" text="Academic Calendar" styleClass="mfx-button-outline" />
                         </VBox>
                         
                         <!-- Student Affairs Card -->
@@ -160,7 +160,7 @@
                                 </HBox>
                             </VBox>
                             <Region VBox.vgrow="ALWAYS" />
-                            <MFXButton text="Student Services" styleClass="mfx-button-outline" />
+                            <MFXButton fx:id="studentServicesButton" text="Student Services" styleClass="mfx-button-outline" />
                         </VBox>
                     </HBox>
                 </VBox>
