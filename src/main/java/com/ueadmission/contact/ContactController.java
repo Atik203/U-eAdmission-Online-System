@@ -27,6 +27,12 @@ public class ContactController {
     @FXML private MFXButton contactButton;
     @FXML private MFXButton loginButton;
     
+    // Contact page specific buttons
+    @FXML private MFXButton viewMapButton;
+    @FXML private MFXButton applyNowButton;
+    @FXML private MFXButton academicCalendarButton;
+    @FXML private MFXButton studentServicesButton;
+    
     // Authentication UI elements
     @FXML private HBox loginButtonContainer;
     @FXML private HBox profileButtonContainer;
@@ -66,6 +72,23 @@ public class ContactController {
         
         // Set up contact form submission
         submitButton.setOnAction(this::handleContactFormSubmission);
+        
+        // Set up the special link buttons - if they exist in the FXML
+        if (viewMapButton != null) {
+            viewMapButton.setOnAction(event -> openCampusMap());
+        }
+        
+        if (academicCalendarButton != null) {
+            academicCalendarButton.setOnAction(event -> openAcademicCalendar());
+        }
+        
+        if (studentServicesButton != null) {
+            studentServicesButton.setOnAction(event -> openStudentServices());
+        }
+        
+        if (applyNowButton != null) {
+            applyNowButton.setOnAction(this::handleApplyNow);
+        }
         
         // Update auth UI based on current state
         refreshUI();
@@ -253,5 +276,55 @@ public class ContactController {
         // Basic email validation using regex
         String emailRegex = "^[A-Za-z0-9+_.-]+@(.+)$";
         return email.matches(emailRegex);
+    }
+    
+    /**
+     * Opens a URL in the default browser
+     * @param url The URL to open
+     */
+    private void openURL(String url) {
+        try {
+            java.awt.Desktop.getDesktop().browse(java.net.URI.create(url));
+            System.out.println("Opening URL: " + url);
+        } catch (Exception e) {
+            System.err.println("Error opening URL: " + e.getMessage());
+            MFXNotifications.show("Error", 
+                    "Could not open the link. Please try again later.",
+                    MFXNotifications.NotificationType.ERROR);
+        }
+    }
+    
+    /**
+     * Opens the UIU campus Google Maps location
+     */
+    private void openCampusMap() {
+        openURL("https://maps.app.goo.gl/pLYxqfJwjZ57XoHD7");
+    }
+    
+    /**
+     * Opens the UIU academic calendar webpage
+     */
+    private void openAcademicCalendar() {
+        openURL("https://www.uiu.ac.bd/academics/calendar/");
+    }
+    
+    /**
+     * Opens the UIU student affairs webpage
+     */
+    private void openStudentServices() {
+        openURL("https://www.uiu.ac.bd/offices/directorate-of-career-counselling-student-affairs/");
+    }
+    
+    /**
+     * Handles the Apply Now button click with authentication check
+     * Navigates to Admission if authenticated, Login if not
+     * @param event The action event
+     */
+    private void handleApplyNow(ActionEvent event) {
+        if (AuthStateManager.getInstance().isAuthenticated()) {
+            navigateToAdmission(event);
+        } else {
+            navigateToLogin(event);
+        }
     }
 }
