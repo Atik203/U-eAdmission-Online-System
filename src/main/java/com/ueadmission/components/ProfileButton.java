@@ -324,7 +324,15 @@ public class ProfileButton extends HBox {
             System.out.println("Navigate to " + screen + " screen");
             try {
                 // Use NavigationUtil instead of NavigationManager
-                String fxmlPath = "/com.ueadmission/" + screen + ".fxml";
+                String fxmlPath;
+                
+                // Special case for application screen which is in a subdirectory
+                if (screen.equals("application")) {
+                    fxmlPath = "/com.ueadmission/application/application.fxml";
+                } else {
+                    fxmlPath = "/com.ueadmission/" + screen + ".fxml";
+                }
+                
                 String title = "UeAdmission - " + screen.substring(0, 1).toUpperCase() + screen.substring(1);
                 Stage currentStage = (Stage) this.getScene().getWindow();
                 com.ueadmission.navigation.NavigationUtil.navigateTo(currentStage, fxmlPath, title);

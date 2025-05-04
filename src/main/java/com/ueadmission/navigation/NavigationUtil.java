@@ -263,6 +263,16 @@ public class NavigationUtil {
     }
     
     /**
+     * Navigate to applications screen
+     * 
+     * @param event The event that triggered navigation
+     * @return true if navigation was successful, false otherwise
+     */
+    public static boolean navigateToApplications(Event event) {
+        return navigateTo(event, "/com.ueadmission/application/application.fxml", "My Applications - UeAdmission");
+    }
+    
+    /**
      * Get the current stage from known references
      * @return The current stage or null if not found
      */
