@@ -5,12 +5,16 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.logging.Logger;
 
 import com.ueadmission.auth.state.AuthState;
 import com.ueadmission.auth.state.AuthStateManager;
+import com.ueadmission.auth.state.User;
 import com.ueadmission.components.ProfileButton;
+import com.ueadmission.payment.SSLCommerzPayment;
+import com.ueadmission.utils.MFXNotifications;
 
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXCheckbox;
@@ -19,9 +23,16 @@ import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.application.HostServices;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
@@ -32,6 +43,9 @@ public class AdmissionController {
 
     private static final Logger LOGGER = Logger.getLogger(AdmissionController.class.getName());
     private Consumer<AuthState> authStateListener;
+    
+    // Store the current application ID for payment processing
+    private int currentApplicationId = -1;
 
     @FXML
     private ImageView campusImage;
@@ -269,9 +283,34 @@ public class AdmissionController {
 
     @FXML
     void showApplicationForm(ActionEvent event) {
+        // Auto-populate fields from the current user data
+        populateUserData();
+        
         applicationFormContainer.setVisible(true);
         applicationFormContainer.setManaged(true);
         applicationFormContainer.toFront();
+    }
+    
+    /**
+     * Auto-populate form fields from the current user data
+     */
+    private void populateUserData() {
+        User currentUser = AuthStateManager.getInstance().getState().getUser();
+        
+        if (currentUser != null) {
+            // Populate personal information fields
+            firstNameField.setText(currentUser.getFirstName());
+            lastNameField.setText(currentUser.getLastName());
+            emailField.setText(currentUser.getEmail());
+            phoneField.setText(currentUser.getPhoneNumber());
+            addressField.setText(currentUser.getAddress());
+            cityField.setText(currentUser.getCity());
+            
+            // Make email field read-only
+            emailField.setEditable(false);
+            // Apply a style to show it's read-only
+            emailField.setStyle("-fx-background-color: #f0f0f0; -fx-opacity: 0.9;");
+        }
     }
 
     @FXML
@@ -286,9 +325,11 @@ public class AdmissionController {
         // Clear all form fields - Personal Information
         firstNameField.clear();
         lastNameField.clear();
-        emailField.clear();
+        
+        // Don't clear email field, it will be auto-populated and read-only
+        
         phoneField.clear();
-        dobPicker.setValue(null); // Changed for standard DatePicker
+        dobPicker.setValue(null); 
         genderComboBox.clear();
         addressField.clear();
         cityField.clear();
@@ -314,6 +355,9 @@ public class AdmissionController {
         if (declarationCheckbox != null) {
             declarationCheckbox.setSelected(false);
         }
+        
+        // Re-populate user data after reset
+        populateUserData();
     }
 
     @FXML
@@ -335,10 +379,10 @@ public class AdmissionController {
             hscGpaField.getText().isEmpty()) {
             
             // Show error message or alert
-            javafx.scene.control.Alert alert = new javafx.scene.control.Alert(
-                javafx.scene.control.Alert.AlertType.ERROR,
+            Alert alert = new Alert(
+                Alert.AlertType.ERROR,
                 "Please fill in all required fields marked with *.",
-                javafx.scene.control.ButtonType.OK
+                ButtonType.OK
             );
             alert.setHeaderText("Form Validation Error");
             alert.show();
@@ -347,10 +391,10 @@ public class AdmissionController {
         
         // Check if declaration is checked
         if (declarationCheckbox != null && !declarationCheckbox.isSelected()) {
-            javafx.scene.control.Alert alert = new javafx.scene.control.Alert(
-                javafx.scene.control.Alert.AlertType.ERROR,
+            Alert alert = new Alert(
+                Alert.AlertType.ERROR,
                 "You must agree to the terms and conditions to submit the application.",
-                javafx.scene.control.ButtonType.OK
+                ButtonType.OK
             );
             alert.setHeaderText("Declaration Required");
             alert.show();
@@ -359,10 +403,10 @@ public class AdmissionController {
         
         // Validate email format
         if (!isValidEmail(emailField.getText())) {
-            javafx.scene.control.Alert alert = new javafx.scene.control.Alert(
-                javafx.scene.control.Alert.AlertType.ERROR,
+            Alert alert = new Alert(
+                Alert.AlertType.ERROR,
                 "Please enter a valid email address.",
-                javafx.scene.control.ButtonType.OK
+                ButtonType.OK
             );
             alert.setHeaderText("Invalid Email");
             alert.show();
@@ -370,47 +414,242 @@ public class AdmissionController {
         }
         
         // Validate GPA values
+        double sscGpa, hscGpa;
         try {
-            double sscGpa = Double.parseDouble(sscGpaField.getText());
-            double hscGpa = Double.parseDouble(hscGpaField.getText());
+            sscGpa = Double.parseDouble(sscGpaField.getText());
+            hscGpa = Double.parseDouble(hscGpaField.getText());
             
             if (sscGpa < 0 || sscGpa > 5 || hscGpa < 0 || hscGpa > 5) {
-                javafx.scene.control.Alert alert = new javafx.scene.control.Alert(
-                    javafx.scene.control.Alert.AlertType.ERROR,
+                Alert alert = new Alert(
+                    Alert.AlertType.ERROR,
                     "GPA values must be between 0 and 5.",
-                    javafx.scene.control.ButtonType.OK
+                    ButtonType.OK
                 );
                 alert.setHeaderText("Invalid GPA");
                 alert.show();
                 return;
             }
         } catch (NumberFormatException e) {
-            javafx.scene.control.Alert alert = new javafx.scene.control.Alert(
-                javafx.scene.control.Alert.AlertType.ERROR,
+            Alert alert = new Alert(
+                Alert.AlertType.ERROR,
                 "GPA values must be numeric.",
-                javafx.scene.control.ButtonType.OK
+                ButtonType.OK
             );
             alert.setHeaderText("Invalid GPA Format");
             alert.show();
             return;
         }
         
-        // If validation passes, show success message
-        javafx.scene.control.Alert alert = new javafx.scene.control.Alert(
-            javafx.scene.control.Alert.AlertType.INFORMATION,
-            "Your application has been successfully submitted. We will contact you soon.",
-            javafx.scene.control.ButtonType.OK
-        );
-        alert.setHeaderText("Application Submitted");
-        alert.showAndWait();
-        
-        // Hide form after submission
-        hideApplicationForm(event);
-        
-        // Reset form for next use
-        resetForm(event);
+        // If validation passes, save application to database
+        try {
+            User currentUser = AuthStateManager.getInstance().getState().getUser();
+            
+            if (currentUser == null) {
+                Alert alert = new Alert(
+                    Alert.AlertType.ERROR,
+                    "You must be logged in to submit an application.",
+                    ButtonType.OK
+                );
+                alert.setHeaderText("Authentication Required");
+                alert.show();
+                return;
+            }
+            
+            // Create Application object
+            Application application = new Application(
+                currentUser.getId(),
+                firstNameField.getText(),
+                lastNameField.getText(),
+                emailField.getText(),
+                phoneField.getText(),
+                dobPicker.getValue(),
+                genderComboBox.getValue(),
+                addressField.getText(),
+                cityField.getText(),
+                postalCodeField.getText(),
+                fatherNameField.getText(),
+                fatherOccupationField.getText(),
+                motherNameField.getText(),
+                motherOccupationField.getText(),
+                guardianPhoneField.getText(),
+                guardianEmailField.getText(),
+                programComboBox.getValue(),
+                institutionField.getText(),
+                Double.parseDouble(sscGpaField.getText()),
+                Double.parseDouble(hscGpaField.getText()),
+                sscYearField.getText(),
+                hscYearField.getText()
+            );
+            
+            // Save to database
+            currentApplicationId = ApplicationDAO.createApplication(application);
+            
+            if (currentApplicationId > 0) {
+                // Show success message with payment button
+                showSuccessWithPaymentOption();
+            } else {
+                // Show error message
+                Alert alert = new Alert(
+                    Alert.AlertType.ERROR,
+                    "Failed to submit application. Please try again later.",
+                    ButtonType.OK
+                );
+                alert.setHeaderText("Submission Error");
+                alert.show();
+            }
+        } catch (Exception e) {
+            LOGGER.severe("Error submitting application: " + e.getMessage());
+            e.printStackTrace();
+            
+            // Show error message
+            Alert alert = new Alert(
+                Alert.AlertType.ERROR,
+                "An error occurred while submitting your application: " + e.getMessage(),
+                ButtonType.OK
+            );
+            alert.setHeaderText("Submission Error");
+            alert.show();
+        }
     }
     
+    private void showSuccessWithPaymentOption() {
+        // First, hide the application form to ensure it's closed before showing the dialog
+        hideApplicationForm(null);
+        
+        // Create a standard JavaFX dialog styled to match our theme
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.setTitle("Application Submitted");
+        
+        // Create the DialogPane (where we can apply styling)
+        DialogPane dialogPane = dialog.getDialogPane();
+        
+        // Apply CSS styling from your application theme
+        dialogPane.getStylesheets().add(getClass().getResource("/com.ueadmission/common.css").toExternalForm());
+        dialogPane.getStylesheets().add(getClass().getResource("/com.ueadmission/main.css").toExternalForm());
+        
+        // Custom styles for this specific dialog to match your theme
+        dialogPane.setStyle("-fx-background-color: white; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 10, 0, 0, 4);");
+        
+        // Create content
+        VBox content = new VBox(15);
+        content.setPadding(new Insets(20));
+        content.setAlignment(Pos.CENTER);
+        content.setMinWidth(450);
+        content.setMaxWidth(450);
+        
+        // Create styled components
+        Label message = new Label("Application Submitted Successfully!");
+        message.setStyle("-fx-font-weight: bold; -fx-font-size: 18px; -fx-text-fill: #2D8E36;");
+        
+        Label paymentLabel = new Label("To finalize your application, please complete the payment.");
+        paymentLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: #333333;");
+        paymentLabel.setWrapText(true);
+        
+        Label amountLabel = new Label("Application Fee: 1000 Tk");
+        amountLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 16px; -fx-text-fill: #333333;");
+        
+        // Add components to content
+        content.getChildren().addAll(message, paymentLabel, amountLabel);
+        
+        // Set custom content to the dialog
+        dialogPane.setContent(content);
+        
+        // Remove the header text that comes by default
+        dialog.setHeaderText(null);
+        
+        // Create custom buttons with your app's styling
+        ButtonType payButtonType = new ButtonType("Pay Now (1000 Tk)", ButtonBar.ButtonData.OK_DONE);
+        ButtonType closeButtonType = new ButtonType("Close", ButtonBar.ButtonData.CANCEL_CLOSE);
+        
+        dialogPane.getButtonTypes().addAll(closeButtonType, payButtonType);
+        
+        // Style the buttons to match your theme
+        Button payButton = (Button) dialogPane.lookupButton(payButtonType);
+        payButton.setStyle("-fx-background-color: #fa4506; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 12 20; -fx-background-radius: 5;");
+        payButton.setPrefWidth(200);
+        
+        Button closeButton = (Button) dialogPane.lookupButton(closeButtonType);
+        closeButton.setStyle("-fx-background-color: #dddddd; -fx-text-fill: #333333; -fx-padding: 12 20; -fx-background-radius: 5;");
+        closeButton.setPrefWidth(120);
+        
+        // Show dialog and handle the result
+        try {
+            Optional<ButtonType> result = dialog.showAndWait();
+            if (result.isPresent() && result.get() == payButtonType) {
+                initiateSSLCommerzPayment();
+            }
+        } catch (Exception e) {
+            LOGGER.severe("Error showing payment dialog: " + e.getMessage());
+            e.printStackTrace();
+            
+            // Fallback to simple notification if dialog fails
+            MFXNotifications.showSuccess("Application Submitted", 
+                "Your application has been submitted successfully. Please proceed to payment.");
+                
+            // Try direct payment initiation
+            initiateSSLCommerzPayment();
+        }
+    }
+
+    /**
+     * Initiate payment via SSLCommerz
+     */
+    private void initiateSSLCommerzPayment() {
+        if (currentApplicationId <= 0) {
+            MFXNotifications.showError("Payment Error", "Cannot process payment. Application ID is invalid.");
+            return;
+        }
+        
+        // Get current user info for the payment
+        User currentUser = AuthStateManager.getInstance().getState().getUser();
+        if (currentUser == null) {
+            MFXNotifications.showError("Payment Error", "User information is not available.");
+            return;
+        }
+        
+        // Create SSLCommerz payment object
+        SSLCommerzPayment payment = new SSLCommerzPayment(1000.0, "UIU Admission Application Fee")
+            .withCustomer(
+                currentUser.getFullName(),
+                currentUser.getEmail(),
+                currentUser.getPhoneNumber()
+            )
+            .withParam("application_id", String.valueOf(currentApplicationId));
+        
+        // Start payment process
+        payment.startPayment(result -> {
+            if (result.isSuccessful()) {
+                // Update payment status in database
+                boolean success = ApplicationDAO.updatePaymentStatus(currentApplicationId, true);
+                
+                if (success) {
+                    MFXNotifications.showSuccess("Payment Successful", 
+                        "Your payment of 1000 Tk has been processed successfully.\n" +
+                        "Transaction ID: " + result.getTransactionId() + "\n" +
+                        "Your application status is now Approved.");
+                } else {
+                    MFXNotifications.showError("Database Error", 
+                        "Payment was successful, but we couldn't update your application status.\n" +
+                        "Please contact support with your Transaction ID: " + result.getTransactionId());
+                }
+            } else {
+                MFXNotifications.showError("Payment Failed", 
+                    "Failed to process payment: " + result.getMessage() + "\n" +
+                    "Please try again later.");
+            }
+        });
+    }
+
+    /**
+     * Process payment for the application
+     * @deprecated This method is replaced by initiateSSLCommerzPayment()
+     */
+    @Deprecated
+    private void processPayment() {
+        // Replaced by SSLCommerz integration
+        initiateSSLCommerzPayment();
+    }
+
     /**
      * Simple email validation method
      */
