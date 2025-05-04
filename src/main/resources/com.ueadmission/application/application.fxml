@@ -60,13 +60,13 @@
         </VBox>
         
         <!-- Applications Content Section -->
-        <VBox fx:id="applicationContainer" id="applications-content" spacing="20">
+        <VBox fx:id="applicationContainer" id="applications-content" spacing="20" alignment="CENTER">
             <padding>
-                <Insets top="20" right="50" bottom="40" left="50" />
+                <Insets top="20" right="30" bottom="40" left="30" />
             </padding>
             
             <!-- Applications List -->
-            <VBox id="applications-list" spacing="20" styleClass="content-panel" alignment="CENTER">
+            <VBox id="applications-list" spacing="20" styleClass="content-panel" alignment="CENTER" maxWidth="1000" prefWidth="1000">
                 <padding>
                     <Insets top="25" right="30" bottom="25" left="30" />
                 </padding>
@@ -89,7 +89,7 @@
                         <Label text="Year" styleClass="header-cell" HBox.hgrow="ALWAYS" maxWidth="80" />
                         <Label text="Date" styleClass="header-cell" HBox.hgrow="ALWAYS" maxWidth="100" />
                         <Label text="Status" styleClass="header-cell" HBox.hgrow="ALWAYS" maxWidth="100" />
-                        <Label text="Payment" styleClass="header-cell" HBox.hgrow="ALWAYS" maxWidth="120" />
+                        <Label text="Action" styleClass="header-cell" HBox.hgrow="ALWAYS" maxWidth="120" />
                     </HBox>
                     
                     <!-- Application List View -->

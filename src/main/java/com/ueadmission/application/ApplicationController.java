@@ -1,7 +1,8 @@
 package com.ueadmission.application;
 
+import static java.lang.Integer.parseInt;
+
 import java.time.format.DateTimeFormatter;
-import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -11,6 +12,7 @@ import com.ueadmission.application.model.PaymentStatus;
 import com.ueadmission.application.service.ApplicationService;
 import com.ueadmission.auth.state.AuthState;
 import com.ueadmission.auth.state.AuthStateManager;
+import com.ueadmission.auth.state.User;
 import com.ueadmission.navigation.NavigationUtil;
 import com.ueadmission.payment.SSLCommerzPayment;
 
@@ -23,9 +25,16 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
@@ -135,13 +144,55 @@ public class ApplicationController {
         applicationListView.setItems(applications);
         applicationListView.setCellFactory(createCellFactory());
         
-        // Set up navigation buttons
-        homeButton.setOnAction(this::navigateToHome);
-        aboutButton.setOnAction(this::navigateToAbout);
-        admissionButton.setOnAction(this::navigateToAdmission);
-        mockTestButton.setOnAction(this::navigateToMockTest);
-        contactButton.setOnAction(this::navigateToContact);
-        refreshButton.setOnAction(e -> refreshApplications());
+        // Add selection change listener to update details when a row is selected
+        applicationListView.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            selectedApplication.set(newVal);
+            updateApplicationDetails(newVal);
+            updateActionButtons(newVal);
+        });
+        
+        // Set up action buttons with null checks
+        if (makePaymentButton != null) {
+            makePaymentButton.setOnAction(e -> {
+                Application selected = selectedApplication.get();
+                if (selected != null) {
+                    showPaymentDialog(selected);
+                }
+            });
+        } else {
+            LOGGER.warning("makePaymentButton is null in FXML. Button not found with required ID.");
+        }
+        
+        if (trackStatusButton != null) {
+            trackStatusButton.setOnAction(e -> {
+                Application selected = selectedApplication.get();
+                if (selected != null) {
+                    trackApplicationStatus(selected);
+                }
+            });
+        } else {
+            LOGGER.warning("trackStatusButton is null in FXML. Button not found with required ID.");
+        }
+        
+        // Set up navigation buttons with null checks
+        if (homeButton != null) {
+            homeButton.setOnAction(this::navigateToHome);
+        }
+        if (aboutButton != null) {
+            aboutButton.setOnAction(this::navigateToAbout);
+        }
+        if (admissionButton != null) {
+            admissionButton.setOnAction(this::navigateToAdmission);
+        }
+        if (mockTestButton != null) {
+            mockTestButton.setOnAction(this::navigateToMockTest);
+        }
+        if (contactButton != null) {
+            contactButton.setOnAction(this::navigateToContact);
+        }
+        if (refreshButton != null) {
+            refreshButton.setOnAction(e -> refreshApplications());
+        }
         
         // Load applications data
         showLoader();
@@ -285,7 +336,7 @@ public class ApplicationController {
             .exceptionally(ex -> {
                 Platform.runLater(() -> {
                     hideLoader();
-                    showErrorAlert("Failed to load applications");
+                    showErrorAlert("Failed to load applications", "User information is not available.");
                     LOGGER.log(Level.SEVERE, "Error loading applications: {0}", ex.getMessage());
                 });
                 return null;
@@ -305,6 +356,12 @@ public class ApplicationController {
      * Update the application details panel with the selected application
      */
     private void updateApplicationDetails(Application application) {
+        // First check if applicationDetailsAccordion exists
+        if (applicationDetailsAccordion == null) {
+            LOGGER.warning("applicationDetailsAccordion is null in FXML. UI element not found with required ID.");
+            return;
+        }
+        
         if (application == null) {
             applicationDetailsAccordion.setVisible(false);
             applicationDetailsAccordion.setManaged(false);
@@ -321,48 +378,54 @@ public class ApplicationController {
             pane.setExpanded(true);
         }
         
-        // Update all the labels with application data
-        programLabel.setText(application.getProgramName());
-        nameLabel.setText(application.getApplicantName());
-        emailLabel.setText(application.getEmail());
-        phoneLabel.setText(application.getPhoneNumber());
+        // Only update labels if they exist
+        if (programLabel != null) programLabel.setText(application.getProgramName());
+        if (nameLabel != null) nameLabel.setText(application.getApplicantName());
+        if (emailLabel != null) emailLabel.setText(application.getEmail());
+        if (phoneLabel != null) phoneLabel.setText(application.getPhoneNumber());
         
         // Format date of birth if available
-        if (application.getDateOfBirth() != null) {
-            dobLabel.setText(application.getDateOfBirth().format(dateFormatter));
-        } else {
-            dobLabel.setText("-");
+        if (dobLabel != null) {
+            if (application.getDateOfBirth() != null) {
+                dobLabel.setText(application.getDateOfBirth().format(dateFormatter));
+            } else {
+                dobLabel.setText("-");
+            }
         }
         
-        genderLabel.setText(application.getGender());
-        addressLabel.setText(application.getAddress());
-        cityLabel.setText(application.getCity());
-        postalCodeLabel.setText(application.getPostalCode());
+        if (genderLabel != null) genderLabel.setText(application.getGender());
+        if (addressLabel != null) addressLabel.setText(application.getAddress());
+        if (cityLabel != null) cityLabel.setText(application.getCity());
+        if (postalCodeLabel != null) postalCodeLabel.setText(application.getPostalCode());
         
         // Academic information
-        sscGpaLabel.setText(String.format("%.2f", application.getSscGpa()));
-        hscGpaLabel.setText(String.format("%.2f", application.getHscGpa()));
-        sscYearLabel.setText(application.getSscYear());
-        hscYearLabel.setText(application.getHscYear());
+        if (sscGpaLabel != null) sscGpaLabel.setText(String.format("%.2f", application.getSscGpa()));
+        if (hscGpaLabel != null) hscGpaLabel.setText(String.format("%.2f", application.getHscGpa()));
+        if (sscYearLabel != null) sscYearLabel.setText(application.getSscYear());
+        if (hscYearLabel != null) hscYearLabel.setText(application.getHscYear());
         
         // Guardian information
-        fatherNameLabel.setText(application.getFatherName());
-        fatherOccupationLabel.setText(application.getFatherOccupation());
-        motherNameLabel.setText(application.getMotherName());
-        motherOccupationLabel.setText(application.getMotherOccupation());
-        guardianPhoneLabel.setText(application.getGuardianPhone());
-        guardianEmailLabel.setText(application.getGuardianEmail());
+        if (fatherNameLabel != null) fatherNameLabel.setText(application.getFatherName());
+        if (fatherOccupationLabel != null) fatherOccupationLabel.setText(application.getFatherOccupation());
+        if (motherNameLabel != null) motherNameLabel.setText(application.getMotherName());
+        if (motherOccupationLabel != null) motherOccupationLabel.setText(application.getMotherOccupation());
+        if (guardianPhoneLabel != null) guardianPhoneLabel.setText(application.getGuardianPhone());
+        if (guardianEmailLabel != null) guardianEmailLabel.setText(application.getGuardianEmail());
         
         // Status information
-        statusLabel.setText(application.getStatus().getDisplayName());
-        statusLabel.getStyleClass().setAll("detail-value", "status-label", application.getStatus().getStyleClass());
+        if (statusLabel != null) {
+            statusLabel.setText(application.getStatus().getDisplayName());
+            statusLabel.getStyleClass().setAll("detail-value", "status-label", application.getStatus().getStyleClass());
+        }
         
-        paymentStatusLabel.setText(application.isPaymentComplete() ? "Paid" : "Pending");
-        paymentStatusLabel.getStyleClass().setAll("detail-value", "payment-status-label", 
-            application.isPaymentComplete() ? "status-approved" : "status-pending");
+        if (paymentStatusLabel != null) {
+            paymentStatusLabel.setText(application.isPaymentComplete() ? "Paid" : "Pending");
+            paymentStatusLabel.getStyleClass().setAll("detail-value", "payment-status-label", 
+                application.isPaymentComplete() ? "status-approved" : "status-pending");
+        }
         
         // Format application date
-        applicationDateLabel.setText(application.getApplicationDate().format(dateFormatter));
+        if (applicationDateLabel != null) applicationDateLabel.setText(application.getApplicationDate().format(dateFormatter));
     }
     
     /**
@@ -371,10 +434,16 @@ public class ApplicationController {
     private void updateActionButtons(Application application) {
         boolean hasSelection = (application != null);
         
-        makePaymentButton.setDisable(!hasSelection || 
+        // Add null checks to prevent NullPointerException
+        if (makePaymentButton != null) {
+            makePaymentButton.setDisable(!hasSelection || 
                                     (hasSelection && application.isPaymentComplete()) || 
                                     (hasSelection && application.getStatus() == ApplicationStatus.REJECTED));
-        trackStatusButton.setDisable(!hasSelection);
+        }
+        
+        if (trackStatusButton != null) {
+            trackStatusButton.setDisable(!hasSelection);
+        }
     }
     
     /**
@@ -396,17 +465,8 @@ public class ApplicationController {
             return;
         }
         
-        // Create a text input dialog for payment confirmation
-        Alert alert = new Alert(AlertType.CONFIRMATION);
-        alert.setTitle("Complete Payment");
-        alert.setHeaderText("Payment for " + application.getProgramName());
-        alert.setContentText("Click OK to complete payment for this application.");
-        
-        Optional<javafx.scene.control.ButtonType> result = alert.showAndWait();
-        
-        if (result.isPresent() && result.get() == javafx.scene.control.ButtonType.OK) {
-            processPayment(application);
-        }
+        // Directly process the payment without confirmation dialog
+        processPayment(application);
     }
     
     /**
@@ -416,7 +476,7 @@ public class ApplicationController {
         showLoader();
         
         // Get current user info for the payment
-        com.ueadmission.auth.model.User currentUser = AuthStateManager.getInstance().getState().getUser();
+        User currentUser = AuthStateManager.getInstance().getState().getUser();
         if (currentUser == null) {
             hideLoader();
             showErrorAlert("Payment Error", "User information is not available.");
@@ -438,7 +498,18 @@ public class ApplicationController {
                 hideLoader();
                 
                 if (result.isSuccessful()) {
-                    // Update application payment status
+                    // Update the database with the new payment status
+                    boolean dbUpdateSuccess = com.ueadmission.admission.ApplicationDAO.updatePaymentStatus(
+                            parseInt(application.getId()), true);
+                    
+                    if (!dbUpdateSuccess) {
+                        showErrorAlert("Database Error", 
+                            "Payment was successful, but we couldn't update your application status in the database.\n" +
+                            "Please contact support with your Transaction ID: " + result.getTransactionId());
+                        return;
+                    }
+                    
+                    // Update application payment status in memory
                     application.setPaymentStatus(PaymentStatus.PAID);
                     
                     // If payment is complete, update status to Approved
@@ -458,11 +529,8 @@ public class ApplicationController {
                     // Update UI to reflect changes (disable payment button)
                     updateActionButtons(application);
                     
-                    // Show success message
-                    showInfoAlert("Payment Successful", 
-                        "Your payment of 1000 Tk has been processed successfully.\n" +
-                        "Transaction ID: " + result.getTransactionId() + "\n" +
-                        "Your application status is now " + application.getStatus().getDisplayName() + ".");
+                    // Show success dialog styled like in admission screen
+                    showPaymentSuccessDialog(result.getTransactionId(), application);
                     
                 } else {
                     // Payment failed
@@ -472,6 +540,71 @@ public class ApplicationController {
                 }
             });
         });
+    }
+    
+    /**
+     * Show a custom styled payment success dialog
+     */
+    private void showPaymentSuccessDialog(String transactionId, Application application) {
+        // Create a standard JavaFX dialog styled to match our theme
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.setTitle("Payment Successful");
+        
+        // Create the DialogPane (where we can apply styling)
+        DialogPane dialogPane = dialog.getDialogPane();
+        
+        // Apply CSS styling from application theme
+        dialogPane.getStylesheets().add(getClass().getResource("/com.ueadmission/common.css").toExternalForm());
+        dialogPane.getStylesheets().add(getClass().getResource("/com.ueadmission/main.css").toExternalForm());
+        
+        // Custom styles for this specific dialog
+        dialogPane.setStyle("-fx-background-color: white; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 10, 0, 0, 4);");
+        
+        // Create content
+        VBox content = new VBox(15);
+        content.setPadding(new Insets(20));
+        content.setAlignment(Pos.CENTER);
+        content.setMinWidth(450);
+        content.setMaxWidth(450);
+        
+        // Create styled components
+        Label message = new Label("Payment Successful!");
+        message.setStyle("-fx-font-weight: bold; -fx-font-size: 18px; -fx-text-fill: #2D8E36;");
+        
+        Label detailsLabel = new Label("Your payment of 1000 Tk has been processed successfully.");
+        detailsLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: #333333;");
+        detailsLabel.setWrapText(true);
+        
+        Label transactionLabel = new Label("Transaction ID: " + transactionId);
+        transactionLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: #333333;");
+        
+        Label statusLabel = new Label("Your application status is now " + application.getStatus().getDisplayName());
+        statusLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: #333333;");
+        statusLabel.setWrapText(true);
+        
+        // Add components to content
+        content.getChildren().addAll(message, detailsLabel, transactionLabel, statusLabel);
+        
+        // Set custom content to the dialog
+        dialogPane.setContent(content);
+        
+        // Remove the header text that comes by default
+        dialog.setHeaderText(null);
+        
+        // Create custom button with app's styling
+        ButtonType closeButtonType = new ButtonType("Close", ButtonBar.ButtonData.OK_DONE);
+        dialogPane.getButtonTypes().add(closeButtonType);
+        
+        // Style the button to match theme
+        Button closeButton = (Button) dialogPane.lookupButton(closeButtonType);
+        closeButton.setStyle("-fx-background-color: #fa4506; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 12 20; -fx-background-radius: 5;");
+        closeButton.setPrefWidth(120);
+        
+        // Show dialog
+        dialog.showAndWait();
+        
+        // Update the application list to reflect the changes
+        refreshApplications();
     }
     
     /**
@@ -515,7 +648,7 @@ public class ApplicationController {
     /**
      * Show an error alert
      */
-    private void showErrorAlert(String message) {
+    private void showErrorAlert(String message, String s) {
         Alert alert = new Alert(AlertType.ERROR);
         alert.setTitle("Error");
         alert.setHeaderText(null);

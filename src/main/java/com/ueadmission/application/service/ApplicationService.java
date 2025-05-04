@@ -180,12 +180,24 @@ public class ApplicationService {
         String lastName = rs.getString("last_name");
         String fullName = firstName + " " + lastName;
         
+        // Safely convert status string to enum - handle case properly
+        ApplicationStatus status;
+        try {
+            // Convert to uppercase to match enum constant naming convention
+            status = ApplicationStatus.valueOf(rs.getString("status").toUpperCase());
+        } catch (IllegalArgumentException e) {
+            // Log the issue and default to PENDING if conversion fails
+            LOGGER.warning("Invalid status value in database: " + rs.getString("status") + 
+                          ". Defaulting to PENDING. Error: " + e.getMessage());
+            status = ApplicationStatus.PENDING;
+        }
+        
         return new Application(
             rs.getString("id"),
             rs.getString("program"),
             "Summer 2025", // Static semester and year as requested
             rs.getDate("application_date").toLocalDate(),
-            ApplicationStatus.valueOf(rs.getString("status").toUpperCase()),
+            status, // Use the safely converted status
             rs.getBoolean("payment_complete") ? PaymentStatus.PAID : PaymentStatus.UNPAID,
             5000.00, // Default fee for now
             rs.getBoolean("payment_complete") ? 5000.00 : 0.0,
