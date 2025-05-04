@@ -102,7 +102,17 @@ public class ProfileController {
         // Set up navigation button handlers using NavigationUtil
         homeButton.setOnAction(e -> navigateToHome(e));
         aboutButton.setOnAction(e -> navigateToAbout(e));
-        admissionButton.setOnAction(e -> navigateToAdmission(e));
+        
+        // Add authentication check before navigating to admission
+        admissionButton.setOnAction(e -> {
+            if (AuthStateManager.getInstance().isAuthenticated()) {
+                navigateToAdmission(e);
+            } else {
+                // Redirect to login if not authenticated
+                navigateToLogin(e);
+            }
+        });
+        
         mockTestButton.setOnAction(e -> navigateToMockTest(e));
         contactButton.setOnAction(e -> navigateToContact(e));
         
@@ -314,5 +324,13 @@ public class ProfileController {
     private void navigateToContact(ActionEvent event) {
         cleanup();
         NavigationUtil.navigateToContact(event);
+    }
+    
+    /**
+     * Redirects to the Login screen
+     */
+    private void navigateToLogin(ActionEvent event) {
+        cleanup();
+        NavigationUtil.navigateToLogin(event);
     }
 }

@@ -68,8 +68,15 @@ public class MainController {
         // Set up the Login button click action
         loginButton.setOnAction(event -> openLoginPage(event));
 
-        // Set up the admission button click action
-        admissionButton.setOnAction(event -> openAdmissionPage(event));
+        // Set up the admission button click action - Add authentication check
+        admissionButton.setOnAction(event -> {
+            if (AuthStateManager.getInstance().isAuthenticated()) {
+                openAdmissionPage(event);
+            } else {
+                // Redirect to login page if not authenticated
+                openLoginPage(event);
+            }
+        });
         
         // Set up the contact button click action
         if (contactButton != null) {
