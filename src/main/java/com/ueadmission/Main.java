@@ -137,6 +137,18 @@ public class Main extends Application {
 
             // Show the stage
             primaryStage.show();
+            
+            // Add window close handler to ensure proper logout when window is closed
+            primaryStage.setOnCloseRequest(event -> {
+                LOGGER.info("Application closing, logging out user if authenticated");
+                AuthStateManager authStateManager = AuthStateManager.getInstance();
+                if (authStateManager.isAuthenticated() && authStateManager.getState().getUser() != null) {
+                    int userId = authStateManager.getState().getUser().getId();
+                    com.ueadmission.auth.UserDAO.logoutUser(userId);
+                    LOGGER.info("Logged out user ID: " + userId + " on application close");
+                }
+            });
+            
             LOGGER.info("Main window shown successfully");
 
         } catch (IOException e) {
@@ -167,6 +179,14 @@ public class Main extends Application {
     @Override
     public void stop() {
         try {
+            // Logout user if authenticated before closing
+            AuthStateManager authStateManager = AuthStateManager.getInstance();
+            if (authStateManager.isAuthenticated() && authStateManager.getState().getUser() != null) {
+                int userId = authStateManager.getState().getUser().getId();
+                com.ueadmission.auth.UserDAO.logoutUser(userId);
+                LOGGER.info("Logged out user ID: " + userId + " on application shutdown");
+            }
+            
             // Cleanup resources when application closes
             com.ueadmission.db.DatabaseConnection.closeConnection();
             LOGGER.info("Application closed, resources cleaned up");
