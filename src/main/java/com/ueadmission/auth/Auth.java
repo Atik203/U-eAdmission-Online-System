@@ -1,17 +1,13 @@
 package com.ueadmission.auth;
 
-import com.ueadmission.Main;
-import com.ueadmission.utils.MFXNotifications;
-import javafx.animation.FadeTransition;
+import java.io.IOException;
+
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import javafx.util.Duration;
-
-import java.io.IOException;
 
 /**
  * Auth utility class that handles navigation between authentication-related screens
@@ -64,6 +60,18 @@ public class Auth {
                 com.ueadmission.utils.MFXNotifications.addToPane((Pane) stage.getScene().getRoot());
             }
             
+            // Add window close handler to ensure proper logout when window is closed
+            stage.setOnCloseRequest(event -> {
+                System.out.println("Login window closing, checking for logout needs");
+                com.ueadmission.auth.state.AuthStateManager authStateManager = 
+                    com.ueadmission.auth.state.AuthStateManager.getInstance();
+                if (authStateManager.isAuthenticated() && authStateManager.getState().getUser() != null) {
+                    int userId = authStateManager.getState().getUser().getId();
+                    com.ueadmission.auth.UserDAO.logoutUser(userId);
+                    System.out.println("Logged out user ID: " + userId + " on login window close");
+                }
+            });
+            
             return stage;
         } catch (IOException e) {
             e.printStackTrace();
@@ -113,6 +121,18 @@ public class Auth {
             
             // Initialize notification center for this stage
             com.ueadmission.utils.MFXNotifications.initialize(stage);
+            
+            // Add window close handler to ensure proper logout when window is closed
+            stage.setOnCloseRequest(event -> {
+                System.out.println("Registration window closing, checking for logout needs");
+                com.ueadmission.auth.state.AuthStateManager authStateManager = 
+                    com.ueadmission.auth.state.AuthStateManager.getInstance();
+                if (authStateManager.isAuthenticated() && authStateManager.getState().getUser() != null) {
+                    int userId = authStateManager.getState().getUser().getId();
+                    com.ueadmission.auth.UserDAO.logoutUser(userId);
+                    System.out.println("Logged out user ID: " + userId + " on registration window close");
+                }
+            });
                 
             return stage;
         } catch (IOException e) {
@@ -160,6 +180,18 @@ public class Auth {
             
             // Initialize notification center for this stage
             com.ueadmission.utils.MFXNotifications.initialize(stage);
+            
+            // Add window close handler to ensure proper logout when window is closed
+            stage.setOnCloseRequest(event -> {
+                System.out.println("Main window closing, checking for logout needs");
+                com.ueadmission.auth.state.AuthStateManager authStateManager = 
+                    com.ueadmission.auth.state.AuthStateManager.getInstance();
+                if (authStateManager.isAuthenticated() && authStateManager.getState().getUser() != null) {
+                    int userId = authStateManager.getState().getUser().getId();
+                    com.ueadmission.auth.UserDAO.logoutUser(userId);
+                    System.out.println("Logged out user ID: " + userId + " on main window close");
+                }
+            });
             
             return stage;
         } catch (IOException e) {
