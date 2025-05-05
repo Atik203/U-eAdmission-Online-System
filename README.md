@@ -97,6 +97,10 @@ https://github.com/user-attachments/assets/0d5d2956-f818-42c3-bb8e-b53ef8558ede
 
 https://github.com/user-attachments/assets/66ad1f9d-0fab-46f4-a57c-f1cbc99951e1
 
+### Application and Payment Process Demo
+
+https://github.com/user-attachments/assets/e63f30b4-4c4e-4b9c-82a4-31008c1d5175
+
 ## 🛠️ Technologies
 
 The U-eAdmission Online System is built using the following technologies:
