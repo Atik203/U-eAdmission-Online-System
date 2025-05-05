@@ -249,42 +249,42 @@ public class ApplicationController {
                 if (empty || app == null) {
                     setGraphic(null);
                     setText(null);
-                } else {
-                    // Update the labels with application data
-                    nameLabel.setText(app.getApplicantName());
-                    emailLabel.setText(app.getEmail());
-                    programLabel.setText(app.getProgramName());
-                    
-                    // Extract semester and year from app.getSemesterAndYear() (which returns "Summer 2025")
-                    String[] semesterYear = app.getSemesterAndYear().split(" ");
-                    semesterLabel.setText(semesterYear.length > 0 ? semesterYear[0] : "");
-                    yearLabel.setText(semesterYear.length > 1 ? semesterYear[1] : "");
-                    
-                    dateLabel.setText(app.getApplicationDate().format(dateFormatter));
-                    
-                    // Set status with appropriate style
-                    statusLabel.setText(app.getStatus().getDisplayName());
-                    statusLabel.getStyleClass().setAll("cell-label", "status-column", app.getStatus().getStyleClass());
-                    
-                    // Handle payment section - show either label or button
-                    paymentContainer.getChildren().clear();
-                    if (app.isPaymentComplete()) {
-                        paymentLabel.setText("Completed");
-                        paymentLabel.getStyleClass().setAll("cell-label", "status-approved");
-                        paymentContainer.getChildren().add(paymentLabel);
-                    } else {
-                        // Configure payment button for this specific cell
-                        paymentButton.setText("Make Payment");
-                        paymentButton.setOnAction(e -> {
-                            e.consume(); // Prevent event from reaching the list cell
-                            showPaymentDialog(app);
-                        });
-                        paymentContainer.getChildren().add(paymentButton);
-                    }
-                    
-                    setGraphic(container);
-                    setText(null);
+                    return;
                 }
+                
+                // Update the labels with application data
+                nameLabel.setText(app.getApplicantName());
+                emailLabel.setText(app.getEmail());
+                programLabel.setText(app.getProgramName());
+                
+                // Extract semester and year from app.getSemesterAndYear() (which returns "Summer 2025")
+                String[] semesterYear = app.getSemesterAndYear().split(" ");
+                semesterLabel.setText(semesterYear.length > 0 ? semesterYear[0] : "");
+                yearLabel.setText(semesterYear.length > 1 ? semesterYear[1] : "");
+                
+                dateLabel.setText(app.getApplicationDate().format(dateFormatter));
+                
+                // Set status with appropriate style
+                statusLabel.setText(app.getStatus().getDisplayName());
+                statusLabel.getStyleClass().setAll("cell-label", "status-column", app.getStatus().getStyleClass());
+                
+                // Handle payment section - show either label or button
+                paymentContainer.getChildren().clear();
+                if (app.isPaymentComplete()) {
+                    paymentLabel.setText("Completed");
+                    paymentLabel.getStyleClass().setAll("cell-label", "status-approved");
+                    paymentContainer.getChildren().add(paymentLabel);
+                } else {
+                    // Configure payment button for this specific cell
+                    paymentButton.setText("Make Payment");
+                    paymentButton.setOnAction(e -> {
+                        e.consume(); // Prevent event from reaching the list cell
+                        showPaymentDialog(app);
+                    });
+                    paymentContainer.getChildren().add(paymentButton);
+                }
+                
+                setGraphic(container);
             }
         };
     }
