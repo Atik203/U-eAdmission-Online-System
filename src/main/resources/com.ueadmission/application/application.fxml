@@ -52,7 +52,7 @@
             <Label styleClass="page-subtitle" text="View and manage your admission applications" />
 
             <!-- Filter section -->
-            <HBox alignment="CENTER" spacing="20">
+            <HBox alignment="CENTER" spacing="20" maxWidth="1200" prefWidth="1200">
                 <Label styleClass="semester-label" text="Current Semester: Summer 2025" />
                 <Region HBox.hgrow="ALWAYS" />
                 <MFXButton fx:id="refreshButton" text="Refresh" styleClass="mfx-button-outline" onAction="#refreshApplications" />
