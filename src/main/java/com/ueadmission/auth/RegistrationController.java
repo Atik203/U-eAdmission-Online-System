@@ -93,6 +93,36 @@ public class RegistrationController {
         termsCheckbox.setSelected(false);
     }
 
+    @FXML
+    public void handleRegistration(ActionEvent event) {
+        // Reset error state
+        errorLabel.setVisible(false);
+
+        if (isFormValid()) {
+            String firstName = firstNameField.getText();
+            String lastName = lastNameField.getText();
+            String email = emailField.getText();
+            String phone = phoneField.getText();
+            String address = addressField.getText();
+            String city = cityField.getText();
+            String country = countryComboBox.getValue();
+            String password = passwordField.getText();
+
+            boolean success = MyJDBC.registerUser(firstName, lastName, email, phone, address, city, country, password);
+
+            if (success) {
+                System.out.println("User registered successfully!");
+                navigateToLogin(event);  // redirect to login screen
+            } else {
+                errorLabel.setText("Failed to register user. Try again.");
+                errorLabel.setVisible(true);
+            }
+        } else {
+            errorLabel.setVisible(true);
+        }
+    }
+
+
     /**
      * Navigates to the Home screen
      */
@@ -205,6 +235,7 @@ public class RegistrationController {
     /**
      * Handles the form submission for registration
      */
+<<<<<<< HEAD
     @FXML
     public void handleRegistration(ActionEvent event) {
         // Reset error state
@@ -283,6 +314,25 @@ public class RegistrationController {
             errorLabel.setVisible(true);
         }
     }
+=======
+//    @FXML
+//    public void handleRegistration(ActionEvent event) {
+//        // Reset error state
+//        errorLabel.setVisible(false);
+//
+//        // Validate form inputs
+//        if (isFormValid()) {
+//            // Process registration (in a real app, this would connect to a backend)
+//            System.out.println("Registration successful!");
+//
+//            // Redirect to login
+//            navigateToLogin(event);
+//        } else {
+//            // Show error message
+//            errorLabel.setVisible(true);
+//        }
+//    }
+>>>>>>> 4cb2520a6c57a74211110878015e0eee33c98367
     
     /**
      * Validates all form inputs
