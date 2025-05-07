@@ -27,6 +27,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) {
 
+<<<<<<< HEAD
 
         try {
             // Try to initialize database, but continue even if it fails
@@ -193,6 +194,18 @@ public class Main extends Application {
         } catch (Exception e) {
             LOGGER.log(Level.WARNING, "Error during application shutdown", e);
         }
+=======
+        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("/com.ueadmission/main.fxml"));
+        Scene scene = new Scene(fxmlLoader.load(), 1280, 768);
+        // set the fullscreen mode
+//       hi Our team leader name:Atikur Rahman
+        Image icon = new Image(getClass().getResourceAsStream("/com.ueadmission/uiu_logo_update.png"));
+        stage.getIcons().add(icon);
+        stage.setMaximized(true);
+        stage.setTitle("UeAdmission - Home");
+        stage.setScene(scene);
+        stage.show();
+>>>>>>> 4cb2520a6c57a74211110878015e0eee33c98367
     }
 
     public static void main(String[] args) {

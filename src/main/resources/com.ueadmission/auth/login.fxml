@@ -33,6 +33,7 @@
             <MFXButton id="nav-button" fx:id="admissionButton" styleClass="mfx-button" text="Admission" />
             <MFXButton id="nav-button" fx:id="mockTestButton" styleClass="mfx-button" text="Mock Test" />
             <MFXButton id="nav-button" fx:id="contactButton" styleClass="mfx-button" text="Contact" />
+<<<<<<< HEAD
             
             <!-- Login button container - visible when not authenticated -->
             <HBox id="loginButtonContainer" alignment="CENTER">
@@ -45,8 +46,12 @@
                     <com.ueadmission.components.ProfileButton fx:id="profileButton" styleClass="profile-button-container" />
                 </children>
             </HBox>
+=======
+            <MFXButton id="login-button" fx:id="loginButton" styleClass="mfx-button-login" text="Login" />
+            <MFXButton id="login-button" fx:id="logoutButton" styleClass="mfx-button-login" text="Logout" visible="false" />
+>>>>>>> 4cb2520a6c57a74211110878015e0eee33c98367
         </HBox>
-        
+
         <!-- Login Section -->
         <VBox alignment="CENTER" styleClass="login-section">
             <padding>
@@ -57,7 +62,7 @@
                     <padding>
                         <Insets topRightBottomLeft="40" />
                     </padding>
-                    
+
                     <!-- Login Header -->
                     <HBox alignment="CENTER" spacing="15">
                         <ImageView fitHeight="60" fitWidth="60">
@@ -67,39 +72,42 @@
                         </ImageView>
                         <Label id="login-title" text="Login to your Account" />
                     </HBox>
-                    
+
                     <Label id="login-subtitle" text="Enter your credentials to access your account" />
-                    
+
                     <!-- Error Message -->
                     <Label fx:id="errorLabel" styleClass="error-label" text="Invalid email or password!" visible="false" />
-                    
+
                     <!-- Login Form -->
                     <VBox spacing="20">
                         <VBox spacing="5">
                             <Label text="Email Address *" styleClass="field-label" />
                             <MFXTextField fx:id="emailField" styleClass="mfx-text-field" />
                         </VBox>
-                        
+
                         <VBox spacing="5">
                             <Label text="Password *" styleClass="field-label" />
                             <MFXPasswordField fx:id="passwordField" styleClass="mfx-password-field" />
                         </VBox>
-                        
+
                         <HBox alignment="CENTER_RIGHT">
                             <Hyperlink fx:id="forgotPasswordLink" styleClass="auth-link" text="Forgot Password?" />
                         </HBox>
-                        
+
                         <MFXButton fx:id="loginButton" onAction="#handleLogin" buttonType="RAISED" styleClass="mfx-button-primary" text="Login" prefWidth="370" prefHeight="45" />
-                        
+
                         <HBox alignment="CENTER" spacing="5">
                             <Label text="Don't have an account?" />
                             <Hyperlink fx:id="createAccountLink" onAction="#navigateToRegistration" styleClass="auth-link" text="Create Account" />
                         </HBox>
+
+                        <!-- Toast Notification -->
+                        <Label fx:id="toastLabel" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-padding: 8px; -fx-background-radius: 10;" visible="false" />
                     </VBox>
                 </VBox>
             </StackPane>
         </VBox>
-        
+
         <!-- 🔚 Footer -->
         <VBox id="footer" alignment="CENTER" spacing="30" style="-fx-background-color: #222222;">
             <padding>
