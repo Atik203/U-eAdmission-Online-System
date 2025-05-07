@@ -15,11 +15,14 @@ module com.u.eadmission.ueadmission {
     requires MaterialFX;
     requires java.desktop;
     requires java.sql;
+<<<<<<< HEAD
     requires java.prefs;
     requires annotations;
     requires java.logging;
     requires transitive javafx.base;
     requires transitive javafx.graphics;
+=======
+>>>>>>> 4cb2520a6c57a74211110878015e0eee33c98367
 
     opens com.ueadmission to javafx.fxml;
     opens com.ueadmission.about to javafx.fxml;
