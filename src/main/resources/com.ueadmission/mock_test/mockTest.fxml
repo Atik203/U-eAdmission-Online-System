@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import io.github.palexdev.materialfx.controls.*?>
+<?import com.ueadmission.components.ProfileButton?>
+
+<StackPane xmlns="http://javafx.com/javafx/21"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.ueadmission.MockTest.MockTestController">
+    <MFXScrollPane fitToWidth="true">
+        <VBox fx:id="mainContainer" spacing="0" stylesheets="@main.css">
+
+            <!-- 🔷 Navbar -->
+            <HBox id="navbar" alignment="CENTER_LEFT" spacing="30" style="-fx-background-color: #FA4506;">
+                <padding>
+                    <Insets top="15" right="15" bottom="15" left="15"/>
+                </padding>
+                <ImageView fitHeight="40" fitWidth="40">
+                    <image>
+                        <Image url="@uiu_logo_update.png"/>
+                    </image>
+                </ImageView>
+                <Label id="title" style="-fx-text-fill: white; -fx-font-weight: bold;" text="United International University"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <MFXButton fx:id="homeButton" text="Home" styleClass="mfx-button"/>
+                <MFXButton fx:id="aboutButton" text="About" styleClass="mfx-button"/>
+                <MFXButton fx:id="admissionButton" text="Admission" styleClass="mfx-button"/>
+                <MFXButton fx:id="mockTestButton" text="Mock Test" styleClass="mfx-button"/>
+                <MFXButton fx:id="contactButton" text="Contact" styleClass="mfx-button"/>
+
+                <HBox fx:id="loginButtonContainer" alignment="CENTER">
+                    <MFXButton fx:id="loginButton" text="Login" styleClass="mfx-button-login"/>
+                </HBox>
+
+                <HBox fx:id="profileButtonContainer" alignment="CENTER" visible="false" managed="false">
+                    <ProfileButton fx:id="profileButton" styleClass="profile-button-container"/>
+                </HBox>
+            </HBox>
+
+            <!-- 🔶 Mock Test Section -->
+            <VBox id="mock-test-container" alignment="TOP_CENTER" spacing="20">
+                <padding>
+                    <Insets top="40" right="40" bottom="40" left="40"/>
+                </padding>
+
+                <!-- Test Header -->
+                <HBox alignment="CENTER_LEFT" spacing="20">
+                    <VBox alignment="CENTER_LEFT" spacing="5">
+                        <Label text="UIU Admission Mock Test" styleClass="section-title"/>
+                        <Label text="Practice for the actual admission test with this timed simulation" styleClass="subtitle"/>
+                    </VBox>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <VBox alignment="CENTER_RIGHT" spacing="5">
+                        <HBox alignment="CENTER_RIGHT" spacing="10">
+                            <Label text="Time Remaining:" styleClass="time-label"/>
+                            <Label fx:id="timeLabel" text="60:00" styleClass="time-value"/>
+                        </HBox>
+                        <ProgressBar fx:id="timeProgress" progress="1.0" styleClass="time-progress"/>
+                    </VBox>
+                </HBox>
+
+                <!-- Instructions -->
+                <VBox styleClass="instructions-box" spacing="10">
+                    <Label text="Test Instructions" styleClass="instructions-title"/>
+                    <Label text="1. This test consists of 60 multiple-choice questions to be completed in 60 minutes." wrapText="true" styleClass="instructions-text"/>
+                    <Label text="2. Questions are divided into three sections: Mathematics, English, and Analytical Ability." wrapText="true" styleClass="instructions-text"/>
+                    <Label text="3. There is no negative marking for wrong answers." wrapText="true" styleClass="instructions-text"/>
+                    <Label text="4. Use the navigation buttons to move between questions." wrapText="true" styleClass="instructions-text"/>
+                    <HBox alignment="CENTER" spacing="15">
+                        <MFXButton fx:id="startTestBtn" text="Start Test" styleClass="mfx-button-primary"/>
+                        <MFXButton fx:id="viewSyllabusBtn" text="View Syllabus" styleClass="mfx-button-outline"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Test Content (hidden until test starts) -->
+                <VBox fx:id="testContent" visible="false" spacing="20">
+                    <!-- Navigation -->
+                    <HBox alignment="CENTER" spacing="10">
+                        <MFXButton fx:id="prevQuestionBtn" text="◀ Previous" styleClass="mfx-button-small"/>
+                        <Label fx:id="questionNumberLabel" text="Question 1 of 60" styleClass="question-number"/>
+                        <MFXButton fx:id="nextQuestionBtn" text="Next ▶" styleClass="mfx-button-small"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <MFXButton fx:id="submitTestBtn" text="Submit Test" styleClass="mfx-button-danger"/>
+                    </HBox>
+
+                    <!-- Current Question -->
+                    <VBox styleClass="question-box" spacing="15">
+                        <Label fx:id="questionText" styleClass="question-text" wrapText="true"/>
+                        <VBox fx:id="optionsContainer" spacing="10">
+                            <!-- No <ToggleGroup> tag here; just reference it in RadioButtons -->
+                            <HBox alignment="CENTER_LEFT" spacing="10">
+                                <RadioButton fx:id="option1" toggleGroup="$optionsGroup" styleClass="option-radio"/>
+                                <Label fx:id="option1Text" styleClass="option-text" wrapText="true"/>
+                            </HBox>
+                            <HBox alignment="CENTER_LEFT" spacing="10">
+                                <RadioButton fx:id="option2" toggleGroup="$optionsGroup" styleClass="option-radio"/>
+                                <Label fx:id="option2Text" styleClass="option-text" wrapText="true"/>
+                            </HBox>
+                            <HBox alignment="CENTER_LEFT" spacing="10">
+                                <RadioButton fx:id="option3" toggleGroup="$optionsGroup" styleClass="option-radio"/>
+                                <Label fx:id="option3Text" styleClass="option-text" wrapText="true"/>
+                            </HBox>
+                            <HBox alignment="CENTER_LEFT" spacing="10">
+                                <RadioButton fx:id="option4" toggleGroup="$optionsGroup" styleClass="option-radio"/>
+                                <Label fx:id="option4Text" styleClass="option-text" wrapText="true"/>
+                            </HBox>
+                        </VBox>
+                    </VBox>
+
+                    <!-- Section Navigation -->
+                    <HBox alignment="CENTER" spacing="15">
+                        <MFXButton fx:id="mathSectionBtn" text="Mathematics (20)" styleClass="section-button"/>
+                        <MFXButton fx:id="englishSectionBtn" text="English (20)" styleClass="section-button"/>
+                        <MFXButton fx:id="analyticalSectionBtn" text="Analytical (20)" styleClass="section-button"/>
+                    </HBox>
+
+                    <!-- Question Palette -->
+                    <VBox styleClass="palette-box" spacing="10">
+                        <Label text="Question Palette" styleClass="palette-title"/>
+                        <GridPane fx:id="questionPalette" hgap="10" vgap="10">
+                            <columnConstraints>
+                                <ColumnConstraints hgrow="ALWAYS"/>
+                                <ColumnConstraints hgrow="ALWAYS"/>
+                                <ColumnConstraints hgrow="ALWAYS"/>
+                                <ColumnConstraints hgrow="ALWAYS"/>
+                                <ColumnConstraints hgrow="ALWAYS"/>
+                            </columnConstraints>
+                        </GridPane>
+                    </VBox>
+                </VBox>
+
+                <!-- Results Section -->
+                <VBox fx:id="resultsContainer" visible="false" spacing="20" styleClass="results-box">
+                    <Label text="Test Results" styleClass="section-title"/>
+                    <HBox alignment="CENTER" spacing="30">
+                        <VBox alignment="CENTER" spacing="5" styleClass="result-card">
+                            <Label text="Score" styleClass="result-label"/>
+                            <Label fx:id="scoreLabel" text="75" styleClass="result-value"/>
+                        </VBox>
+                        <VBox alignment="CENTER" spacing="5" styleClass="result-card">
+                            <Label text="Correct" styleClass="result-label"/>
+                            <Label fx:id="correctLabel" text="45" styleClass="result-value-correct"/>
+                        </VBox>
+                        <VBox alignment="CENTER" spacing="5" styleClass="result-card">
+                            <Label text="Wrong" styleClass="result-label"/>
+                            <Label fx:id="wrongLabel" text="10" styleClass="result-value-wrong"/>
+                        </VBox>
+                        <VBox alignment="CENTER" spacing="5" styleClass="result-card">
+                            <Label text="Unanswered" styleClass="result-label"/>
+                            <Label fx:id="unansweredLabel" text="5" styleClass="result-value"/>
+                        </VBox>
+                    </HBox>
+
+                    <VBox spacing="15">
+                        <Label text="Detailed Analysis" styleClass="subsection-title"/>
+                        <HBox spacing="30" alignment="CENTER">
+                            <VBox spacing="10">
+                                <Label text="Mathematics" styleClass="analysis-title"/>
+                                <Label fx:id="mathScoreLabel" text="25/30" styleClass="analysis-score"/>
+                                <ProgressBar fx:id="mathProgress" progress="0.83" styleClass="analysis-progress"/>
+                            </VBox>
+                            <VBox spacing="10">
+                                <Label text="English" styleClass="analysis-title"/>
+                                <Label fx:id="englishScoreLabel" text="20/30" styleClass="analysis-score"/>
+                                <ProgressBar fx:id="englishProgress" progress="0.67" styleClass="analysis-progress"/>
+                            </VBox>
+                            <VBox spacing="10">
+                                <Label text="Analytical" styleClass="analysis-title"/>
+                                <Label fx:id="analyticalScoreLabel" text="30/30" styleClass="analysis-score"/>
+                                <ProgressBar fx:id="analyticalProgress" progress="1.0" styleClass="analysis-progress"/>
+                            </VBox>
+                        </HBox>
+                    </VBox>
+
+                    <VBox spacing="15">
+                        <Label text="Recommendations" styleClass="subsection-title"/>
+                        <TextArea fx:id="recommendationsText" styleClass="recommendations-text" wrapText="true" editable="false">
+                            <padding>
+                                <Insets top="15" right="15" bottom="15" left="15"/>
+                            </padding>
+                        </TextArea>
+                    </VBox>
+
+                    <HBox alignment="CENTER" spacing="15">
+                        <MFXButton fx:id="reviewTestBtn" text="Review Test" styleClass="mfx-button-outline"/>
+                        <MFXButton fx:id="newTestBtn" text="Take Another Test" styleClass="mfx-button-primary"/>
+                    </HBox>
+                </VBox>
+            </VBox>
+
+            <!-- 🔚 Footer -->
+            <VBox id="footer" alignment="CENTER" spacing="30" style="-fx-background-color: #222222;">
+                <padding>
+                    <Insets top="50" right="20" bottom="30" left="20"/>
+                </padding>
+                <HBox alignment="CENTER" spacing="60">
+                    <VBox spacing="15" alignment="CENTER_LEFT" maxWidth="300">
+                        <ImageView fitHeight="60" fitWidth="60">
+                            <image>
+                                <Image url="@uiu_logo_update.png"/>
+                            </image>
+                        </ImageView>
+                        <Label styleClass="footer-text" text="UIU is committed to providing quality education and preparing students for the global challenges through innovative teaching methods and research." wrapText="true"/>
+                    </VBox>
+                    <VBox spacing="15" alignment="CENTER_LEFT">
+                        <Label styleClass="footer-title" text="Quick Links"/>
+                        <Label styleClass="footer-link" text="Home"/>
+                        <Label styleClass="footer-link" text="About"/>
+                        <Label styleClass="footer-link" text="Admission"/>
+                        <Label styleClass="footer-link" text="Mock Test"/>
+                        <Label styleClass="footer-link" text="Contact"/>
+                    </VBox>
+                </HBox>
+            </VBox>
+
+        </VBox>
+    </MFXScrollPane>
+</StackPane>

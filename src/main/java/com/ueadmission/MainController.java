@@ -1,5 +1,6 @@
 package com.ueadmission;
 
+import com.ueadmission.MockTest.MockTest;
 import com.ueadmission.auth.Auth;
 import com.ueadmission.auth.state.AuthState;
 import com.ueadmission.auth.state.AuthStateManager;
@@ -16,6 +17,11 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+import java.io.IOException;
 
 
 
@@ -56,7 +62,18 @@ public class MainController {
     
     @FXML
     private VBox mainContainer; // Main container VBox defined in main.fxml
-    
+    @FXML
+    private MFXButton mockTestButton;
+
+
+
+
+
+    @FXML
+    private void openMockTestPage(ActionEvent event) {
+        MockTest mockTest = new MockTest();
+        mockTest.openMockTestPage(event);
+    }
     @FXML
     private void initialize() {
         // Set up the About button click action
@@ -77,6 +94,16 @@ public class MainController {
                 openLoginPage(event);
             }
         });
+        // In the initialize() method
+        mockTestButton.setOnAction(event -> {
+            if (AuthStateManager.getInstance().isAuthenticated()) {
+                openMockTestPage(event);
+            } else {
+                openLoginPage(event);
+            }
+        });
+
+
         
         // Set up the contact button click action
         if (contactButton != null) {

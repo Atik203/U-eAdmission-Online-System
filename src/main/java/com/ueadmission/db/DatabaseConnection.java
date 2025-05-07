@@ -13,9 +13,9 @@ import java.util.logging.Logger;
  */
 public class DatabaseConnection {
     // Database configuration
-    private static final String DB_URL = "jdbc:mysql://localhost:3306/uiu_admission_db";
+    private static final String DB_URL = "jdbc:mysql://localhost:3306/login_schema";
     private static final String DB_USER = "root";
-    private static final String DB_PASSWORD = "admin";
+    private static final String DB_PASSWORD = "poi@20470";
     
     private static final Logger LOGGER = Logger.getLogger(DatabaseConnection.class.getName());
     

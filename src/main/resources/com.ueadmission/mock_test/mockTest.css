@@ -1,0 +1,230 @@
+/* Mock Test Specific Styles */
+#mock-test-container {
+    -fx-background-color: -bg-light;
+}
+
+.subtitle {
+    -fx-font-size: 16px;
+    -fx-text-fill: -text-dark;
+    -fx-opacity: 0.8;
+}
+
+.instructions-box {
+    -fx-background-color: white;
+    -fx-border-color: -border-color;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 20;
+    -fx-effect: dropshadow(gaussian, -shadow-color, 10, 0, 0, 2);
+}
+
+.instructions-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -primary-color;
+}
+
+.instructions-text {
+    -fx-font-size: 14px;
+    -fx-text-fill: -text-dark;
+    -fx-opacity: 0.8;
+}
+
+.time-label {
+    -fx-font-size: 14px;
+    -fx-text-fill: -text-dark;
+    -fx-opacity: 0.8;
+}
+
+.time-value {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -primary-color;
+}
+
+.time-progress {
+    -fx-accent: -primary-color;
+    -fx-pref-width: 200;
+    -fx-pref-height: 8;
+}
+
+.question-box {
+    -fx-background-color: white;
+    -fx-border-color: -border-color;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 25;
+    -fx-effect: dropshadow(gaussian, -shadow-color, 10, 0, 0, 2);
+}
+
+.question-number {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -text-dark;
+}
+
+.question-text {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -text-dark;
+}
+
+.option-radio {
+    -fx-padding: 0;
+}
+
+.option-text {
+    -fx-font-size: 14px;
+    -fx-text-fill: -text-dark;
+    -fx-opacity: 0.9;
+}
+
+.section-button {
+    -fx-background-color: white;
+    -fx-text-fill: -primary-color;
+    -fx-border-color: -primary-color;
+    -fx-border-width: 1.5;
+    -fx-font-weight: bold;
+    -fx-padding: 8 15;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+    -mfx-ripple-color: rgba(250, 69, 6, 0.1);
+}
+
+.section-button:hover {
+    -fx-background-color: rgba(250, 69, 6, 0.05);
+}
+
+.section-button:selected {
+    -fx-background-color: -primary-color;
+    -fx-text-fill: white;
+}
+
+.palette-box {
+    -fx-background-color: white;
+    -fx-border-color: -border-color;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 20;
+    -fx-effect: dropshadow(gaussian, -shadow-color, 10, 0, 0, 2);
+}
+
+.palette-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -text-dark;
+}
+
+.question-palette-button {
+    -fx-background-color: white;
+    -fx-border-color: -border-color;
+    -fx-border-width: 1;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-pref-width: 40;
+    -fx-pref-height: 40;
+    -fx-font-size: 14px;
+    -fx-text-fill: -text-dark;
+}
+
+.question-palette-button:hover {
+    -fx-background-color: #f0f0f0;
+}
+
+.question-palette-button:visited {
+    -fx-background-color: #e0e0e0;
+}
+
+.question-palette-button:selected {
+    -fx-background-color: -primary-color;
+    -fx-text-fill: white;
+}
+
+/* Results Section */
+.results-box {
+    -fx-background-color: white;
+    -fx-border-color: -border-color;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 30;
+    -fx-effect: dropshadow(gaussian, -shadow-color, 10, 0, 0, 2);
+}
+
+.result-card {
+    -fx-background-color: -bg-light;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 20;
+    -fx-pref-width: 120;
+}
+
+.result-label {
+    -fx-font-size: 14px;
+    -fx-text-fill: -text-dark;
+    -fx-opacity: 0.8;
+}
+
+.result-value {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -primary-color;
+}
+
+.result-value-correct {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2ecc71;
+}
+
+.result-value-wrong {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -danger-color;
+}
+
+.subsection-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -text-dark;
+    -fx-padding: 10 0 5 0;
+}
+
+.analysis-title {
+    -fx-font-size: 16px;
+    -fx-text-fill: -text-dark;
+}
+
+.analysis-score {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -primary-color;
+}
+
+.analysis-progress {
+    -fx-accent: -primary-color;
+    -fx-pref-width: 150;
+    -fx-pref-height: 8;
+}
+
+.recommendations-text {
+    -fx-font-size: 14px;
+    -fx-text-fill: -text-dark;
+    -fx-background-color: -bg-light;
+    -fx-border-color: -border-color;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+}
+
+.mfx-button-danger {
+    -fx-background-color: -danger-color;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 10 20;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+    -mfx-ripple-color: rgba(255, 255, 255, 0.3);
+}
+
+.mfx-button-danger:hover {
+    -fx-background-color: #d63031;
+}
