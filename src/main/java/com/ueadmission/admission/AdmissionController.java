@@ -688,10 +688,13 @@ public class AdmissionController {
         // Configure other navigation buttons if they exist
         if (aboutButton != null) {
             aboutButton.setOnAction(event -> navigateToAbout(event));
-        }
-
-        if (contactButton != null) {
+        }        if (contactButton != null) {
             contactButton.setOnAction(event -> navigateToContact(event));
+        }
+        
+        // Configure Exam Portal navigation button
+        if (examPortalButton != null) {
+            examPortalButton.setOnAction(event -> navigateToExamPortal(event));
         }
 
         // Subscribe to auth state changes
@@ -965,9 +968,7 @@ public class AdmissionController {
         // Call cleanup first to ensure proper resource disposal
         cleanup();
         com.ueadmission.navigation.NavigationUtil.navigateToContact(event);
-    }
-
-    /**
+    }    /**
      * Navigates to the Login page with transition effects
      * @param event The event that triggered this action
      */
@@ -975,6 +976,16 @@ public class AdmissionController {
         // Call cleanup first to ensure proper resource disposal
         cleanup();
         com.ueadmission.navigation.NavigationUtil.navigateToLogin(event);
+    }
+    
+    /**
+     * Navigates to the Exam Portal page with transition effects
+     * @param event The event that triggered this action
+     */
+    private void navigateToExamPortal(javafx.event.ActionEvent event) {
+        // Call cleanup first to ensure proper resource disposal
+        cleanup();
+        com.ueadmission.navigation.NavigationUtil.navigateToExamPortal(event);
     }
 }
 

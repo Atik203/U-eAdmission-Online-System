@@ -233,8 +233,7 @@ public class ContactController {
     private void navigateToExamPortal(ActionEvent event) {
         // Call cleanup first to ensure proper resource disposal
         cleanup();
-        // Exam Portal page navigation is not yet fully implemented
-        System.out.println("Navigate to Exam Portal (not implemented yet)");
+        com.ueadmission.navigation.NavigationUtil.navigateToExamPortal(event);
     }
     
     /**
