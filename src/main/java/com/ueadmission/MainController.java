@@ -41,9 +41,11 @@ public class MainController {
 
     @FXML
     private MFXButton admissionButton; //" it will be show admission info about bsc--sagor"
+      @FXML
+    private MFXButton contactButton; // Contact page button
     
     @FXML
-    private MFXButton contactButton; // Contact page button
+    private MFXButton examPortalButton; // Exam Portal button
     
     @FXML
     private javafx.scene.layout.HBox loginButtonContainer; // Container for login button
@@ -77,11 +79,15 @@ public class MainController {
                 openLoginPage(event);
             }
         });
-        
-        // Set up the contact button click action
+          // Set up the contact button click action
         if (contactButton != null) {
             contactButton.setOnAction(event -> openContactPage(event));
         }
+        
+        // Set up the exam portal button click action
+
+            examPortalButton.setOnAction(event -> openExamPortalPage(event));
+
         
         // Set up the Apply Now button to open login page if not logged in,
         // otherwise go directly to admission page
@@ -369,9 +375,16 @@ public class MainController {
     /**
      * Opens the Contact page
      * @param event The event that triggered this action
-     */
-    private void openContactPage(javafx.event.ActionEvent event) {
+     */    private void openContactPage(javafx.event.ActionEvent event) {
         NavigationUtil.navigateToContact(event);
+    }
+    
+    /**
+     * Opens the Exam Portal page
+     * @param event The event that triggered this action
+     */
+    private void openExamPortalPage(javafx.event.ActionEvent event) {
+        NavigationUtil.navigateToExamPortal(event);
     }
 
     @FXML

@@ -11,7 +11,6 @@ import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.animation.FadeTransition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -124,32 +123,17 @@ public class RegistrationController {
     public void navigateToAdmission(ActionEvent event) {
         com.ueadmission.navigation.NavigationUtil.navigateToAdmission(event);
     }
-      /**
+    /**
      * Navigates to the Exam Portal screen
-     */
+     */    
     @FXML
     public void navigateToExamPortal(ActionEvent event) {
         try {
-            // Get current stage and its properties
-            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            double width = currentStage.getWidth();
-            double height = currentStage.getHeight();
-            double x = currentStage.getX();
-            double y = currentStage.getY();
-            boolean maximized = currentStage.isMaximized();
-            
-            // In a real app, this would navigate to the exam portal screen
-            // For now, we'll just show an alert or log a message
-            System.out.println("Navigate to Exam Portal (not implemented yet)");
-            
-            // Placeholder for future implementation
-            // Stage examPortalWindow = ExamPortal.prepareExamPortalWindow(width, height, x, y, maximized);
-            // if (examPortalWindow != null) {
-            //     applyTransition(currentStage, examPortalWindow);
-            // }
+            // Navigate to Exam Portal using NavigationUtil
+            com.ueadmission.navigation.NavigationUtil.navigateToExamPortal(event);
         } catch (Exception e) {
             e.printStackTrace();
-            System.err.println("Failed to navigate to exam portal: " + e.getMessage());
+            System.err.println("Error navigating to Exam Portal: " + e.getMessage());
         }
     }
     
