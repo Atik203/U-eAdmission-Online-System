@@ -63,7 +63,7 @@ public class AdmissionController {
     private MFXButton aboutButton;
 
     @FXML
-    private MFXButton mockTestButton;
+    private MFXButton examPortalButton;
 
     @FXML
     private MFXButton contactButton;

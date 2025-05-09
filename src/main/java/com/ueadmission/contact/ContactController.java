@@ -23,7 +23,7 @@ public class ContactController {
     @FXML private MFXButton homeButton;
     @FXML private MFXButton aboutButton;
     @FXML private MFXButton admissionButton;
-    @FXML private MFXButton mockTestButton;
+    @FXML private MFXButton examPortalButton;
     @FXML private MFXButton contactButton;
     @FXML private MFXButton loginButton;
     
@@ -66,7 +66,7 @@ public class ContactController {
             }
         });
         
-        mockTestButton.setOnAction(this::navigateToMockTest);
+        examPortalButton.setOnAction(this::navigateToExamPortal);
         contactButton.setOnAction(event -> {}); // Already on contact page
         loginButton.setOnAction(this::navigateToLogin);
         
@@ -225,17 +225,16 @@ public class ContactController {
         cleanup();
         NavigationUtil.navigateToAdmission(event);
     }
-    
-    /**
-     * Navigates to the Mock Test page
+      /**
+     * Navigates to the Exam Portal page
      * @param event The event that triggered this action
      */
     @FXML
-    private void navigateToMockTest(ActionEvent event) {
+    private void navigateToExamPortal(ActionEvent event) {
         // Call cleanup first to ensure proper resource disposal
         cleanup();
-        // Mock Test page navigation is not yet fully implemented
-        System.out.println("Navigate to Mock Test (not implemented yet)");
+        // Exam Portal page navigation is not yet fully implemented
+        System.out.println("Navigate to Exam Portal (not implemented yet)");
     }
     
     /**

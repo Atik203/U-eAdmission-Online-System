@@ -34,7 +34,7 @@
             <MFXButton id="nav-button" fx:id="homeButton" styleClass="mfx-button" text="Home" />
             <MFXButton id="nav-button" fx:id="aboutButton" styleClass="mfx-button" text="About" />
             <MFXButton id="nav-button" fx:id="admissionButton" styleClass="mfx-button" text="Admission" />
-            <MFXButton id="nav-button" fx:id="mockTestButton" styleClass="mfx-button" text="Mock Test" />
+            <MFXButton id="nav-button" fx:id="examPortalButton" styleClass="mfx-button" text="Exam Portal" />
             <MFXButton id="nav-button" fx:id="contactButton" styleClass="mfx-button" text="Contact" />
             
             <!-- Login button container - visible when not authenticated -->
@@ -283,7 +283,7 @@
                 <VBox spacing="15" alignment="CENTER_LEFT">
                     <Label styleClass="footer-title" text="Resources" />
                     <Label styleClass="footer-link" text="Student Portal" />
-                    <Label styleClass="footer-link" text="Mock Tests" />
+                    <Label styleClass="footer-link" text="Exam Portal" />
                     <Label styleClass="footer-link" text="FAQ" />
                     <Label styleClass="footer-link" text="Help Center" />
                 </VBox>
