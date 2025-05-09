@@ -261,8 +261,7 @@ public class NavigationUtil {
     public static boolean navigateToContact(Event event) {
         return navigateTo(event, "/com.ueadmission/contact/contact.fxml", "Contact - UeAdmission");
     }
-    
-    /**
+      /**
      * Navigate to applications screen
      * 
      * @param event The event that triggered navigation
@@ -270,6 +269,16 @@ public class NavigationUtil {
      */
     public static boolean navigateToApplications(Event event) {
         return navigateTo(event, "/com.ueadmission/application/application.fxml", "My Applications - UeAdmission");
+    }
+    
+    /**
+     * Navigate to exam portal screen
+     * 
+     * @param event The event that triggered navigation
+     * @return true if navigation was successful, false otherwise
+     */
+    public static boolean navigateToExamPortal(Event event) {
+        return navigateTo(event, "/com.ueadmission/examPortal/exam-portal.fxml", "Exam Portal - UeAdmission");
     }
     
     /**

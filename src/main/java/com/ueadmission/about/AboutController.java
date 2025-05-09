@@ -56,9 +56,7 @@ public class AboutController {
         visitWebsiteBtn.setOnAction(event -> openWebsite("https://www.uiu.ac.bd/"));
 
         // Configure navigation buttons
-        homeButton.setOnAction(event -> navigateToHome(event));
-
-        // Configure login button if it exists
+        homeButton.setOnAction(event -> navigateToHome(event));        // Configure login button if it exists
         if (loginButton != null) {
             loginButton.setOnAction(event -> navigateToLogin(event));
         }
@@ -72,18 +70,20 @@ public class AboutController {
                     // Redirect to login page if not authenticated
                     navigateToLogin(event);
                 }
-            });        }
+            });
+        }
 
         if (examPortalButton != null) {
-            examPortalButton.setOnAction(event -> System.out.println("Exam Portal button clicked"));
+            examPortalButton.setOnAction(event -> navigateToExamPortal(event));
         }
 
         if (contactButton != null) {
             contactButton.setOnAction(event -> navigateToContact(event));
-        }
-
-        // Subscribe to auth state changes
+        }        // Subscribe to auth state changes
         subscribeToAuthStateChanges();
+
+        // Setup profile button action
+        setupProfileButtonAction();
 
         // Refresh UI with current auth state
         refreshUI();
@@ -317,9 +317,7 @@ public class AboutController {
         // Call cleanup first to ensure proper resource disposal
         cleanup();
         com.ueadmission.navigation.NavigationUtil.navigateToLogin(event);
-    }
-
-    /**
+    }    /**
      * Navigates to the Contact page
      * @param event The event that triggered this action
      */
@@ -328,7 +326,7 @@ public class AboutController {
         cleanup();
         com.ueadmission.navigation.NavigationUtil.navigateToContact(event);
     }
-
+    
     /**
      * Navigates to the Profile page with transition effects
      * @param event The event that triggered this action
@@ -337,5 +335,15 @@ public class AboutController {
         // Call cleanup first to ensure proper resource disposal
         cleanup();
         com.ueadmission.navigation.NavigationUtil.navigateToProfile(event);
+    }
+    
+    /**
+     * Navigates to the Exam Portal page with transition effects
+     * @param event The event that triggered this action
+     */
+    private void navigateToExamPortal(javafx.event.ActionEvent event) {
+        // Call cleanup first to ensure proper resource disposal
+        cleanup();
+        com.ueadmission.navigation.NavigationUtil.navigateToExamPortal(event);
     }
 }

@@ -382,11 +382,11 @@ public class LoginController extends BaseController {
     }
       /**
      * Navigates to the Exam Portal screen
-     */
-    @FXML
+     */    @FXML
     public void navigateToExamPortal(ActionEvent event) {
-        // This is a placeholder for Exam Portal navigation
-        System.out.println("Navigate to Exam Portal (not implemented yet)");
+        // Navigate to Exam Portal using NavigationUtil
+        cleanup();
+        com.ueadmission.navigation.NavigationUtil.navigateToExamPortal(event);
     }
     
     /**
@@ -404,7 +404,9 @@ public class LoginController extends BaseController {
     public void navigateToRegistration(ActionEvent event) {
         com.ueadmission.navigation.NavigationUtil.navigateToRegistration(event);
     }
-    
+
+
+
     /**
      * Opens the Login page
      * @param event The event that triggered this action
