@@ -71,7 +71,7 @@ public class ApplicationController {
     private MFXButton admissionButton;
     
     @FXML
-    private MFXButton mockTestButton;
+    private MFXButton examPortalButton;
     
     @FXML
     private MFXButton contactButton;
@@ -178,9 +178,8 @@ public class ApplicationController {
         }
         if (admissionButton != null) {
             admissionButton.setOnAction(this::navigateToAdmission);
-        }
-        if (mockTestButton != null) {
-            mockTestButton.setOnAction(this::navigateToMockTest);
+        }        if (examPortalButton != null) {
+            examPortalButton.setOnAction(this::navigateToExamPortal);
         }
         if (contactButton != null) {
             contactButton.setOnAction(this::navigateToContact);
@@ -715,15 +714,14 @@ public class ApplicationController {
         cleanup();
         NavigationUtil.navigateToLogin(event);
     }
-    
-    /**
-     * Navigate to the Mock Test screen
+      /**
+     * Navigate to the Exam Portal screen
      */
     @FXML
-    private void navigateToMockTest(ActionEvent event) {
+    private void navigateToExamPortal(ActionEvent event) {
         cleanup();
         // Not implemented yet
-        System.out.println("Navigate to Mock Test page (not implemented yet)");
+        System.out.println("Navigate to Exam Portal page (not implemented yet)");
     }
     
     /**

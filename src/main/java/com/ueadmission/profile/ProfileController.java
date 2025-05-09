@@ -74,7 +74,7 @@ public class ProfileController {
     public MFXButton admissionButton;
     
     @FXML
-    private MFXButton mockTestButton;
+    private MFXButton examPortalButton;
     
     @FXML
     private MFXButton contactButton;
@@ -116,7 +116,7 @@ public class ProfileController {
             }
         });
         
-        mockTestButton.setOnAction(e -> navigateToMockTest(e));
+        examPortalButton.setOnAction(e -> navigateToExamPortal(e));
         contactButton.setOnAction(e -> navigateToContact(e));
         
         editProfileButton.setOnAction(e -> handleEditProfile());
@@ -320,12 +320,12 @@ public class ProfileController {
     }
     
     /**
-     * Navigates to the Mock Test screen
+     * Navigates to the Exam Portal screen
      */
-    private void navigateToMockTest(ActionEvent event) {
+    private void navigateToExamPortal(ActionEvent event) {
         cleanup();
-        // This is a placeholder - Mock Test isn't fully implemented yet
-        System.out.println("Navigate to Mock Test page (not implemented yet)");
+        // This is a placeholder - Exam Portal isn't fully implemented yet
+        System.out.println("Navigate to Exam Portal page (not implemented yet)");
     }
     
     /**

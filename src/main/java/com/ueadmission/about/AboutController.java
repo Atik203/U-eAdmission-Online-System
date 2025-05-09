@@ -36,7 +36,7 @@ public class AboutController {
     private MFXButton admissionButton;
 
     @FXML
-    private MFXButton mockTestButton;
+    private MFXButton examPortalButton;
 
     @FXML
     private MFXButton contactButton;
@@ -72,11 +72,10 @@ public class AboutController {
                     // Redirect to login page if not authenticated
                     navigateToLogin(event);
                 }
-            });
-        }
+            });        }
 
-        if (mockTestButton != null) {
-            mockTestButton.setOnAction(event -> System.out.println("Mock Test button clicked"));
+        if (examPortalButton != null) {
+            examPortalButton.setOnAction(event -> System.out.println("Exam Portal button clicked"));
         }
 
         if (contactButton != null) {
