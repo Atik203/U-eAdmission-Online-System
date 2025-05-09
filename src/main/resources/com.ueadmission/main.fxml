@@ -38,7 +38,7 @@
                 <MFXButton id="nav-button" fx:id="homeButton" styleClass="mfx-button" text="Home" />
                 <MFXButton id="nav-button" fx:id="aboutButton" styleClass="mfx-button" text="About" />
                 <MFXButton id="nav-button" fx:id="admissionButton" styleClass="mfx-button" text="Admission" />
-                <MFXButton id="nav-button" fx:id="mockTestButton" styleClass="mfx-button" text="Mock Test" />
+                <MFXButton id="nav-button" fx:id="examPortalButton" styleClass="mfx-button" text="Exam Portal" />
                 <MFXButton id="nav-button" fx:id="contactButton" styleClass="mfx-button" text="Contact" />
                 
                 <!-- Login button container - visible when not authenticated -->
@@ -106,13 +106,13 @@
                                     <MFXButton styleClass="mfx-button-small" text="Learn More" />
                                 </VBox>
                             </TitledPane>
-                            <TitledPane styleClass="notice-item" text="Mock Test Registration for Admission Preparation">
+                            <TitledPane styleClass="notice-item" text="Exam Portal Registration for Admission Preparation">
                                 <VBox spacing="10">
                                     <HBox spacing="10" alignment="CENTER_LEFT">
                                         <Label styleClass="notice-date" text="April 8, 2025" />
                                         <Label styleClass="notice-category" text="Preparation" />
                                     </HBox>
-                                    <Label styleClass="notice-content" wrapText="true" text="Register for our free mock test sessions to prepare for the upcoming admission test. Sessions are designed to familiarize students with the test format and improve their performance. Next mock test session is scheduled for April 25, 2025." />
+                                    <Label styleClass="notice-content" wrapText="true" text="Register for our Exam Portal to prepare for the upcoming admission test. The portal is designed to familiarize students with the test format and improve their performance. The next scheduled exam is on April 25, 2025." />
                                     <MFXButton styleClass="mfx-button-small" text="Register Now" />
                                 </VBox>
                             </TitledPane>
@@ -166,12 +166,12 @@
                             <Label styleClass="faq-answer" text="Yes! You can apply and upload documents online directly from your dashboard. The online application process is simple and user-friendly. You will need to create an account first, then fill out the application form and upload the required documents." wrapText="true" />
                         </VBox>
                     </TitledPane>
-                    <TitledPane expanded="false" styleClass="faq-item" text="Is there a mock test available?">
+                    <TitledPane expanded="false" styleClass="faq-item" text="Is there an exam portal available?">
                         <VBox>
                             <padding>
                                 <Insets topRightBottomLeft="15" />
                             </padding>
-                            <Label styleClass="faq-answer" text="Definitely. Practice anytime with our mock test system. The mock tests are designed to simulate the actual admission test environment and help you prepare better. You can take multiple mock tests to improve your performance." wrapText="true" />
+                            <Label styleClass="faq-answer" text="Definitely. Practice anytime with our exam portal system. The exam portal is designed to simulate the actual admission test environment and help you prepare better. You can take multiple practice exams to improve your performance." wrapText="true" />
                         </VBox>
                     </TitledPane>
                     <TitledPane expanded="false" styleClass="faq-item" text="What are the available scholarships?">
@@ -243,7 +243,7 @@
                     <VBox spacing="15" alignment="CENTER_LEFT">
                         <Label styleClass="footer-title" text="Resources" />
                         <Label styleClass="footer-link" text="Student Portal" />
-                        <Label styleClass="footer-link" text="Mock Tests" />
+                        <Label styleClass="footer-link" text="Exam Portal" />
                         <Label styleClass="footer-link" text="FAQ" />
                         <Label styleClass="footer-link" text="Help Center" />
                     </VBox>

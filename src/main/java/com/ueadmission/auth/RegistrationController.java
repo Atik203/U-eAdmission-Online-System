@@ -62,7 +62,7 @@ public class RegistrationController {
     private MFXButton admissionButton;
     
     @FXML
-    private MFXButton mockTestButton;
+    private MFXButton examPortalButton;
     
     @FXML
     private MFXButton contactButton;
@@ -86,7 +86,7 @@ public class RegistrationController {
                 errorLabel.setVisible(true);
             }
         });
-        mockTestButton.setOnAction(event -> navigateToMockTest(event));
+        examPortalButton.setOnAction(event -> navigateToExamPortal(event));
         contactButton.setOnAction(event -> navigateToContact(event));
         
         // Style the terms checkbox
@@ -124,12 +124,11 @@ public class RegistrationController {
     public void navigateToAdmission(ActionEvent event) {
         com.ueadmission.navigation.NavigationUtil.navigateToAdmission(event);
     }
-    
-    /**
-     * Navigates to the Mock Test screen
+      /**
+     * Navigates to the Exam Portal screen
      */
     @FXML
-    public void navigateToMockTest(ActionEvent event) {
+    public void navigateToExamPortal(ActionEvent event) {
         try {
             // Get current stage and its properties
             Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -139,18 +138,18 @@ public class RegistrationController {
             double y = currentStage.getY();
             boolean maximized = currentStage.isMaximized();
             
-            // In a real app, this would navigate to the mock test screen
+            // In a real app, this would navigate to the exam portal screen
             // For now, we'll just show an alert or log a message
-            System.out.println("Navigate to Mock Test (not implemented yet)");
+            System.out.println("Navigate to Exam Portal (not implemented yet)");
             
             // Placeholder for future implementation
-            // Stage mockTestWindow = MockTest.prepareMockTestWindow(width, height, x, y, maximized);
-            // if (mockTestWindow != null) {
-            //     applyTransition(currentStage, mockTestWindow);
+            // Stage examPortalWindow = ExamPortal.prepareExamPortalWindow(width, height, x, y, maximized);
+            // if (examPortalWindow != null) {
+            //     applyTransition(currentStage, examPortalWindow);
             // }
         } catch (Exception e) {
             e.printStackTrace();
-            System.err.println("Failed to navigate to mock test: " + e.getMessage());
+            System.err.println("Failed to navigate to exam portal: " + e.getMessage());
         }
     }
     

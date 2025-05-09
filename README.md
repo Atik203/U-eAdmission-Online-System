@@ -15,7 +15,7 @@ The U-eAdmission Online System is a comprehensive JavaFX application designed to
 - **Admission Offer System**: Automated seat allocation based on merit
 - **Role-Specific Dashboards**: Custom interfaces for students and administrators
 - **Notification System**: Email/SMS alerts for deadlines, exam schedules, and results
-- **Mock Tests**: Practice sessions with instant feedback
+- **Exam Portal**: Online admission testing with instant feedback
 - **Live Support**: In-app chat and one-to-one video meeting functionality
 
 ## 📸 Screenshots

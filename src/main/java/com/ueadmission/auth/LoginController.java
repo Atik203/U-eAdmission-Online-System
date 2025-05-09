@@ -44,7 +44,7 @@ public class LoginController extends BaseController {
     private MFXButton admissionButton;
     
     @FXML
-    private MFXButton mockTestButton;
+    private MFXButton examPortalButton;
     
     @FXML
     private MFXButton contactButton;
@@ -83,9 +83,8 @@ public class LoginController extends BaseController {
                 }
             });
         }
-        
-        if (mockTestButton != null) {
-            mockTestButton.setOnAction(event -> navigateToMockTest(event));
+          if (examPortalButton != null) {
+            examPortalButton.setOnAction(event -> navigateToExamPortal(event));
         }
         
         if (contactButton != null) {
@@ -381,14 +380,13 @@ public class LoginController extends BaseController {
     public void navigateToAdmission(ActionEvent event) {
         com.ueadmission.navigation.NavigationUtil.navigateToAdmission(event);
     }
-    
-    /**
-     * Navigates to the Mock Test screen
+      /**
+     * Navigates to the Exam Portal screen
      */
     @FXML
-    public void navigateToMockTest(ActionEvent event) {
-        // This is a placeholder for Mock Test navigation
-        System.out.println("Navigate to Mock Test (not implemented yet)");
+    public void navigateToExamPortal(ActionEvent event) {
+        // This is a placeholder for Exam Portal navigation
+        System.out.println("Navigate to Exam Portal (not implemented yet)");
     }
     
     /**

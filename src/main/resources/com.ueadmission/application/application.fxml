@@ -31,7 +31,7 @@
             <MFXButton id="nav-button" fx:id="homeButton" styleClass="mfx-button" text="Home" onAction="#navigateToHome" />
             <MFXButton id="nav-button" fx:id="aboutButton" styleClass="mfx-button" text="About" onAction="#navigateToAbout" />
             <MFXButton id="nav-button" fx:id="admissionButton" styleClass="mfx-button" text="Admission" onAction="#navigateToAdmission" />
-            <MFXButton id="nav-button" fx:id="mockTestButton" styleClass="mfx-button" text="Mock Test" onAction="#navigateToMockTest" />
+            <MFXButton id="nav-button" fx:id="examPortalButton" styleClass="mfx-button" text="Exam Portal" onAction="#navigateToExamPortal" />
             <MFXButton id="nav-button" fx:id="contactButton" styleClass="mfx-button" text="Contact" onAction="#navigateToContact" />
          
             <!-- Profile button container - always visible when in this screen -->
@@ -126,7 +126,7 @@
                 <VBox spacing="15" alignment="CENTER_LEFT">
                     <Label styleClass="footer-title" text="Resources" />
                     <Label styleClass="footer-link" text="Student Portal" />
-                    <Label styleClass="footer-link" text="Mock Tests" onMouseClicked="#navigateToMockTest" />
+                    <Label styleClass="footer-link" text="Exam Portal" onMouseClicked="#navigateToExamPortal" />
                     <Label styleClass="footer-link" text="FAQ" />
                     <Label styleClass="footer-link" text="Help Center" />
                 </VBox>
