@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.StackPane?>
 
-<StackPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ueadmission.examPortal.ExamPortalController">
+<StackPane fx:id="examPortalRoot" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ueadmission.examPortal.ExamPortalController">
     <MFXScrollPane fitToWidth="true">
         <VBox fx:id="mainContainer" spacing="0" stylesheets="@exam-portal.css">
 
@@ -34,14 +34,13 @@
                 <MFXButton id="nav-button" fx:id="admissionButton" styleClass="mfx-button" text="Admission" />
                 <MFXButton id="nav-button" fx:id="examPortalButton" styleClass="mfx-button" text="Exam Portal" />
                 <MFXButton id="nav-button" fx:id="contactButton" styleClass="mfx-button" text="Contact" />
-                
-                <!-- Login button container - visible when not authenticated -->
-                <HBox id="loginButtonContainer" alignment="CENTER">
+                  <!-- Login button container - visible when not authenticated -->
+                <HBox fx:id="loginButtonContainer" id="loginButtonContainer" alignment="CENTER">
                     <MFXButton id="login-button" fx:id="loginButton" styleClass="mfx-button-login" text="Login" />
                 </HBox>
                 
                 <!-- Profile button container - visible when authenticated -->
-                <HBox id="profileButtonContainer" alignment="CENTER" visible="false" managed="false">
+                <HBox fx:id="profileButtonContainer" id="profileButtonContainer" alignment="CENTER" visible="false" managed="false">
                     <children>
                         <com.ueadmission.components.ProfileButton fx:id="profileButton" styleClass="profile-button-container" />
                     </children>
