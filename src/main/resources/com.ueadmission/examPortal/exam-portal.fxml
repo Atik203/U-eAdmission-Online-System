@@ -48,8 +48,7 @@
                 </HBox>
             </HBox>
             
-            <!-- Content Container -->
-              <!-- Hero Section -->
+            <!-- Content Container -->                <!-- Hero Section -->
             <VBox alignment="CENTER" spacing="10" styleClass="content-container">
                 <padding>
                     <Insets top="40" right="20" bottom="30" left="20" />
@@ -57,12 +56,6 @@
                 <VBox maxWidth="1000" alignment="CENTER">
                     <Label styleClass="section-title" text="University Admission Exam Portal" />
                     <Label styleClass="section-subtitle" text="Practice with mock tests and prepare for your actual admission exams" wrapText="true" />
-                    
-                    <!-- Notification/Alert Box -->
-                    <VBox styleClass="notify-section" maxWidth="800">
-                        <Label styleClass="notify-title" text="Important Notice" />
-                        <Label styleClass="notify-text" text="Students are advised to attempt mock tests before the actual admission exam. This will help familiarize with the format and improve performance. The upcoming admission test is scheduled for June 5, 2025." wrapText="true" />
-                    </VBox>
                 </VBox>
             </VBox>
               <!-- Mock Test Section -->
@@ -81,10 +74,11 @@
                         <Label styleClass="instruction-item" text="• Each test contains questions similar to those that will appear in the actual exam" wrapText="true" />
                         <Label styleClass="instruction-item" text="• You will receive immediate feedback on your performance" wrapText="true" />
                         <Label styleClass="instruction-item" text="• You can take these tests multiple times" wrapText="true" />
-                        <Label styleClass="instruction-item" text="• Make sure you have a stable internet connection before starting a test" wrapText="true" />                    </VBox>
+                        <Label styleClass="instruction-item" text="• Make sure you have a stable internet connection before starting a test" wrapText="true" />
+                    </VBox>
                     
                     <!-- School Mock Tests - One card per school -->
-                    <Label styleClass="school-title" text="Mock Tests by School" />
+                    <Label styleClass="school-title" text="Mock Tests" />
                     <GridPane hgap="20" vgap="20">
                         <columnConstraints>
                             <ColumnConstraints percentWidth="50" />
@@ -95,13 +89,12 @@
                             <Label styleClass="exam-card-title" text="School of Engineering &amp; Technology" />
                             <Label styleClass="exam-card-description" text="Prepare for all engineering programs (CSE, EEE, Civil) with this comprehensive mock test." wrapText="true" />
                             <HBox spacing="10" alignment="CENTER_LEFT">
-                                <Label styleClass="time-badge" text="90 Minutes" />
-                                <Label styleClass="question-badge" text="100 Questions" />
+                                <Label styleClass="time-badge" text="75 Minutes" />
+                                <Label styleClass="question-badge" text="75 Questions" />
                             </HBox>
-                            <Label styleClass="exam-card-details" text="Subjects: Physics, Mathematics, English, Programming" />
+                            <Label styleClass="exam-card-details" text="Sections: English (30 marks), General Mathematics (15 marks), Higher Math &amp; Physics (30 marks)" wrapText="true" />
                             <HBox spacing="10" alignment="CENTER_RIGHT">
-                                <MFXButton styleClass="info-button" text="View Syllabus" />
-                                <MFXButton styleClass="start-exam-button" text="Start Test" />
+                                <MFXButton styleClass="start-exam-button" text="Start Test" onAction="#startExam" />
                             </HBox>
                         </VBox>
                           
@@ -110,13 +103,12 @@
                             <Label styleClass="exam-card-title" text="School of Business &amp; Economics" />
                             <Label styleClass="exam-card-description" text="Prepare for Business programs (BBA, Economics) with questions on mathematics, English, and business concepts." wrapText="true" />
                             <HBox spacing="10" alignment="CENTER_LEFT">
-                                <Label styleClass="time-badge" text="90 Minutes" />
-                                <Label styleClass="question-badge" text="100 Questions" />
+                                <Label styleClass="time-badge" text="75 Minutes" />
+                                <Label styleClass="question-badge" text="75 Questions" />
                             </HBox>
-                            <Label styleClass="exam-card-details" text="Subjects: Mathematics, English, Business Knowledge" />
+                            <Label styleClass="exam-card-details" text="Sections: English (30 marks), General Mathematics (15 marks), Business &amp; Economics (30 marks)" wrapText="true" />
                             <HBox spacing="10" alignment="CENTER_RIGHT">
-                                <MFXButton styleClass="info-button" text="View Syllabus" />
-                                <MFXButton styleClass="start-exam-button" text="Start Test" />
+                                <MFXButton styleClass="start-exam-button" text="Start Test" onAction="#startExam" />
                             </HBox>
                         </VBox>
                         
@@ -125,13 +117,12 @@
                             <Label styleClass="exam-card-title" text="School of Humanities &amp; Social Sciences" />
                             <Label styleClass="exam-card-description" text="Prepare for Humanities programs (English, MSJ) with questions on language, literature, and social concepts." wrapText="true" />
                             <HBox spacing="10" alignment="CENTER_LEFT">
-                                <Label styleClass="time-badge" text="90 Minutes" />
-                                <Label styleClass="question-badge" text="100 Questions" />
+                                <Label styleClass="time-badge" text="75 Minutes" />
+                                <Label styleClass="question-badge" text="75 Questions" />
                             </HBox>
-                            <Label styleClass="exam-card-details" text="Subjects: English, Literature, General Knowledge" />
+                            <Label styleClass="exam-card-details" text="Sections: English (30 marks), General Mathematics (15 marks), Current Affairs (15 marks), Higher English &amp; Logical Reasoning (15 marks)" wrapText="true" />
                             <HBox spacing="10" alignment="CENTER_RIGHT">
-                                <MFXButton styleClass="info-button" text="View Syllabus" />
-                                <MFXButton styleClass="start-exam-button" text="Start Test" />
+                                <MFXButton styleClass="start-exam-button" text="Start Test" onAction="#startExam" />
                             </HBox>
                         </VBox>
                         
@@ -140,13 +131,12 @@
                             <Label styleClass="exam-card-title" text="School of Life Sciences" />
                             <Label styleClass="exam-card-description" text="Prepare for Life Sciences programs (Pharmacy, Biotech) with questions on biology, chemistry, and physics." wrapText="true" />
                             <HBox spacing="10" alignment="CENTER_LEFT">
-                                <Label styleClass="time-badge" text="90 Minutes" />
-                                <Label styleClass="question-badge" text="100 Questions" />
+                                <Label styleClass="time-badge" text="75 Minutes" />
+                                <Label styleClass="question-badge" text="75 Questions" />
                             </HBox>
-                            <Label styleClass="exam-card-details" text="Subjects: Biology, Chemistry, Physics" />
+                            <Label styleClass="exam-card-details" text="Sections: English (30 marks), General Mathematics (15 marks), Biology &amp; Chemistry (30 marks)" wrapText="true" />
                             <HBox spacing="10" alignment="CENTER_RIGHT">
-                                <MFXButton styleClass="info-button" text="View Syllabus" />
-                                <MFXButton styleClass="start-exam-button" text="Start Test" />
+                                <MFXButton styleClass="start-exam-button" text="Start Test" onAction="#startExam" />
                             </HBox>
                         </VBox>
                     </GridPane>
@@ -155,10 +145,19 @@
             <VBox styleClass="exam-section, actual-exam-section" alignment="CENTER">
                 <padding>
                     <Insets top="40" right="20" bottom="40" left="20" />
-                </padding>
-                <VBox maxWidth="1000" spacing="20">
+                </padding>                <VBox maxWidth="1000" spacing="20">
                     <Label styleClass="section-title" text="Scheduled Admission Exams" />
-                    <Label styleClass="section-subtitle" text="View and register for upcoming admission exams" wrapText="true" />
+                    <Label styleClass="section-subtitle" text="Start the admission exams" wrapText="true" />
+                    
+                    <!-- Rules Section -->
+                    <VBox styleClass="instructions-section" maxWidth="800">
+                        <Label styleClass="instructions-title" text="Online Admission Test Rules &amp; Instructions:" />
+                        <Label styleClass="instruction-item" text="• Ensure you have a stable internet connection before starting the exam" wrapText="true" />
+                        <Label styleClass="instruction-item" text="• You must use a computer with a working webcam for identity verification and proctoring" wrapText="true" />
+                        <Label styleClass="instruction-item" text="• Your screen will be monitored during the exam - ensure no other applications are running" wrapText="true" />
+                        <Label styleClass="instruction-item" text="• You must complete the exam in one sitting - the timer cannot be paused once started" wrapText="true" />
+                        <Label styleClass="instruction-item" text="• Your digital Admit Card must be verified before you can start the exam" wrapText="true" />
+                    </VBox>
                     
                     <!-- School Actual Exams -->
                     <GridPane hgap="20" vgap="20">
@@ -176,10 +175,9 @@
                                 <Label styleClass="time-badge" text="10:00 AM - 12:00 PM" />
                                 <Label styleClass="question-badge" text="100 Questions" />
                             </HBox>
-                            <Label styleClass="exam-card-details" text="Venue: UIU Campus, United City, Madani Avenue, Dhaka 1212" wrapText="true" />
+                            <Label styleClass="exam-card-details" text="Syllabus: Physics, Mathematics, English, Programming" />
                             <HBox spacing="10" alignment="CENTER_RIGHT">
-                                <MFXButton styleClass="info-button" text="View Details" />
-                                <MFXButton styleClass="start-exam-button" text="Register" />
+                                <MFXButton styleClass="start-exam-button" text="Start Exam" onAction="#startExam" />
                             </HBox>
                         </VBox>
                         
@@ -192,10 +190,9 @@
                                 <Label styleClass="time-badge" text="10:00 AM - 12:00 PM" />
                                 <Label styleClass="question-badge" text="100 Questions" />
                             </HBox>
-                            <Label styleClass="exam-card-details" text="Venue: UIU Campus, United City, Madani Avenue, Dhaka 1212" wrapText="true" />
+                            <Label styleClass="exam-card-details" text="Syllabus: Mathematics, English, Business Knowledge" />
                             <HBox spacing="10" alignment="CENTER_RIGHT">
-                                <MFXButton styleClass="info-button" text="View Details" />
-                                <MFXButton styleClass="start-exam-button" text="Register" />
+                                <MFXButton styleClass="start-exam-button" text="Start Exam" onAction="#startExam" />
                             </HBox>
                         </VBox>
                         
@@ -208,10 +205,9 @@
                                 <Label styleClass="time-badge" text="10:00 AM - 12:00 PM" />
                                 <Label styleClass="question-badge" text="100 Questions" />
                             </HBox>
-                            <Label styleClass="exam-card-details" text="Venue: UIU Campus, United City, Madani Avenue, Dhaka 1212" wrapText="true" />
+                            <Label styleClass="exam-card-details" text="Syllabus: English, Literature, General Knowledge" />
                             <HBox spacing="10" alignment="CENTER_RIGHT">
-                                <MFXButton styleClass="info-button" text="View Details" />
-                                <MFXButton styleClass="start-exam-button" text="Register" />
+                                <MFXButton styleClass="start-exam-button" text="Start Exam" onAction="#startExam" />
                             </HBox>
                         </VBox>
                         
@@ -224,10 +220,9 @@
                                 <Label styleClass="time-badge" text="10:00 AM - 12:00 PM" />
                                 <Label styleClass="question-badge" text="100 Questions" />
                             </HBox>
-                            <Label styleClass="exam-card-details" text="Venue: UIU Campus, United City, Madani Avenue, Dhaka 1212" wrapText="true" />
+                            <Label styleClass="exam-card-details" text="Syllabus: Biology, Chemistry, Physics" />
                             <HBox spacing="10" alignment="CENTER_RIGHT">
-                                <MFXButton styleClass="info-button" text="View Details" />
-                                <MFXButton styleClass="start-exam-button" text="Register" />
+                                <MFXButton styleClass="start-exam-button" text="Start Exam" onAction="#startExam" />
                             </HBox>
                         </VBox>
                     </GridPane>

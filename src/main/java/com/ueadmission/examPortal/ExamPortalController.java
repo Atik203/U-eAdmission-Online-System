@@ -12,7 +12,9 @@ import com.ueadmission.utils.MFXNotifications;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 
 /**
  * Controller for the Exam Portal page
@@ -96,11 +98,19 @@ public class ExamPortalController extends BaseController {
         // Get the button that was clicked
         MFXButton button = (MFXButton) event.getSource();
         
-        // For now, show a notification that this feature is coming soon
-        MFXNotifications.showInfo("Coming Soon", 
-                "The exam functionality is currently being developed. Please check back later.");
+        // Get the exam card container
+        VBox examCard = (VBox) button.getParent().getParent();
         
-        LOGGER.info("User attempted to start an exam or test.");
+        // Get the exam title
+        Label titleLabel = (Label) examCard.getChildren().get(0);
+        String examTitle = titleLabel.getText();
+        
+        // Show confirmation dialog
+        MFXNotifications.showInfo("Starting Exam", 
+                "You are about to start the " + examTitle + " exam. Make sure you have a stable internet connection and a quiet environment.");
+        
+        // TODO: Implement actual exam start logic
+        LOGGER.info("User starting exam: " + examTitle);
     }
     
     /**
