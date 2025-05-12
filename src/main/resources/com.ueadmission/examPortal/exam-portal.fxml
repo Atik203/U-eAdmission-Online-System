@@ -165,62 +165,58 @@
                             <ColumnConstraints percentWidth="50" />
                             <ColumnConstraints percentWidth="50" />
                         </columnConstraints>
-                        
-                        <!-- School of Engineering & Technology -->
+                          <!-- School of Engineering & Technology -->
                         <VBox styleClass="exam-card" GridPane.columnIndex="0" GridPane.rowIndex="0">
                             <Label styleClass="exam-card-title" text="School of Engineering &amp; Technology" />
-                            <Label styleClass="exam-card-description" text="Official admission exam for all engineering programs (CSE, EEE, Civil) for Spring 2025 intake." wrapText="true" />
+                            <Label styleClass="exam-card-description" text="Official admission exam for all engineering programs (CSE, EEE, Civil) for Summer 2025 intake." wrapText="true" />
                             <HBox spacing="10" alignment="CENTER_LEFT">
                                 <Label styleClass="date-badge" text="June 5, 2025" />
                                 <Label styleClass="time-badge" text="10:00 AM - 12:00 PM" />
                                 <Label styleClass="question-badge" text="100 Questions" />
                             </HBox>
-                            <Label styleClass="exam-card-details" text="Syllabus: Physics, Mathematics, English, Programming" />
+                            <Label styleClass="exam-card-details" text="Sections: English (30 marks), General Mathematics (15 marks), Higher Math &amp; Physics (30 marks)" wrapText="true" />
                             <HBox spacing="10" alignment="CENTER_RIGHT">
                                 <MFXButton styleClass="start-exam-button" text="Start Exam" onAction="#startExam" />
                             </HBox>
                         </VBox>
-                        
-                        <!-- School of Business & Economics -->
+                          <!-- School of Business & Economics -->
                         <VBox styleClass="exam-card" GridPane.columnIndex="1" GridPane.rowIndex="0">
                             <Label styleClass="exam-card-title" text="School of Business &amp; Economics" />
-                            <Label styleClass="exam-card-description" text="Official admission exam for all business programs (BBA, Economics) for Spring 2025 intake." wrapText="true" />
+                            <Label styleClass="exam-card-description" text="Official admission exam for all business programs (BBA, Economics) for Summer 2025 intake." wrapText="true" />
                             <HBox spacing="10" alignment="CENTER_LEFT">
                                 <Label styleClass="date-badge" text="June 7, 2025" />
                                 <Label styleClass="time-badge" text="10:00 AM - 12:00 PM" />
                                 <Label styleClass="question-badge" text="100 Questions" />
                             </HBox>
-                            <Label styleClass="exam-card-details" text="Syllabus: Mathematics, English, Business Knowledge" />
+                            <Label styleClass="exam-card-details" text="Sections: English (30 marks), General Mathematics (15 marks), Business &amp; Economics (30 marks)" wrapText="true" />
                             <HBox spacing="10" alignment="CENTER_RIGHT">
                                 <MFXButton styleClass="start-exam-button" text="Start Exam" onAction="#startExam" />
                             </HBox>
                         </VBox>
-                        
-                        <!-- School of Humanities & Social Sciences -->
+                          <!-- School of Humanities & Social Sciences -->
                         <VBox styleClass="exam-card" GridPane.columnIndex="0" GridPane.rowIndex="1">
                             <Label styleClass="exam-card-title" text="School of Humanities &amp; Social Sciences" />
-                            <Label styleClass="exam-card-description" text="Official admission exam for all humanities programs (English, MSJ) for Spring 2025 intake." wrapText="true" />
+                            <Label styleClass="exam-card-description" text="Official admission exam for all humanities programs (English, MSJ) for Summer 2025 intake." wrapText="true" />
                             <HBox spacing="10" alignment="CENTER_LEFT">
                                 <Label styleClass="date-badge" text="June 10, 2025" />
                                 <Label styleClass="time-badge" text="10:00 AM - 12:00 PM" />
                                 <Label styleClass="question-badge" text="100 Questions" />
                             </HBox>
-                            <Label styleClass="exam-card-details" text="Syllabus: English, Literature, General Knowledge" />
+                            <Label styleClass="exam-card-details" text="Sections: English (30 marks), General Mathematics (15 marks), Current Affairs (15 marks), Higher English &amp; Logical Reasoning (15 marks)" wrapText="true" />
                             <HBox spacing="10" alignment="CENTER_RIGHT">
                                 <MFXButton styleClass="start-exam-button" text="Start Exam" onAction="#startExam" />
                             </HBox>
                         </VBox>
-                        
-                        <!-- School of Life Sciences -->
+                          <!-- School of Life Sciences -->
                         <VBox styleClass="exam-card" GridPane.columnIndex="1" GridPane.rowIndex="1">
                             <Label styleClass="exam-card-title" text="School of Life Sciences" />
-                            <Label styleClass="exam-card-description" text="Official admission exam for all life sciences programs (Pharmacy, Biotech) for Spring 2025 intake." wrapText="true" />
+                            <Label styleClass="exam-card-description" text="Official admission exam for all life sciences programs (Pharmacy, Biotech) for Summer 2025 intake." wrapText="true" />
                             <HBox spacing="10" alignment="CENTER_LEFT">
                                 <Label styleClass="date-badge" text="June 12, 2025" />
                                 <Label styleClass="time-badge" text="10:00 AM - 12:00 PM" />
                                 <Label styleClass="question-badge" text="100 Questions" />
                             </HBox>
-                            <Label styleClass="exam-card-details" text="Syllabus: Biology, Chemistry, Physics" />
+                            <Label styleClass="exam-card-details" text="Sections: English (30 marks), General Mathematics (15 marks), Biology &amp; Chemistry (30 marks)" wrapText="true" />
                             <HBox spacing="10" alignment="CENTER_RIGHT">
                                 <MFXButton styleClass="start-exam-button" text="Start Exam" onAction="#startExam" />
                             </HBox>
