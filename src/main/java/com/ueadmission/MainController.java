@@ -85,9 +85,14 @@ public class MainController {
         }
         
         // Set up the exam portal button click action
-
-            examPortalButton.setOnAction(event -> openExamPortalPage(event));
-
+        examPortalButton.setOnAction(event -> {
+            if (AuthStateManager.getInstance().isAuthenticated()) {
+                openExamPortalPage(event);
+            } else {
+                // Redirect to login page if not authenticated
+                openLoginPage(event);
+            }
+        });
         
         // Set up the Apply Now button to open login page if not logged in,
         // otherwise go directly to admission page

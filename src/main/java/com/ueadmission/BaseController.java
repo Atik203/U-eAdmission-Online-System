@@ -84,9 +84,19 @@ public abstract class BaseController {
     
     /**
      * Navigates to the Exam Portal screen with cleanup
+     * First checks if the user is authenticated, redirects to login if not
      * @param event The event that triggered this action
      */
     protected void navigateToExamPortal(ActionEvent event) {
+        // Check authentication first
+        if (!AuthStateManager.getInstance().isAuthenticated()) {
+            LOGGER.info("User not authenticated, redirecting to login");
+            cleanup();
+            NavigationUtil.navigateToLogin(event);
+            return;
+        }
+        
+        // User is authenticated, proceed to exam portal
         cleanup();
         NavigationUtil.navigateToExamPortal(event);
     }
