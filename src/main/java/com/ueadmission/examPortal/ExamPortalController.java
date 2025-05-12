@@ -46,13 +46,44 @@ public class ExamPortalController extends BaseController {
      */
     @FXML
     public void initialize() {
-        // Initialize from BaseController
-
+        // Check authentication first when page loads directly
+        if (!AuthStateManager.getInstance().isAuthenticated()) {
+            LOGGER.info("User not authenticated, redirecting to login");
+            javafx.application.Platform.runLater(() -> {
+                // Create a dummy ActionEvent with the homeButton as the source
+                ActionEvent event = new ActionEvent(homeButton, ActionEvent.NULL_SOURCE_TARGET);
+                navigateToLogin(event);
+            });
+            return;
+        }
         
         // Set up navigation buttons
         homeButton.setOnAction(event -> navigateToHome(event));
         aboutButton.setOnAction(event -> navigateToAbout(event));
-        examPortalButton.setOnAction(event -> navigateToExamPortal(event));
+        
+        // Improved: Exam Portal button acts as private route and does nothing if already on Exam Portal
+        if (examPortalButton != null) {
+            examPortalButton.setOnAction(event -> {
+                // If already on Exam Portal, do nothing
+                if (examPortalButton.getScene() != null &&
+                    examPortalButton.getScene().getRoot().getId() != null &&
+                    examPortalButton.getScene().getRoot().getId().equals("examPortalRoot")) {
+                    return;
+                }
+                if (AuthStateManager.getInstance().isAuthenticated()) {
+                    navigateToExamPortal(event);
+                } else {
+                    // Only show error if not already on login screen
+                    if (examPortalButton.getScene() != null &&
+                        examPortalButton.getScene().getRoot().getId() != null &&
+                        examPortalButton.getScene().getRoot().getId().equals("loginRoot")) {
+                        return;
+                    }
+                    MFXNotifications.showWarning("Authentication Required", "Please log in to access the Exam Portal.");
+                }
+            });
+        }
+        
         contactButton.setOnAction(event -> navigateToContact(event));
         
         // Configure login button if it exists
