@@ -39,8 +39,7 @@ public class ExamPortalController {
     @FXML private ProfileButton profileButton;
     
     // Exam Portal specific elements
-    @FXML private MFXButton viewSyllabusButton;
-    @FXML
+    @FXML private MFXButton viewSyllabusButton;    @FXML
     public void initialize() {        
         // Configure navigation buttons
         homeButton.setOnAction(event -> navigateToHome(event));
@@ -217,7 +216,7 @@ public class ExamPortalController {
      * Cleanup method to ensure any transitions are completed and opacity is reset
      * Called before navigating away from the Exam Portal screen
      */
-    private void cleanup() {
+    void cleanup() {
         LOGGER.info("Cleaning up ExamPortalController before navigation");
         
         // Reset opacity on the scene root if available
@@ -640,8 +639,7 @@ public class ExamPortalController {
         // No scene found
         return null;
     }
-    
-    /**
+      /**
      * Navigates to the Home screen
      * @param event The event that triggered this action
      */
@@ -684,8 +682,7 @@ public class ExamPortalController {
             refreshUI();
             return;
         }
-        
-        // Check authentication before navigating
+          // Check authentication before navigating
         if (!AuthStateManager.getInstance().isAuthenticated()) {
             LOGGER.info("User not authenticated, redirecting to login");
             navigateToLogin(event);
@@ -713,8 +710,16 @@ public class ExamPortalController {
     private void navigateToLogin(ActionEvent event) {
         cleanup();
         com.ueadmission.navigation.NavigationUtil.navigateToLogin(event);
+    }    /**
+     * Handle mouse click navigation to Login in the footer or elsewhere
+     * @param event The mouse event that triggered this action
+     */
+    @FXML
+    public void navigateToLogin(javafx.scene.input.MouseEvent event) {
+        cleanup();
+        com.ueadmission.navigation.NavigationUtil.navigateToLogin(event);
     }
-
+    
     /**
      * Navigates to the Application screen
      * @param event The event that triggered this action
@@ -723,5 +728,69 @@ public class ExamPortalController {
     public void navigateToApplication(ActionEvent event) {
         cleanup();
         com.ueadmission.navigation.NavigationUtil.navigateToApplications(event);
+    }
+    
+    /**
+     * Handle mouse click navigation to Home in the footer
+     * @param event The mouse event that triggered this action
+     */
+    @FXML
+    public void navigateToHome(javafx.scene.input.MouseEvent event) {
+        cleanup();
+        com.ueadmission.navigation.NavigationUtil.navigateToHome(event);
+    }
+    
+    /**
+     * Handle mouse click navigation to About in the footer
+     * @param event The mouse event that triggered this action
+     */
+    @FXML
+    public void navigateToAbout(javafx.scene.input.MouseEvent event) {
+        cleanup();
+        com.ueadmission.navigation.NavigationUtil.navigateToAbout(event);
+    }
+    
+    /**
+     * Handle mouse click navigation to Admission in the footer
+     * @param event The mouse event that triggered this action
+     */
+    @FXML
+    public void navigateToAdmission(javafx.scene.input.MouseEvent event) {
+        // Check authentication before navigating
+        if (!AuthStateManager.getInstance().isAuthenticated()) {
+            LOGGER.info("User not authenticated, redirecting to login");
+            com.ueadmission.navigation.NavigationUtil.navigateToLogin(event);
+            return;
+        }
+        
+        cleanup();
+        com.ueadmission.navigation.NavigationUtil.navigateToAdmission(event);
+    }
+    
+    /**
+     * Handle mouse click navigation to Exam Portal in the footer
+     * @param event The mouse event that triggered this action
+     */
+    @FXML
+    public void navigateToExamPortal(javafx.scene.input.MouseEvent event) {
+        // Check authentication before navigating
+        if (!AuthStateManager.getInstance().isAuthenticated()) {
+            LOGGER.info("User not authenticated, redirecting to login");
+            com.ueadmission.navigation.NavigationUtil.navigateToLogin(event);
+            return;
+        }
+        
+        cleanup();
+        com.ueadmission.navigation.NavigationUtil.navigateToExamPortal(event);
+    }
+    
+    /**
+     * Handle mouse click navigation to Contact in the footer
+     * @param event The mouse event that triggered this action
+     */
+    @FXML
+    public void navigateToContact(javafx.scene.input.MouseEvent event) {
+        cleanup();
+        com.ueadmission.navigation.NavigationUtil.navigateToContact(event);
     }
 }
