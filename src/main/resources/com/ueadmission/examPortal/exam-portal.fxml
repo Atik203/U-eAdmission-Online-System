@@ -1,0 +1,191 @@
+            <!-- Actual Exams Section -->
+            <VBox styleClass="exam-section, actual-exam-section" alignment="CENTER">
+                <padding>
+                    <Insets top="40" right="20" bottom="40" left="20" />
+                </padding>
+                <VBox maxWidth="1000" spacing="20">
+                    <Label styleClass="section-title" text="Scheduled Admission Exams" />
+                    <Label styleClass="section-subtitle" text="Start your admission exam" wrapText="true" />
+                    
+                    <!-- School Actual Exams -->
+                    <GridPane hgap="20" vgap="20">
+                        <columnConstraints>
+                            <ColumnConstraints percentWidth="50" />
+                            <ColumnConstraints percentWidth="50" />
+                        </columnConstraints>
+                        
+                        <!-- School of Engineering & Technology -->
+                        <VBox styleClass="exam-card" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                            <Label styleClass="exam-card-title" text="School of Engineering &amp; Technology" />
+                            <Label styleClass="exam-card-description" text="Official admission exam for all engineering programs (CSE, EEE, Civil) for Spring 2025 intake." wrapText="true" />
+                            <HBox spacing="10" alignment="CENTER_LEFT">
+                                <Label styleClass="date-badge" text="June 5, 2025" />
+                                <Label styleClass="time-badge" text="10:00 AM - 12:00 PM" />
+                                <Label styleClass="question-badge" text="75 Questions" />
+                            </HBox>
+                            <Label styleClass="exam-card-details" text="Sections: English (30 marks), General Mathematics (15 marks), Higher Math & Physics (30 marks)" wrapText="true" />
+                            <HBox spacing="10" alignment="CENTER_RIGHT">
+                                <MFXButton styleClass="start-exam-button" text="Start Exam" onAction="#startExam" />
+                            </HBox>
+                        </VBox>
+                        
+                        <!-- School of Business & Economics -->
+                        <VBox styleClass="exam-card" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                            <Label styleClass="exam-card-title" text="School of Business &amp; Economics" />
+                            <Label styleClass="exam-card-description" text="Official admission exam for all business programs (BBA, Economics) for Spring 2025 intake." wrapText="true" />
+                            <HBox spacing="10" alignment="CENTER_LEFT">
+                                <Label styleClass="date-badge" text="June 7, 2025" />
+                                <Label styleClass="time-badge" text="10:00 AM - 12:00 PM" />
+                                <Label styleClass="question-badge" text="75 Questions" />
+                            </HBox>
+                            <Label styleClass="exam-card-details" text="Sections: English (30 marks), General Mathematics (15 marks), Business & Economics (30 marks)" wrapText="true" />
+                            <HBox spacing="10" alignment="CENTER_RIGHT">
+                                <MFXButton styleClass="start-exam-button" text="Start Exam" onAction="#startExam" />
+                            </HBox>
+                        </VBox>
+                        
+                        <!-- School of Humanities & Social Sciences -->
+                        <VBox styleClass="exam-card" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                            <Label styleClass="exam-card-title" text="School of Humanities &amp; Social Sciences" />
+                            <Label styleClass="exam-card-description" text="Official admission exam for all humanities programs (English, MSJ) for Spring 2025 intake." wrapText="true" />
+                            <HBox spacing="10" alignment="CENTER_LEFT">
+                                <Label styleClass="date-badge" text="June 10, 2025" />
+                                <Label styleClass="time-badge" text="10:00 AM - 12:00 PM" />
+                                <Label styleClass="question-badge" text="75 Questions" />
+                            </HBox>
+                            <Label styleClass="exam-card-details" text="Sections: English (30 marks), General Mathematics (15 marks), Current Affairs (15 marks), Higher English & Logical Reasoning (15 marks)" wrapText="true" />
+                            <HBox spacing="10" alignment="CENTER_RIGHT">
+                                <MFXButton styleClass="start-exam-button" text="Start Exam" onAction="#startExam" />
+                            </HBox>
+                        </VBox>
+                        
+                        <!-- School of Life Sciences -->
+                        <VBox styleClass="exam-card" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                            <Label styleClass="exam-card-title" text="School of Life Sciences" />
+                            <Label styleClass="exam-card-description" text="Official admission exam for all life sciences programs (Pharmacy, Biotech) for Spring 2025 intake." wrapText="true" />
+                            <HBox spacing="10" alignment="CENTER_LEFT">
+                                <Label styleClass="date-badge" text="June 12, 2025" />
+                                <Label styleClass="time-badge" text="10:00 AM - 12:00 PM" />
+                                <Label styleClass="question-badge" text="75 Questions" />
+                            </HBox>
+                            <Label styleClass="exam-card-details" text="Sections: English (30 marks), General Mathematics (15 marks), Biology & Chemistry (30 marks)" wrapText="true" />
+                            <HBox spacing="10" alignment="CENTER_RIGHT">
+                                <MFXButton styleClass="start-exam-button" text="Start Exam" onAction="#startExam" />
+                            </HBox>
+                        </VBox>
+                    </GridPane>
+                </VBox>
+            </VBox>
+
+            <!-- Rules Section -->
+            <VBox styleClass="rules-section" alignment="CENTER">
+                <padding>
+                    <Insets top="30" right="30" bottom="30" left="30" />
+                </padding>
+                <VBox maxWidth="1000" spacing="20">
+                    <Label styleClass="section-title" text="Online Admission Test Rules" />
+                    <Label styleClass="section-subtitle" text="Please read all instructions carefully before starting the exam" wrapText="true" />
+                    
+                    <VBox styleClass="rules-content" spacing="15">
+                        <Label styleClass="rule-item" text="1. Technical Requirements:" wrapText="true">
+                            <graphic>
+                                <FontIcon iconLiteral="fas-laptop" styleClass="rule-icon" />
+                            </graphic>
+                        </Label>
+                        <VBox styleClass="rule-subitem" spacing="5">
+                            <Label styleClass="rule-text" text="• Stable internet connection (minimum 2 Mbps)" wrapText="true" />
+                            <Label styleClass="rule-text" text="• Webcam and microphone for proctoring" wrapText="true" />
+                            <Label styleClass="rule-text" text="• Updated web browser (Chrome/Firefox recommended)" wrapText="true" />
+                            <Label styleClass="rule-text" text="• Full-screen mode must be enabled during the exam" wrapText="true" />
+                        </VBox>
+
+                        <Label styleClass="rule-item" text="2. Before Starting:" wrapText="true">
+                            <graphic>
+                                <FontIcon iconLiteral="fas-clock" styleClass="rule-icon" />
+                            </graphic>
+                        </Label>
+                        <VBox styleClass="rule-subitem" spacing="5">
+                            <Label styleClass="rule-text" text="• Join 15 minutes before the scheduled time" wrapText="true" />
+                            <Label styleClass="rule-text" text="• Keep your ID card ready for verification" wrapText="true" />
+                            <Label styleClass="rule-text" text="• Ensure a quiet, well-lit environment" wrapText="true" />
+                            <Label styleClass="rule-text" text="• Clear your desk of all materials except allowed items" wrapText="true" />
+                        </VBox>
+
+                        <Label styleClass="rule-item" text="3. During the Exam:" wrapText="true">
+                            <graphic>
+                                <FontIcon iconLiteral="fas-pencil-alt" styleClass="rule-icon" />
+                            </graphic>
+                        </Label>
+                        <VBox styleClass="rule-subitem" spacing="5">
+                            <Label styleClass="rule-text" text="• No switching between browser tabs or applications" wrapText="true" />
+                            <Label styleClass="rule-text" text="• Keep your face visible to the webcam at all times" wrapText="true" />
+                            <Label styleClass="rule-text" text="• No communication with others during the exam" wrapText="true" />
+                            <Label styleClass="rule-text" text="• Use only the provided calculator if needed" wrapText="true" />
+                        </VBox>
+
+                        <Label styleClass="rule-item" text="4. Exam Format:" wrapText="true">
+                            <graphic>
+                                <FontIcon iconLiteral="fas-file-alt" styleClass="rule-icon" />
+                            </graphic>
+                        </Label>
+                        <VBox styleClass="rule-subitem" spacing="5">
+                            <Label styleClass="rule-text" text="• Total duration: 75 minutes" wrapText="true" />
+                            <Label styleClass="rule-text" text="• Total questions: 75 (1 mark each)" wrapText="true" />
+                            <Label styleClass="rule-text" text="• No negative marking" wrapText="true" />
+                            <Label styleClass="rule-text" text="• Questions must be answered in sequence" wrapText="true" />
+                        </VBox>
+
+                        <Label styleClass="rule-item" text="5. Important Notes:" wrapText="true">
+                            <graphic>
+                                <FontIcon iconLiteral="fas-exclamation-triangle" styleClass="rule-icon" />
+                            </graphic>
+                        </Label>
+                        <VBox styleClass="rule-subitem" spacing="5">
+                            <Label styleClass="rule-text" text="• Any attempt to cheat will result in immediate disqualification" wrapText="true" />
+                            <Label styleClass="rule-text" text="• Technical issues must be reported immediately" wrapText="true" />
+                            <Label styleClass="rule-text" text="• The exam cannot be paused or restarted" wrapText="true" />
+                            <Label styleClass="rule-text" text="• Results will be available within 48 hours" wrapText="true" />
+                        </VBox>
+                    </VBox>
+                </VBox>
+            </VBox>
+
+            <!-- Hero Section -->
+            <VBox alignment="CENTER" spacing="20" styleClass="content-container, hero-section">
+                <padding>
+                    <Insets top="40" right="20" bottom="40" left="20" />
+                </padding>
+                <VBox maxWidth="1000" alignment="CENTER" spacing="30">
+                    <Label styleClass="hero-title" text="University Admission Exam Portal" />
+                    <Label styleClass="hero-subtitle" text="Prepare and take your admission exams online from anywhere" wrapText="true" />
+                    
+                    <!-- Rules Section -->
+                    <VBox styleClass="rules-section" maxWidth="900">
+                        <padding>
+                            <Insets top="25" right="25" bottom="25" left="25" />
+                        </padding>
+                        <HBox alignment="CENTER_LEFT" spacing="15">
+                            <FontIcon iconLiteral="fas-info-circle" styleClass="rules-icon" />
+                            <Label styleClass="rules-title" text="Online Admission Test Guidelines" />
+                        </HBox>
+                        <VBox styleClass="rules-content" spacing="15">
+                            <HBox alignment="CENTER_LEFT" styleClass="rule-container">
+                                <FontIcon iconLiteral="fas-laptop" styleClass="rule-bullet" />
+                                <Label styleClass="rule-item" text="Ensure you have a stable internet connection and a device with webcam for proctoring. Test your setup at least 1 day before the exam." wrapText="true" />
+                            </HBox>
+                            <HBox alignment="CENTER_LEFT" styleClass="rule-container">
+                                <FontIcon iconLiteral="fas-ban" styleClass="rule-bullet" />
+                                <Label styleClass="rule-item" text="Use of secondary devices, virtual machines, or additional browsers/tabs during the exam is strictly prohibited and will result in disqualification." wrapText="true" />
+                            </HBox>
+                            <HBox alignment="CENTER_LEFT" styleClass="rule-container">
+                                <FontIcon iconLiteral="fas-calculator" styleClass="rule-bullet" />
+                                <Label styleClass="rule-item" text="A virtual calculator will be provided within the exam interface. No physical calculators or other external tools are permitted." wrapText="true" />
+                            </HBox>
+                            <HBox alignment="CENTER_LEFT" styleClass="rule-container">
+                                <FontIcon iconLiteral="fas-id-card" styleClass="rule-bullet" />
+                                <Label styleClass="rule-item" text="You must present a valid photo ID through your webcam for identity verification before starting the exam." wrapText="true" />
+                            </HBox>
+                        </VBox>
+                    </VBox>
+                </VBox>
+            </VBox> 

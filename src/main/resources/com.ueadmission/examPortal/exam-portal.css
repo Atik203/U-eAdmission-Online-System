@@ -57,9 +57,11 @@
 }
 
 .exam-card-details {
-  -fx-font-size: 13px;
-  -fx-text-fill: -secondary-color;
+  -fx-font-size: 14px;
+  -fx-text-fill: -text-dark;
   -fx-opacity: 0.9;
+  -fx-padding: 5 0;
+  -fx-font-weight: 500;
 }
 
 .school-title {
