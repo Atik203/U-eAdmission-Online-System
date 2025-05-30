@@ -53,7 +53,7 @@ public class Admission {
     }
 
     public static void openAdmissionWindow(double width, double height, double x, double y, boolean maximized) {
-        Stage stage = prepareAboutWindow(width, height, x, y, maximized);
+        Stage stage = prepareAdmissionWindow(width, height, x, y, maximized);
         if (stage != null) {
             stage.show();
             Parent root = stage.getScene().getRoot();

@@ -1,0 +1,310 @@
+/* Chat Interface Styles */
+
+/* Chat Window */
+.chat-window {
+  -fx-background-color: white;
+  -fx-border-color: #e0e0e0;
+  -fx-border-radius: 8px;
+  -fx-background-radius: 8px;
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 10, 0, 0, 4);
+}
+
+/* Fix for emoji and special character display */
+.label, .button {
+  -fx-font-family: "System", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+.chat-header {
+  -fx-background-color: -primary-color;
+  -fx-background-radius: 8px 8px 0 0;
+  -fx-padding: 15px;
+}
+
+.chat-title {
+  -fx-font-size: 18px;
+  -fx-font-weight: bold;
+  -fx-text-fill: white;
+}
+
+.chat-status {
+  -fx-font-size: 12px;
+  -fx-text-fill: rgba(255, 255, 255, 0.8);
+}
+
+.chat-body {
+  -fx-background-color: white;
+  -fx-padding: 15px;
+}
+
+.chat-footer {
+  -fx-background-color: #f5f5f5;
+  -fx-padding: 15px;
+  -fx-border-color: #e0e0e0;
+  -fx-border-width: 1px 0 0 0;
+}
+
+/* User List Styles */
+.user-list {
+  -fx-background-color: #f5f5f5;
+  -fx-background-radius: 5px;
+  -fx-border-color: #e0e0e0;
+  -fx-border-radius: 5px;
+}
+
+.user-item {
+  -fx-padding: 10px;
+  -fx-background-color: transparent;
+  -fx-border-color: transparent transparent #e0e0e0 transparent;
+  -fx-border-width: 0 0 1px 0;
+  -fx-cursor: hand;
+  -fx-transition: all 0.2s ease;
+}
+
+.user-item:hover {
+  -fx-background-color: #ebebeb;
+  -fx-translate-x: 3px;
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 3, 0, 0, 1);
+}
+
+.user-item.active {
+  -fx-background-color: #e1e1e1;
+  -fx-border-color: transparent transparent #d0d0d0 transparent;
+  -fx-border-width: 0 0 2px 0;
+  -fx-effect: innershadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0, 0, 1);
+}
+
+.user-avatar {
+  -fx-background-radius: 50%;
+  -fx-border-radius: 50%;
+}
+
+.user-name {
+  -fx-font-size: 14px;
+  -fx-font-weight: bold;
+  -fx-text-fill: -text-dark;
+}
+
+.last-message {
+  -fx-font-size: 12px;
+  -fx-text-fill: #777777;
+}
+
+.timestamp {
+  -fx-font-size: 10px;
+  -fx-text-fill: #999999;
+}
+
+.unread-badge {
+  -fx-background-color: -primary-color;
+  -fx-background-radius: 50%;
+  -fx-text-fill: white;
+  -fx-font-size: 10px;
+  -fx-font-weight: bold;
+  -fx-padding: 3px 6px;
+}
+
+/* Message Styles */
+.message-container {
+  -fx-padding: 5px 0;
+  -fx-min-width: 400px;
+  -fx-pref-width: 1600px;
+}
+
+.message {
+  -fx-padding: 10px 15px;
+  -fx-background-radius: 18px;
+  -fx-min-width: 300px;
+  -fx-max-width: 95%;
+  -fx-pref-width: -1;
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 3, 0, 0, 1);
+  -fx-transition: all 0.3s ease;
+}
+
+.message:hover {
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 5, 0, 0, 2);
+  -fx-scale-x: 1.01;
+  -fx-scale-y: 1.01;
+}
+
+.message-text {
+  -fx-font-size: 14px;
+  -fx-wrap-text: true;
+  -fx-text-alignment: left;
+  -fx-min-width: 300px;
+  -fx-transition: all 0.2s ease;
+}
+
+.message-sender {
+  -fx-font-size: 12px;
+  -fx-font-weight: bold;
+  -fx-text-fill: #555555;
+  -fx-padding: 0 0 0 10px;
+}
+
+.message-time {
+  -fx-font-size: 10px;
+  -fx-text-fill: #999999;
+  -fx-text-alignment: right;
+  -fx-padding: 4px 0 0 0;
+}
+
+.sent-message {
+  -fx-background-color: -primary-light;
+  -fx-background-radius: 18px 18px 0 18px;
+}
+
+.sent-message .message-text {
+  -fx-text-fill: white;
+}
+
+.sent-message .message-time {
+  -fx-text-fill: rgba(255, 255, 255, 0.8);
+}
+
+.received-message {
+  -fx-background-color: #f0f0f0;
+  -fx-background-radius: 18px 18px 18px 0;
+  -fx-border-width: 1px;
+  -fx-border-color: #e5e5e5;
+  -fx-border-radius: 18px 18px 18px 0;
+}
+
+.received-message .message-text {
+  -fx-text-fill: -text-dark;
+}
+
+/* Message Input Styles */
+.message-input {
+  -fx-background-color: white;
+  -fx-background-radius: 20px;
+  -fx-border-color: #e0e0e0;
+  -fx-border-radius: 20px;
+  -fx-padding: 10px 15px;
+  -fx-font-size: 14px;
+  -fx-transition: all 0.3s ease;
+}
+
+.message-input:focused {
+  -fx-border-color: -primary-light;
+  -fx-border-width: 2px;
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0, 0, 1);
+}
+
+.message-input:hover {
+  -fx-border-color: #cccccc;
+}
+
+.send-button {
+  -fx-background-color: -primary-color;
+  -fx-background-radius: 5px;
+  -fx-min-width: 60px;
+  -fx-min-height: 40px;
+  -fx-max-height: 40px;
+  -fx-cursor: hand;
+  -fx-text-fill: white;
+  -fx-font-weight: bold;
+  -fx-transition: all 0.2s ease;
+}
+
+.send-button:hover {
+  -fx-background-color: -primary-dark;
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 3, 0, 0, 1);
+  -fx-scale-x: 1.05;
+  -fx-scale-y: 1.05;
+}
+
+.send-button:pressed {
+  -fx-scale-x: 0.95;
+  -fx-scale-y: 0.95;
+}
+
+.send-icon {
+  -fx-fill: white;
+}
+
+/* Fix for emoji and special character display */
+.label, .button {
+  -fx-font-family: "System", "Segoe UI Emoji", "Segoe UI Symbol";
+  -fx-text-alignment: left;
+}
+
+/* System Message */
+.system-message {
+  -fx-background-color: #f8f8f8;
+  -fx-background-radius: 10px;
+  -fx-padding: 8px 15px;
+  -fx-border-color: #e0e0e0;
+  -fx-border-radius: 10px;
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 3, 0, 0, 1);
+  -fx-transition: all 0.3s ease;
+}
+
+.system-message:hover {
+  -fx-background-color: #f0f0f0;
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0, 0, 2);
+}
+
+.system-message-text {
+  -fx-font-size: 12px;
+  -fx-text-fill: #777777;
+  -fx-font-style: italic;
+}
+
+.system-warning {
+  -fx-background-color: #fff8e1;
+  -fx-border-color: #ffe0b2;
+}
+
+.system-error {
+  -fx-background-color: #ffebee;
+  -fx-border-color: #ffcdd2;
+}
+
+.system-info {
+  -fx-background-color: #e1f5fe;
+  -fx-border-color: #b3e5fc;
+}
+
+/* Role Badges */
+.role-badge {
+  -fx-font-size: 10px;
+  -fx-font-weight: bold;
+  -fx-padding: 2px 6px;
+  -fx-background-radius: 10px;
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 3, 0, 0, 1);
+  -fx-transition: all 0.2s ease;
+}
+
+.role-badge:hover {
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.25), 5, 0, 0, 2);
+  -fx-scale-x: 1.05;
+  -fx-scale-y: 1.05;
+}
+
+.role-admin {
+  -fx-background-color: -primary-color;
+  -fx-text-fill: white;
+}
+
+.role-student {
+  -fx-background-color: -secondary-color;
+  -fx-text-fill: white;
+}
+
+/* Role-specific message styling */
+.received-message.admin-message {
+  -fx-background-color: #ffe8e0;
+  -fx-border-color: #ffcebf;
+}
+
+.received-message.student-message {
+  -fx-background-color: #e8f0ff;
+  -fx-border-color: #d0e0ff;
+}
+
+/* Typing Indicator */
+.typing-indicator {
+  -fx-font-size: 12px;
+  -fx-font-style: italic;
+  -fx-text-fill: #777777;
+}

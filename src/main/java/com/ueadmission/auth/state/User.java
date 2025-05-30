@@ -169,8 +169,20 @@ public class User implements Serializable {
         isLoggedIn = loggedIn;
     }
     
+    /**
+     * Get the full name of the user
+     * @return First name and last name concatenated
+     */
     public String getFullName() {
         return firstName + " " + lastName;
+    }
+
+    /**
+     * For compatibility with database queries that expect a full_name column
+     * @return The same as getFullName()
+     */
+    public String getFull_name() {
+        return getFullName();
     }
     
     @Override

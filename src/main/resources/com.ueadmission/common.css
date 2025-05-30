@@ -11,6 +11,7 @@
   -border-color: #e0e0e0;
   -shadow-color: rgba(0, 0, 0, 0.1);
   -danger-color: #ff3b30;
+  -fx-font-smoothing-type: lcd;
 }
 
 /* Navbar Styles */

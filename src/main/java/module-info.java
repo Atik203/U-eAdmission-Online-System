@@ -35,6 +35,7 @@ module com.u.eadmission.ueadmission {
     opens com.ueadmission.examPortal to javafx.fxml;
     opens com.ueadmission.exam to javafx.fxml;
     opens com.ueadmission.mockTest to javafx.fxml;
+    opens com.ueadmission.chat to javafx.fxml;
     
     exports com.ueadmission;
     exports com.ueadmission.about;
@@ -50,4 +51,5 @@ module com.u.eadmission.ueadmission {
     exports com.ueadmission.examPortal;
     exports com.ueadmission.exam;
     exports com.ueadmission.mockTest;
+    exports com.ueadmission.chat;
 }
