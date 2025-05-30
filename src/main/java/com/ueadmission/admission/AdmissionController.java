@@ -16,6 +16,9 @@ import com.ueadmission.components.ProfileButton;
 import com.ueadmission.payment.SSLCommerzPayment;
 import com.ueadmission.utils.MFXNotifications;
 
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXCheckbox;
 import io.github.palexdev.materialfx.controls.MFXComboBox;
@@ -37,6 +40,10 @@ import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+
+import javafx.event.ActionEvent;
+import javafx.scene.layout.StackPane;
+import java.util.logging.Logger;
 
 public class AdmissionController {
     private HostServices hostServices;
@@ -79,6 +86,9 @@ public class AdmissionController {
 
     @FXML
     private VBox root;
+
+    @FXML
+    private StackPane rootPane;
 
     @FXML
     private Button applyNowBtn;
@@ -677,6 +687,9 @@ public class AdmissionController {
         // Set up the button action to open the UIU website
         visitWebsiteBtn.setOnAction(event -> openWebsite("https://www.uiu.ac.bd/"));
 
+        // Initialize floating action button
+        initFloatingActionButton();
+
         // Configure navigation buttons
         homeButton.setOnAction(event -> navigateToHome(event));
 
@@ -986,6 +999,28 @@ public class AdmissionController {
         // Call cleanup first to ensure proper resource disposal
         cleanup();
         com.ueadmission.navigation.NavigationUtil.navigateToExamPortal(event);
+    }
+
+    /**
+     * Initializes the floating chat icon and positions it in the bottom right
+     */
+    private void initFloatingActionButton() {
+        // Create the floating chat icon
+        com.ueadmission.components.FloatingChatIcon chatIcon = new com.ueadmission.components.FloatingChatIcon();
+
+
+        // Position the chat icon in the StackPane
+        javafx.application.Platform.runLater(() -> {
+            if (rootPane != null) {
+                rootPane.getChildren().add(chatIcon);
+                // Set alignment and margin
+                StackPane.setAlignment(chatIcon, Pos.BOTTOM_RIGHT);
+                StackPane.setMargin(chatIcon, new Insets(0, 30, 30, 0));
+                LOGGER.info("Floating chat icon added to root pane");
+            } else {
+                LOGGER.warning("Root pane is null, cannot add floating chat icon");
+            }
+        });
     }
 }
 
