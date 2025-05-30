@@ -18,7 +18,8 @@
 <?import io.github.palexdev.materialfx.controls.MFXComboBox?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.control.DatePicker?>
-<MFXScrollPane fitToWidth="true" fitToHeight="true" prefViewportWidth="1280" prefViewportHeight="720" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ueadmission.admission.AdmissionController">
+<StackPane fx:id="rootPane" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ueadmission.admission.AdmissionController">
+    <MFXScrollPane fitToWidth="true" fitToHeight="true" prefViewportWidth="1280" prefViewportHeight="720">
     <VBox spacing="0" stylesheets="@admission.css">
         <!-- 🔷 Navbar -->
         <HBox id="navbar" alignment="CENTER_LEFT" spacing="30" style="-fx-background-color: #FA4506;">
@@ -457,3 +458,4 @@
         </VBox>
     </VBox>
 </MFXScrollPane>
+</StackPane>
