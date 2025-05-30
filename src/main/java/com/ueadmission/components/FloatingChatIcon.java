@@ -1,27 +1,27 @@
 package com.ueadmission.components;
 
+import com.ueadmission.chat.ChatController;
 import javafx.animation.ScaleTransition;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.effect.DropShadow;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
 public class FloatingChatIcon extends Button {
-    
+
     private Stage chatWindow;
     private boolean isOpen = false;
     private double xOffset = -30;
     private double yOffset = -30;
+
+    // Static reference to track all chat windows
+    private static java.util.List<Stage> allChatWindows = new java.util.ArrayList<>();
 
     public FloatingChatIcon() {
         // Set default text as fallback
@@ -44,25 +44,107 @@ public class FloatingChatIcon extends Button {
             }
         });
     }
-    
+
     private void initializeIcon() {
         // Load chat icon
         try {
-            // Use a simpler path format to load the image
-            Image chatImage = new Image(getClass().getResourceAsStream("/com.ueadmission/images/chat.png"));
-            ImageView imageView = new ImageView(chatImage);
-            imageView.setFitWidth(50);
-            imageView.setFitHeight(50);
-            imageView.setPreserveRatio(true);
-            setGraphic(imageView);
+            // Try multiple approaches to load the image
+            String resourcePath = "/com.ueadmission/chat.png";
 
-            // Clear any background or border styling
-            setStyle("-fx-background-color: transparent; -fx-background-insets: 0; -fx-background-radius: 0; -fx-border-width: 0;");
+            // Approach 1: Using getClass().getResource() directly
+            java.net.URL resourceUrl = getClass().getResource(resourcePath);
 
-            // Log success to help with debugging
-            System.out.println("Chat icon image loaded successfully");
+            if (resourceUrl != null) {
+                Image chatImage = new Image(resourceUrl.toExternalForm());
+                if (!chatImage.isError()) {
+                    ImageView imageView = new ImageView(chatImage);
+                    imageView.setFitWidth(50);
+                    imageView.setFitHeight(50);
+                    imageView.setPreserveRatio(true);
+                    setGraphic(imageView);
+
+                    // Clear text to avoid showing both text and image
+                    setText("");
+
+                    // Clear any background or border styling
+                    setStyle("-fx-background-color: transparent; -fx-background-insets: 0; -fx-background-radius: 0; -fx-border-width: 0;");
+
+                    System.out.println("Chat icon image loaded successfully using getResource()");
+                    return;
+                }
+            }
+
+            // Approach 2: Using getClassLoader().getResourceAsStream()
+            java.io.InputStream imageStream = getClass().getClassLoader().getResourceAsStream(resourcePath);
+
+            if (imageStream != null) {
+                Image chatImage = new Image(imageStream);
+                if (!chatImage.isError()) {
+                    ImageView imageView = new ImageView(chatImage);
+                    imageView.setFitWidth(50);
+                    imageView.setFitHeight(50);
+                    imageView.setPreserveRatio(true);
+                    setGraphic(imageView);
+
+                    // Clear text to avoid showing both text and image
+                    setText("");
+
+                    // Clear any background or border styling
+                    setStyle("-fx-background-color: transparent; -fx-background-insets: 0; -fx-background-radius: 0; -fx-border-width: 0;");
+
+                    System.out.println("Chat icon image loaded successfully using getResourceAsStream()");
+                    return;
+                }
+            }
+
+            // Approach 3: Try with images subdirectory
+            String altPath = "/com.ueadmission/images/chat.png";
+            java.io.InputStream altStream = getClass().getClassLoader().getResourceAsStream(altPath);
+
+            if (altStream != null) {
+                Image altImage = new Image(altStream);
+                if (!altImage.isError()) {
+                    ImageView imageView = new ImageView(altImage);
+                    imageView.setFitWidth(50);
+                    imageView.setFitHeight(50);
+                    imageView.setPreserveRatio(true);
+                    setGraphic(imageView);
+
+                    // Clear text to avoid showing both text and image
+                    setText("");
+
+                    System.out.println("Chat icon loaded successfully from images subdirectory");
+                    return;
+                }
+            }
+
+            throw new Exception("Could not load image from any path");
         } catch (Exception e) {
-            // Fallback to text if image not found
+            // Try alternative resource paths before falling back to text
+            try {
+                // Try alternative path without package prefix
+                String altPath = "/chat.png";
+                java.io.InputStream altStream = getClass().getClassLoader().getResourceAsStream(altPath);
+
+                if (altStream != null) {
+                    Image altImage = new Image(altStream);
+                    ImageView imageView = new ImageView(altImage);
+                    imageView.setFitWidth(50);
+                    imageView.setFitHeight(50);
+                    imageView.setPreserveRatio(true);
+                    setGraphic(imageView);
+
+                    // Clear text to avoid showing both text and image
+                    setText("");
+
+                    System.out.println("Chat icon loaded successfully using alternate path");
+                    return;
+                }
+            } catch (Exception ex) {
+                System.err.println("Failed to load image from alternate path: " + ex.getMessage());
+            }
+
+            // Fallback to text if all image loading attempts fail
             setText("💬");
             setStyle("-fx-font-size: 24px; -fx-background-color: #FA4506; -fx-text-fill: white; -fx-background-radius: 25px;");
 
@@ -83,7 +165,7 @@ public class FloatingChatIcon extends Button {
         setPickOnBounds(true);  // Ensure clicks are captured properly
         setMouseTransparent(false);
         setFocusTraversable(true); // Allow focusing for better accessibility
-        
+
         // Only keep scale transition for hover effect
         setOnMouseEntered(e -> {
             ScaleTransition scaleUp = new ScaleTransition(Duration.millis(200), this);
@@ -99,7 +181,7 @@ public class FloatingChatIcon extends Button {
             scaleDown.play();
         });
     }
-    
+
     private void setupClickHandler() {
         setOnAction(e -> {
             // This is the only action we want to happen - toggle the chat window
@@ -113,7 +195,22 @@ public class FloatingChatIcon extends Button {
             e.consume();
         });
     }
-    
+
+    // Helper method to get current user role from the authentication state
+    private String getCurrentUserRole() {
+        try {
+            // Get the current auth state from AuthStateManager
+            com.ueadmission.auth.state.AuthStateManager authManager = com.ueadmission.auth.state.AuthStateManager.getInstance();
+            if (authManager.isAuthenticated() && authManager.getState().getUser() != null) {
+                return authManager.getState().getUser().getRole();
+            }
+        } catch (Exception e) {
+            System.err.println("Error getting user role: " + e.getMessage());
+        }
+        // Default to student if not authenticated or error occurs
+        return "student";
+    }
+
     private void openChatWindow() {
         if (chatWindow != null && chatWindow.isShowing()) {
             // If already showing, bring to front
@@ -124,63 +221,104 @@ public class FloatingChatIcon extends Button {
             // If exists but not showing
             chatWindow.show();
             isOpen = true;
+            // Make sure it's in the list
+            if (!allChatWindows.contains(chatWindow)) {
+                allChatWindows.add(chatWindow);
+            }
             return;
         }
-        
-        // Create chat window
-        chatWindow = new Stage();
-        chatWindow.initStyle(StageStyle.UTILITY);
-        chatWindow.initModality(Modality.NONE);
-        chatWindow.setTitle("Chat Support");
-        chatWindow.setResizable(false);
-        
-        // Chat window content
-        VBox chatContent = new VBox(10);
-        chatContent.setPadding(new Insets(20));
-        chatContent.setAlignment(Pos.CENTER);
-        chatContent.setStyle("-fx-background-color: white; -fx-border-color: #ddd; -fx-border-width: 1px;");
-        
-        Label welcomeLabel = new Label("Welcome to UIU Chat Support!");
-        welcomeLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #333;");
-        
-        Label statusLabel = new Label("Chat feature is coming soon...");
-        statusLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: #666;");
-        
-        Button closeButton = new Button("Close");
-        closeButton.setStyle(
-            "-fx-background-color: #dc3545;" +
-            "-fx-text-fill: white;" +
-            "-fx-background-radius: 5px;" +
-            "-fx-padding: 8 16 8 16;" +
-            "-fx-cursor: hand;"
-        );
-        closeButton.setOnAction(e -> closeChatWindow());
-        
-        chatContent.getChildren().addAll(welcomeLabel, statusLabel, closeButton);
-        
-        Scene chatScene = new Scene(chatContent, 300, 200);
-        chatWindow.setScene(chatScene);
-        
-        // Position window relative to the main stage
+
+        try {
+            // Load chat FXML
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com.ueadmission/chat/chat.fxml"));
+            Parent chatRoot = loader.load();
+
+            // Get controller and set stage reference
+            ChatController chatController = loader.getController();
+
+            // Create chat window
+            chatWindow = new Stage();
+            chatWindow.initStyle(StageStyle.DECORATED);
+            chatWindow.initModality(Modality.NONE);
+            chatWindow.setTitle("UIU Chat Support");
+            chatWindow.setResizable(true);
+            chatWindow.setMinWidth(400);
+            chatWindow.setMinHeight(500);
+            chatWindow.setWidth(800);
+            chatWindow.setHeight(600);
+
+            // Load stylesheets
+            Scene scene = new Scene(chatRoot, 800, 600);
+            scene.getStylesheets().add(getClass().getResource("/com.ueadmission/common.css").toExternalForm());
+            scene.getStylesheets().add(getClass().getResource("/com.ueadmission/chat/chat.css").toExternalForm());
+            chatWindow.setScene(scene);
+
+            // Set controller's stage reference
+            chatController.setStage(chatWindow);
+
+        // Position window relative to the main stage with more space on the right side
         Stage parentStage = (Stage) getScene().getWindow();
         if (parentStage != null) {
-            chatWindow.setX(parentStage.getX() + parentStage.getWidth() - 320);
-            chatWindow.setY(parentStage.getY() + parentStage.getHeight() - 280);
+            chatWindow.setX(parentStage.getX() + parentStage.getWidth() - 850);
+            chatWindow.setY(parentStage.getY() + parentStage.getHeight() - 650);
         }
-        
+
         chatWindow.setOnCloseRequest(e -> {
             isOpen = false;
+            // Remove from list when closed
+            allChatWindows.remove(chatWindow);
         });
-        
+
         chatWindow.show();
         isOpen = true;
+
+        // Add to the list of all chat windows
+        allChatWindows.add(chatWindow);
+
+        } catch (Exception e) {
+            System.err.println("Error loading chat window: " + e.getMessage());
+            e.printStackTrace();
+
+            // Show error alert
+            javafx.scene.control.Alert alert = new javafx.scene.control.Alert(
+                javafx.scene.control.Alert.AlertType.ERROR,
+                "Could not open chat window: " + e.getMessage(),
+                javafx.scene.control.ButtonType.OK
+            );
+            alert.setTitle("Chat Error");
+            alert.setHeaderText("Failed to open chat");
+            alert.showAndWait();
+        }
     }
-    
+
     private void closeChatWindow() {
         if (chatWindow != null) {
             chatWindow.hide();
             isOpen = false;
+            // Remove from list when closed
+            allChatWindows.remove(chatWindow);
         }
+    }
+
+    /**
+     * Static method to close all chat windows
+     * This should be called when the user logs out
+     */
+    public static void closeAllChatWindows() {
+        // Create a copy of the list to avoid ConcurrentModificationException
+        java.util.List<Stage> windowsToClose = new java.util.ArrayList<>(allChatWindows);
+
+        // Close all windows
+        for (Stage window : windowsToClose) {
+            if (window != null && window.isShowing()) {
+                window.hide();
+            }
+        }
+
+        // Clear the list
+        allChatWindows.clear();
+
+        System.out.println("All chat windows closed");
     }
 
     /**
