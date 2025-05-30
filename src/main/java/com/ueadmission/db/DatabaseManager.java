@@ -24,6 +24,14 @@ public class DatabaseManager {
      */
     public static boolean initializeDatabase() {
         try {
+            // First ensure tables are created
+            try {
+                DatabaseInitializer.initializeDatabase();
+            } catch (Exception e) {
+                LOGGER.log(Level.WARNING, "Error initializing database schema", e);
+                // Continue to try loading sample data
+            }
+
             // Load SQL script from resources
             InputStream inputStream = DatabaseManager.class.getResourceAsStream("/database/database.sql");
             

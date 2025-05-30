@@ -1005,22 +1005,31 @@ public class AdmissionController {
      * Initializes the floating chat icon and positions it in the bottom right
      */
     private void initFloatingActionButton() {
-        // Create the floating chat icon
-        com.ueadmission.components.FloatingChatIcon chatIcon = new com.ueadmission.components.FloatingChatIcon();
+        try {
+            // Create the floating chat icon
+            com.ueadmission.components.FloatingChatIcon chatIcon = new com.ueadmission.components.FloatingChatIcon();
 
-
-        // Position the chat icon in the StackPane
-        javafx.application.Platform.runLater(() -> {
-            if (rootPane != null) {
-                rootPane.getChildren().add(chatIcon);
-                // Set alignment and margin
-                StackPane.setAlignment(chatIcon, Pos.BOTTOM_RIGHT);
-                StackPane.setMargin(chatIcon, new Insets(0, 30, 30, 0));
-                LOGGER.info("Floating chat icon added to root pane");
-            } else {
-                LOGGER.warning("Root pane is null, cannot add floating chat icon");
-            }
-        });
+            // Position the chat icon in the StackPane
+            javafx.application.Platform.runLater(() -> {
+                try {
+                    if (rootPane != null) {
+                        rootPane.getChildren().add(chatIcon);
+                        // Set alignment and margin
+                        StackPane.setAlignment(chatIcon, Pos.BOTTOM_RIGHT);
+                        StackPane.setMargin(chatIcon, new Insets(0, 30, 30, 0));
+                        LOGGER.info("Floating chat icon added to root pane");
+                    } else {
+                        LOGGER.warning("Root pane is null, cannot add floating chat icon");
+                    }
+                } catch (Exception e) {
+                    LOGGER.severe("Error adding chat icon to UI: " + e.getMessage());
+                    e.printStackTrace();
+                }
+            });
+        } catch (Exception e) {
+            LOGGER.severe("Error initializing chat icon: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 }
 

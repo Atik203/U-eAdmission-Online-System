@@ -29,17 +29,35 @@ public class Main extends Application {
 
 
         try {
-            // Try to initialize database, but continue even if it fails
+            // Initialize database schema and data
             try {
-                boolean dbInitialized = DatabaseManager.initializeDatabase();
-                if (dbInitialized) {
-                    LOGGER.info("Database initialized successfully");
+                // First initialize base schema with DatabaseInitializer
+                boolean schemaInitialized = com.ueadmission.db.DatabaseInitializer.initializeDatabase();
+
+                if (schemaInitialized) {
+                    LOGGER.info("Database schema initialized successfully");
+
+                    // Then initialize with sample data using DatabaseManager
+                    boolean dataInitialized = DatabaseManager.initializeDatabase();
+                    if (dataInitialized) {
+                        LOGGER.info("Database sample data initialized successfully");
+                    } else {
+                        LOGGER.warning("Database sample data initialization failed but continuing");
+                    }
                 } else {
-                    LOGGER.warning("Database initialization failed but continuing");
+                    LOGGER.warning("Database schema initialization failed but continuing");
                 }
             } catch (Exception e) {
                 // Log but continue without database for UI testing
-                LOGGER.log(Level.WARNING, "Database connection failed, continuing without database", e);
+                LOGGER.log(Level.WARNING, "Database initialization failed, continuing without database", e);
+            }
+
+            // Start all required servers
+            try {
+                com.ueadmission.server.ServerLauncher.startAllServers();
+                LOGGER.info("All application servers started successfully");
+            } catch (Exception e) {
+                LOGGER.log(Level.WARNING, "Failed to start application servers, some features may be in offline mode", e);
             }
 
             // Load the main FXML directly
@@ -137,18 +155,27 @@ public class Main extends Application {
 
             // Show the stage
             primaryStage.show();
-            
+
             // Add window close handler to ensure proper logout when window is closed
             primaryStage.setOnCloseRequest(event -> {
                 LOGGER.info("Application closing, logging out user if authenticated");
                 AuthStateManager authStateManager = AuthStateManager.getInstance();
                 if (authStateManager.isAuthenticated() && authStateManager.getState().getUser() != null) {
                     int userId = authStateManager.getState().getUser().getId();
+
+                    // Close all chat windows before logout
+                    try {
+                        com.ueadmission.components.FloatingChatIcon.closeAllChatWindows();
+                        LOGGER.info("Closed all chat windows on application close");
+                    } catch (Exception e) {
+                        LOGGER.log(Level.WARNING, "Error closing chat windows", e);
+                    }
+
                     com.ueadmission.auth.UserDAO.logoutUser(userId);
                     LOGGER.info("Logged out user ID: " + userId + " on application close");
                 }
             });
-            
+
             LOGGER.info("Main window shown successfully");
 
         } catch (IOException e) {
@@ -183,10 +210,39 @@ public class Main extends Application {
             AuthStateManager authStateManager = AuthStateManager.getInstance();
             if (authStateManager.isAuthenticated() && authStateManager.getState().getUser() != null) {
                 int userId = authStateManager.getState().getUser().getId();
+
+                // Close all chat windows before logout
+                try {
+                    com.ueadmission.components.FloatingChatIcon.closeAllChatWindows();
+                    LOGGER.info("Closed all chat windows on application shutdown");
+                } catch (Exception e) {
+                    LOGGER.log(Level.WARNING, "Error closing chat windows", e);
+                }
+
                 com.ueadmission.auth.UserDAO.logoutUser(userId);
                 LOGGER.info("Logged out user ID: " + userId + " on application shutdown");
+
+                // Disconnect chat client if connected
+                try {
+                    com.ueadmission.chat.ChatClient chatClient = com.ueadmission.chat.ChatClient.getInstance();
+                    if (chatClient != null && chatClient.isConnected()) {
+                        chatClient.updateStatus("offline");
+                        chatClient.disconnect();
+                        LOGGER.info("Disconnected chat client for user ID: " + userId);
+                    }
+                } catch (Exception chatEx) {
+                    LOGGER.log(Level.WARNING, "Error disconnecting chat client", chatEx);
+                }
             }
-            
+
+            // Stop all application servers
+            try {
+                com.ueadmission.server.ServerLauncher.stopAllServers();
+                LOGGER.info("All application servers stopped successfully");
+            } catch (Exception e) {
+                LOGGER.log(Level.WARNING, "Error stopping application servers", e);
+            }
+
             // Cleanup resources when application closes
             com.ueadmission.db.DatabaseConnection.closeConnection();
             LOGGER.info("Application closed, resources cleaned up");
