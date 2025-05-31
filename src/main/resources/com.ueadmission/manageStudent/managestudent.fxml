@@ -102,7 +102,7 @@
             </VBox>
 
             <!-- Application Details Section -->
-            <VBox id="application-details" spacing="20" styleClass="content-panel" alignment="CENTER_LEFT" maxWidth="1000" prefWidth="1000">
+            <VBox id="application-details" spacing="20" styleClass="content-panel" alignment="CENTER_LEFT" maxWidth="1100" prefWidth="1100">
                 <padding>
                     <Insets top="25" right="30" bottom="25" left="30" />
                 </padding>

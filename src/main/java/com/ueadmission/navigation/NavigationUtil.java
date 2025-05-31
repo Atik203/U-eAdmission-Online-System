@@ -292,6 +292,16 @@ public class NavigationUtil {
     }
 
     /**
+     * Navigate to manage user screen
+     * 
+     * @param event The event that triggered navigation
+     * @return true if navigation was successful, false otherwise
+     */
+    public static boolean navigateToManageUser(Event event) {
+        return navigateTo(event, "/com.ueadmission/manageUser/manageuser.fxml", "Manage Users - UeAdmission");
+    }
+
+    /**
      * Get the current stage from known references
      * @return The current stage or null if not found
      */
