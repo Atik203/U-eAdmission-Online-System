@@ -1,6 +1,7 @@
 package com.ueadmission.chat;
 import com.ueadmission.auth.state.AuthState;
 import com.ueadmission.auth.state.AuthStateManager;
+import com.ueadmission.config.ChatServerConfig;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -21,13 +22,12 @@ import java.util.logging.Logger;
 import com.ueadmission.db.DatabaseConnection;
 import javafx.application.Platform;
 
+
 /**
  * Client for connecting to the chat server
  */
 public class ChatClient {
     private static final Logger LOGGER = Logger.getLogger(ChatClient.class.getName());
-    private static final String SERVER_HOST = "localhost";
-    private static final int SERVER_PORT = 9001;
 
     private static ChatClient instance;
 
@@ -76,7 +76,13 @@ public class ChatClient {
 
                 // Set a reasonable connection timeout so the UI doesn't hang but gives enough time to connect
                 socket = new Socket();
-                socket.connect(new InetSocketAddress(SERVER_HOST, SERVER_PORT), 5000);
+
+                // Get server host and port from configuration
+                String serverHost = ChatServerConfig.getInstance().getServerHost();
+                int serverPort = ChatServerConfig.getInstance().getServerPort();
+
+                LOGGER.info("Connecting to chat server at " + serverHost + ":" + serverPort);
+                socket.connect(new InetSocketAddress(serverHost, serverPort), 5000);
                 writer = new PrintWriter(socket.getOutputStream(), true);
                 reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
@@ -248,6 +254,9 @@ public class ChatClient {
     /**
      * Process a message from the server
      */
+    /**
+     * Process a message from the server
+     */
     private void processMessage(String message) {
         try {
             if (message.startsWith("MSG:")) {
@@ -255,17 +264,56 @@ public class ChatClient {
                 String[] parts = message.split(":", 4);
                 if (parts.length == 4) {
                     int senderId = Integer.parseInt(parts[1]);
-                    // Use a more flexible approach to parse the timestamp
+                    // Use a more robust approach to parse the timestamp
                     LocalDateTime timestamp;
                     try {
                         // Try standard ISO format first
                         timestamp = LocalDateTime.parse(parts[2], java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME);
                     } catch (java.time.format.DateTimeParseException e) {
-                        // If that fails, try a custom format that matches what we're receiving
-                        java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
-                        timestamp = LocalDateTime.parse(parts[2], formatter);
+                        try {
+                            // Try database format (yyyy-MM-dd HH:mm:ss)
+                            java.time.format.DateTimeFormatter dbFormatter = java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                            timestamp = LocalDateTime.parse(parts[2], dbFormatter);
+                        } catch (java.time.format.DateTimeParseException e1) {
+                            try {
+                                // Try with microseconds/nanoseconds precision
+                                java.time.format.DateTimeFormatter preciseFormatter = java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSSS");
+                                timestamp = LocalDateTime.parse(parts[2], preciseFormatter);
+                            } catch (java.time.format.DateTimeParseException e2) {
+                                try {
+                                    // Try with milliseconds precision
+                                    java.time.format.DateTimeFormatter msFormatter = java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS");
+                                    timestamp = LocalDateTime.parse(parts[2], msFormatter);
+                                } catch (java.time.format.DateTimeParseException e3) {
+                                    try {
+                                        // Try without nanoseconds but with seconds
+                                        java.time.format.DateTimeFormatter secFormatter = java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+                                        timestamp = LocalDateTime.parse(parts[2], secFormatter);
+                                    } catch (java.time.format.DateTimeParseException e4) {
+                                        // IMPORTANT: Don't make minutes optional - this causes the 1:00 issue
+                                        // Instead use current time as fallback
+                                        LOGGER.warning("Could not parse timestamp: " + parts[2] + ". Using current time as fallback.");
+                                        timestamp = LocalDateTime.now();
+                                    }
+                                }
+                            }
+                        }
                     }
+
+                    // Extract the content part without any timestamp prefix
                     String content = parts[3];
+                    // Check if content contains timestamp-like prefix (e.g., "48:32:2342358:message")
+                    if (content.contains(":")) {
+                        // Try to extract the actual message after the last colon
+                        int lastColonIndex = content.lastIndexOf(":");
+                        if (lastColonIndex >= 0 && lastColonIndex < content.length() - 1) {
+                            content = content.substring(lastColonIndex + 1);
+                        }
+                    }
+
+                    // Log the original timestamp string and the parsed LocalDateTime for debugging
+                    LOGGER.info("Original timestamp string: " + parts[2]);
+                    LOGGER.info("Parsed timestamp: " + timestamp);
 
                     // Notify listeners
                     final int finalSenderId = senderId;

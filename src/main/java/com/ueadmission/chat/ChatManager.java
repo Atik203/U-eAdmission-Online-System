@@ -660,6 +660,7 @@ public class ChatManager {
         private String status;
         private String avatarColor;
         private String lastMessage;
+        private LocalDateTime lastMessageTime;
 
         public ChatUser(int id, String name, String email, String role, 
                         String status, String avatarColor, String lastMessage) {
@@ -670,6 +671,20 @@ public class ChatManager {
             this.status = status;
             this.avatarColor = avatarColor;
             this.lastMessage = lastMessage;
+            this.lastMessageTime = LocalDateTime.now(); // Default to current time
+        }
+
+        public ChatUser(int id, String name, String email, String role, 
+                        String status, String avatarColor, String lastMessage,
+                        LocalDateTime lastMessageTime) {
+            this.id = id;
+            this.name = name;
+            this.email = email;
+            this.role = role;
+            this.status = status;
+            this.avatarColor = avatarColor;
+            this.lastMessage = lastMessage;
+            this.lastMessageTime = lastMessageTime;
         }
 
         public int getId() { return id; }
@@ -679,6 +694,22 @@ public class ChatManager {
         public String getStatus() { return status; }
         public String getAvatarColor() { return avatarColor; }
         public String getLastMessage() { return lastMessage; }
+        public LocalDateTime getLastMessageTime() { return lastMessageTime; }
+
+        public String getFormattedTime() {
+            if (lastMessageTime == null) {
+                return "";
+            }
+            return lastMessageTime.format(java.time.format.DateTimeFormatter.ofPattern("h:mm a", java.util.Locale.ENGLISH));
+        }
+
+        public String getFormattedFullDateTime() {
+            if (lastMessageTime == null) {
+                return "";
+            }
+            return lastMessageTime.format(java.time.format.DateTimeFormatter.ofPattern("MMMM d, yyyy h:mm a", java.util.Locale.ENGLISH));
+        }
+
         public String getInitials() {
             if (name == null || name.isEmpty()) return "";
 
@@ -699,5 +730,3 @@ public class ChatManager {
         void onMessageReceived(Integer fromUserId, String message, LocalDateTime timestamp);
     }
 }
-
-
