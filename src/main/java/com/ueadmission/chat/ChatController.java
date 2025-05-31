@@ -9,6 +9,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -21,6 +22,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 import java.util.Collections;
 import java.util.List;
 
@@ -31,6 +33,7 @@ import javafx.scene.control.ListCell;
 import javafx.scene.control.ContentDisplay;
 import javafx.geometry.Pos;
 import javafx.geometry.Insets;
+import com.ueadmission.chat.ChatUser;
 
 /**
  * Controller for the chat interface
@@ -271,6 +274,7 @@ public class ChatController {
         });
     }
 
+
     /**
      * Handle incoming messages from the chat system
      */
@@ -287,15 +291,61 @@ public class ChatController {
 
                     // Add message to UI
                     addMessage(message, senderName, senderRole, timestamp);
+
+                    // Mark messages as read since user is viewing this conversation
+                    try {
+                        ChatManager.getInstance().markMessagesAsRead(fromUserId,
+                                AuthStateManager.getInstance().getState().getUser().getId());
+                    } catch (Exception e) {
+                        System.err.println("Error marking messages as read: " + e.getMessage());
+                    }
                 } else {
                     // Message from someone other than current partner
-                    // Could add notification or update unread count in the future
+                    // Update the user list to show new unread count
+                    refreshUserList();
                 }
             } catch (Exception e) {
                 System.err.println("Error handling incoming message: " + e.getMessage());
                 e.printStackTrace();
             }
         });
+    }
+
+    /**
+     * Refresh the user list to update unread counts
+     */
+    private void refreshUserList() {
+        // Only refresh if we're in admin view
+        if ("admin".equals(getCurrentUserRole())) {
+            // Find the ListView in the userListPanel
+            for (var node : userListPanel.getChildren()) {
+                if (node instanceof ListView) {
+                    @SuppressWarnings("unchecked")
+                    ListView<ChatUser> userListView = (ListView<ChatUser>) node;
+
+                    // Reload the user data with updated unread counts
+                    ObservableList<ChatUser> updatedUsers = loadActualUsers();
+
+                    // Remember the selected user
+                    ChatUser selectedUser = userListView.getSelectionModel().getSelectedItem();
+                    String selectedUserName = selectedUser != null ? selectedUser.getName() : null;
+
+                    // Update the list
+                    userListView.setItems(updatedUsers);
+
+                    // Restore selection
+                    if (selectedUserName != null) {
+                        for (int i = 0; i < updatedUsers.size(); i++) {
+                            if (updatedUsers.get(i).getName().equals(selectedUserName)) {
+                                userListView.getSelectionModel().select(i);
+                                break;
+                            }
+                        }
+                    }
+                    break;
+                }
+            }
+        }
     }
 
     /**
@@ -423,18 +473,27 @@ public class ChatController {
             messageContent.getStyleClass().addAll("message", "sent-message");
             messageContent.setMaxWidth(1600);
 
+            // Add sender name and time header
+            HBox messageHeader = new HBox(5);
+            messageHeader.setAlignment(Pos.CENTER_RIGHT);
+
+            // Add time to the header
+            Label messageTime = new Label(formatTime(timestamp));
+            messageTime.getStyleClass().add("message-time");
+
+            // Add tooltip with full date and time format
+            javafx.scene.control.Tooltip timeTooltip = new javafx.scene.control.Tooltip(formatFullDateTime(timestamp));
+            timeTooltip.setStyle("-fx-font-size: 12px;");
+            messageTime.setTooltip(timeTooltip);
+
+            messageHeader.getChildren().add(messageTime);
+
             Label messageText = new Label(content);
             messageText.getStyleClass().add("message-text");
             messageText.setWrapText(true);
             messageText.setMaxWidth(1560);
 
-            HBox timeBox = new HBox();
-            timeBox.setAlignment(Pos.CENTER_RIGHT);
-            Label messageTime = new Label(formatTime(timestamp));
-            messageTime.getStyleClass().add("message-time");
-            timeBox.getChildren().add(messageTime);
-
-            messageContent.getChildren().addAll(messageText, timeBox);
+            messageContent.getChildren().addAll(messageHeader, messageText);
             messageBox.getChildren().add(messageContent);
         } else {
             // Messages received (left-aligned with avatar)
@@ -464,22 +523,28 @@ public class ChatController {
             Label senderLabel = new Label(sender);
             senderLabel.setStyle("-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #555;");
 
-            // Role label removed as per requirement
+            // Add time to the header
+            Label messageTime = new Label(formatTime(timestamp));
+            messageTime.getStyleClass().add("message-time");
 
-            messageHeader.getChildren().addAll(senderLabel);
+            // Add tooltip with full date and time format
+            javafx.scene.control.Tooltip timeTooltip = new javafx.scene.control.Tooltip(formatFullDateTime(timestamp));
+            timeTooltip.setStyle("-fx-font-size: 12px; -fx-background-color: #f0f0f0; -fx-text-fill: #333333; -fx-padding: 5;");
+            timeTooltip.setShowDelay(javafx.util.Duration.millis(300));
+            messageTime.setTooltip(timeTooltip);
+
+            // Add spacer to push time to the right
+            Region spacer = new Region();
+            HBox.setHgrow(spacer, javafx.scene.layout.Priority.ALWAYS);
+
+            messageHeader.getChildren().addAll(senderLabel, spacer, messageTime);
 
             Label messageText = new Label(content);
             messageText.getStyleClass().add("message-text");
             messageText.setWrapText(true);
             messageText.setMaxWidth(1560);
 
-            HBox timeBox = new HBox();
-            timeBox.setAlignment(Pos.CENTER_LEFT);
-            Label messageTime = new Label(formatTime(timestamp));
-            messageTime.getStyleClass().add("message-time");
-            timeBox.getChildren().add(messageTime);
-
-            messageContent.getChildren().addAll(messageHeader, messageText, timeBox);
+            messageContent.getChildren().addAll(messageHeader, messageText);
 
             messageBox.getChildren().addAll(avatarPane, messageContent);
         }
@@ -506,10 +571,17 @@ public class ChatController {
     }
 
     /**
-     * Format timestamp for display
+     * Format timestamp for display (full date-time format for regular view)
      */
     private String formatTime(LocalDateTime time) {
-        return time.format(DateTimeFormatter.ofPattern("HH:mm"));
+        return time.format(DateTimeFormatter.ofPattern("MMMM d, yyyy hh:mm a", java.util.Locale.ENGLISH));
+    }
+
+    /**
+     * Format timestamp for display (full format for tooltip)
+     */
+    private String formatFullDateTime(LocalDateTime time) {
+        return time.format(DateTimeFormatter.ofPattern("MMMM d, yyyy hh:mm a", java.util.Locale.ENGLISH));
     }
 
     /**
@@ -657,7 +729,7 @@ public class ChatController {
                     chatUser.getRole(),
                     chatUser.getAvatarColor(),
                     chatUser.getLastMessage(),
-                    LocalDateTime.now(), // This should come from the last message
+                    chatUser.getLastMessageTime(), // Using the lastMessageTime from ChatManager.ChatUser
                     unreadCount
                 ));
             }
@@ -760,43 +832,7 @@ public class ChatController {
         }
     }
 
-    /**
-     * Chat user model class
-     */
-    private static class ChatUser {
-        private String name;
-        private String role;
-        private String avatarColor;
-        private String lastMessage;
-        private LocalDateTime lastMessageTime;
-        private int unreadCount;
 
-        public ChatUser(String name, String role, String avatarColor, String lastMessage,
-                        LocalDateTime lastMessageTime, int unreadCount) {
-            this.name = name;
-            this.role = role;
-            this.avatarColor = avatarColor;
-            this.lastMessage = lastMessage;
-            this.lastMessageTime = lastMessageTime;
-            this.unreadCount = unreadCount;
-        }
-
-        public String getName() { return name; }
-        public String getRole() { return role; }
-        public String getAvatarColor() { return avatarColor; }
-        public String getLastMessage() { return lastMessage; }
-        public LocalDateTime getLastMessageTime() { return lastMessageTime; }
-        public int getUnreadCount() { return unreadCount; }
-        public String getFormattedTime() {
-            return lastMessageTime.format(DateTimeFormatter.ofPattern("HH:mm"));
-        }
-        public String getInitials() {
-            if (name == null || name.isEmpty()) return "";
-            String[] parts = name.split(" ");
-            if (parts.length == 1) return name.substring(0, 1).toUpperCase();
-            return (parts[0].substring(0, 1) + parts[parts.length-1].substring(0, 1)).toUpperCase();
-        }
-    }
 
     /**
      * Custom cell factory for user list
@@ -809,6 +845,7 @@ public class ChatController {
         private VBox infoContainer;
         private HBox nameContainer;
         private Label nameLabel;
+        private StackPane unreadBadgePane;
         private Label unreadBadge;
         private Label lastMessageLabel;
         private Label timeLabel;
@@ -846,14 +883,27 @@ public class ChatController {
             nameLabel.getStyleClass().add("user-name");
             HBox.setHgrow(nameLabel, javafx.scene.layout.Priority.ALWAYS);
 
+            // Create a StackPane for the unread badge to ensure proper circular shape
+            unreadBadgePane = new StackPane();
+            unreadBadgePane.setPrefSize(18, 18);
+            unreadBadgePane.setMaxSize(18, 18);
+            unreadBadgePane.setMinSize(18, 18);
+            unreadBadgePane.setVisible(false);
+
+            // Create circular background
+            Circle badgeBackground = new Circle(9);
+            badgeBackground.setFill(Color.valueOf("#ff4444"));
+
             unreadBadge = new Label();
-            unreadBadge.getStyleClass().add("unread-badge");
-            unreadBadge.setVisible(false);
+            unreadBadge.setStyle("-fx-text-fill: white; -fx-font-size: 9px; -fx-font-weight: bold;");
+            unreadBadge.setAlignment(Pos.CENTER);
+
+            unreadBadgePane.getChildren().addAll(badgeBackground, unreadBadge);
 
             timeLabel = new Label();
             timeLabel.getStyleClass().add("timestamp");
 
-            nameContainer.getChildren().addAll(nameLabel, unreadBadge, timeLabel);
+            nameContainer.getChildren().addAll(nameLabel, unreadBadgePane, timeLabel);
 
             lastMessageLabel = new Label();
             lastMessageLabel.getStyleClass().add("last-message");
@@ -884,12 +934,17 @@ public class ChatController {
                 lastMessageLabel.setText(user.getLastMessage());
                 timeLabel.setText(user.getFormattedTime());
 
+                // Add tooltip with full date and time format
+                javafx.scene.control.Tooltip timeTooltip = new javafx.scene.control.Tooltip(user.getFormattedFullDateTime());
+                timeTooltip.setStyle("-fx-font-size: 12px;");
+                timeLabel.setTooltip(timeTooltip);
+
                 // Show unread badge if needed
                 if (user.getUnreadCount() > 0) {
-                    unreadBadge.setText(String.valueOf(user.getUnreadCount()));
-                    unreadBadge.setVisible(true);
+                    unreadBadge.setText(String.valueOf(Math.min(user.getUnreadCount(), 99))); // Cap at 99
+                    unreadBadgePane.setVisible(true);
                 } else {
-                    unreadBadge.setVisible(false);
+                    unreadBadgePane.setVisible(false);
                 }
 
                 setGraphic(container);
