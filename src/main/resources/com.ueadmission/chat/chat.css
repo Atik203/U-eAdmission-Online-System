@@ -89,18 +89,53 @@
   -fx-text-fill: #777777;
 }
 
-.timestamp {
-  -fx-font-size: 10px;
-  -fx-text-fill: #999999;
-}
 
+
+/* Chat-specific styles */
 .unread-badge {
-  -fx-background-color: -primary-color;
-  -fx-background-radius: 50%;
+  -fx-background-color: #ff4444;
+  -fx-background-radius: 10px;
   -fx-text-fill: white;
   -fx-font-size: 10px;
   -fx-font-weight: bold;
-  -fx-padding: 3px 6px;
+  -fx-padding: 2px 6px;
+  -fx-min-width: 16px;
+  -fx-min-height: 16px;
+  -fx-max-width: 16px;
+  -fx-max-height: 16px;
+  -fx-alignment: center;
+}
+
+.user-item {
+  -fx-padding: 8px;
+  -fx-background-color: transparent;
+  -fx-border-color: transparent;
+}
+
+.user-item:selected {
+  -fx-background-color: #e3f2fd;
+  -fx-border-color: #2196f3;
+}
+
+.user-name {
+  -fx-font-size: 14px;
+  -fx-font-weight: bold;
+  -fx-text-fill: #333;
+}
+
+.last-message {
+  -fx-font-size: 12px;
+  -fx-text-fill: #666;
+  -fx-opacity: 0.8;
+}
+
+.timestamp {
+  -fx-font-size: 11px;
+  -fx-text-fill: #999;
+}
+
+.user-avatar {
+  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 2, 0, 0, 1);
 }
 
 /* Message Styles */

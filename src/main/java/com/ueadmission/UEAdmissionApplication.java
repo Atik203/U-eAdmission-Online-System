@@ -8,6 +8,9 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -27,10 +30,25 @@ public class UEAdmissionApplication extends Application {
             LOGGER.log(Level.SEVERE, "Failed to initialize database: " + e.getMessage(), e);
         }
 
-        // Start chat server
+        // Check if we should start the chat server
         try {
-            ChatManager.getInstance().startServer();
-            LOGGER.info("Chat server started successfully");
+            // Load chat server configuration
+            com.ueadmission.config.ChatServerConfig config = com.ueadmission.config.ChatServerConfig.getInstance();
+
+            // Check if auto-start is enabled
+            if (config.isAutoStartEnabled()) {
+                // Check if server is already running on the configured port
+                if (isServerRunning(config.getServerHost(), config.getServerPort())) {
+                    LOGGER.info("Chat server is already running at " + config.getServerHost() + ":" + config.getServerPort());
+                } else {
+                    // Start the chat server
+                    ChatManager.getInstance().startServer();
+                    LOGGER.info("Chat server started successfully on port " + config.getServerPort());
+                }
+            } else {
+                LOGGER.info("Chat server auto-start is disabled. Using external server at " + 
+                           config.getServerHost() + ":" + config.getServerPort());
+            }
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Failed to start chat server: " + e.getMessage(), e);
         }
@@ -102,5 +120,22 @@ public class UEAdmissionApplication extends Application {
 
     public static void main(String[] args) {
         launch(args);
+    }
+
+    /**
+     * Check if a server is running on the specified host and port
+     * @param host The host to check
+     * @param port The port to check
+     * @return true if a server is running, false otherwise
+     */
+    private boolean isServerRunning(String host, int port) {
+        try (Socket socket = new Socket()) {
+            // Try to connect to the server with a short timeout
+            socket.connect(new InetSocketAddress(host, port), 1000);
+            return true;
+        } catch (IOException e) {
+            // If connection fails, server is not running
+            return false;
+        }
     }
 }
