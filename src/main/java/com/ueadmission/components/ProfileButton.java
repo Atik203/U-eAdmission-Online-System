@@ -266,6 +266,10 @@ public class ProfileButton extends HBox {
                 manageStudentMenuItem.setStyle("-fx-text-fill: #2E3B55; -fx-padding: 8 15;");
                 manageStudentMenuItem.setOnAction(e -> navigateTo("managestudent"));
 
+                MenuItem manageUserMenuItem = new MenuItem("Manage User");
+                manageUserMenuItem.setStyle("-fx-text-fill: #2E3B55; -fx-padding: 8 15;");
+                manageUserMenuItem.setOnAction(e -> navigateTo("manageuser"));
+
                 MenuItem manageAdminMenuItem = new MenuItem("Manage User (Admin)");
                 manageAdminMenuItem.setStyle("-fx-text-fill: #2E3B55; -fx-padding: 8 15;");
                 manageAdminMenuItem.setOnAction(e -> navigateTo("manageadmin"));
@@ -290,6 +294,7 @@ public class ProfileButton extends HBox {
                 profileMenu.getItems().addAll(
                     profileMenuItem,
                     manageStudentMenuItem,
+                    manageUserMenuItem,
                     manageAdminMenuItem,
                     examScheduleMenuItem,
                     publishResultMenuItem,
@@ -329,6 +334,8 @@ public class ProfileButton extends HBox {
                     com.ueadmission.navigation.NavigationUtil.navigateToApplications(event);
                 } else if (screen.equals("managestudent")) {
                     com.ueadmission.navigation.NavigationUtil.navigateToManageStudent(event);
+                } else if (screen.equals("manageuser")) {
+                    com.ueadmission.navigation.NavigationUtil.navigateToManageUser(event);
                 } else {
                     // For other screens, use the generic approach
                     String fxmlPath = "/com.ueadmission/" + screen + ".fxml";

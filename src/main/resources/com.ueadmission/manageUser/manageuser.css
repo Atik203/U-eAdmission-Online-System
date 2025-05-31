@@ -1,0 +1,187 @@
+/* Styles for the Manage Users screen */
+
+/* Import common styles */
+@import "../common.css";
+
+/* Modern header styling */
+.page-title {
+    -fx-font-size: 32px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2E3B55;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 2, 0, 0, 1);
+}
+
+.page-subtitle {
+    -fx-font-size: 16px;
+    -fx-text-fill: #5A6A8E;
+}
+
+/* Content panel styling */
+.content-panel {
+    -fx-background-color: white;
+    -fx-background-radius: 8px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 10, 0, 0, 2);
+    -fx-padding: 20px;
+}
+
+/* List header styling */
+.user-list-header {
+    -fx-background-color: #F5F7FA;
+    -fx-background-radius: 5px;
+    -fx-padding: 10px 15px;
+    -fx-spacing: 10px;
+    -fx-alignment: center-left;
+}
+
+.header-cell {
+    -fx-font-weight: bold;
+    -fx-text-fill: #2E3B55;
+    -fx-font-size: 14px;
+}
+
+/* List item styling */
+.user-list-view {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 5px;
+}
+
+.user-list-view .list-cell {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.user-list-item {
+    -fx-background-color: white;
+    -fx-background-radius: 5px;
+    -fx-border-color: #E0E6ED;
+    -fx-border-radius: 5px;
+    -fx-border-width: 1px;
+    -fx-padding: 12px 15px;
+    -fx-spacing: 10px;
+    -fx-alignment: center-left;
+}
+
+.user-list-item:hover {
+    -fx-background-color: #F5F7FA;
+    -fx-border-color: #D0D8E6;
+}
+
+/* Cell label styling */
+.cell-label {
+    -fx-text-fill: #2E3B55;
+    -fx-font-size: 13px;
+}
+
+.id-column {
+    -fx-min-width: 50px;
+    -fx-max-width: 50px;
+}
+
+.name-column {
+    -fx-font-weight: bold;
+    -fx-min-width: 150px;
+    -fx-max-width: 150px;
+}
+
+.email-column {
+    -fx-min-width: 180px;
+    -fx-max-width: 180px;
+}
+
+.phone-column {
+    -fx-min-width: 120px;
+    -fx-max-width: 120px;
+}
+
+.role-column {
+    -fx-min-width: 100px;
+    -fx-max-width: 100px;
+}
+
+.status-column {
+    -fx-min-width: 100px;
+    -fx-max-width: 100px;
+    -fx-font-weight: bold;
+}
+
+/* Status styling */
+.status-pending {
+    -fx-text-fill: #F59E0B;
+}
+
+.status-approved {
+    -fx-text-fill: #10B981;
+}
+
+.status-rejected {
+    -fx-text-fill: #EF4444;
+}
+
+/* Details section styling */
+.section-title {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2E3B55;
+    -fx-padding: 0 0 10px 0;
+}
+
+.subsection-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2E3B55;
+    -fx-border-color: transparent transparent #E0E6ED transparent;
+    -fx-border-width: 0 0 1px 0;
+    -fx-padding: 0 0 5px 0;
+}
+
+.details-section {
+    -fx-padding: 10px 0;
+}
+
+.detail-row {
+    -fx-spacing: 10px;
+    -fx-alignment: center-left;
+}
+
+.detail-label {
+    -fx-font-weight: bold;
+    -fx-text-fill: #5A6A8E;
+    -fx-min-width: 150px;
+}
+
+.detail-value {
+    -fx-text-fill: #2E3B55;
+}
+
+/* Loader styling */
+.loader-container {
+    -fx-padding: 30px;
+}
+
+.loader-text {
+    -fx-font-size: 14px;
+    -fx-text-fill: #5A6A8E;
+}
+
+/* No data message styling */
+.no-data-label {
+    -fx-font-size: 16px;
+    -fx-text-fill: #5A6A8E;
+    -fx-padding: 20px;
+}
+
+/* Button styling */
+.mfx-button-outline {
+    -fx-background-color: transparent;
+    -fx-border-color: #FA4506;
+    -fx-text-fill: #FA4506;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-font-weight: bold;
+    -fx-padding: 10px 20px;
+}
+
+.mfx-button-outline:hover {
+    -fx-background-color: rgba(250, 69, 6, 0.1);
+}
