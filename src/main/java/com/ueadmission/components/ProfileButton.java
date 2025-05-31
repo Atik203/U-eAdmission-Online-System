@@ -5,6 +5,8 @@ import com.ueadmission.auth.state.AuthState;
 import com.ueadmission.auth.state.AuthStateManager;
 import com.ueadmission.auth.state.User;
 
+import javafx.event.ActionEvent;
+
 import io.github.palexdev.materialfx.controls.MFXButton;
 import javafx.animation.FadeTransition;
 import javafx.beans.property.SimpleStringProperty;
@@ -25,41 +27,41 @@ import javafx.util.Duration;
  * profile information or login button based on auth state
  */
 public class ProfileButton extends HBox {
-    
+
     private final MFXButton loginButton = new MFXButton("Login");
     private final MFXButton profileButton = new MFXButton();
     private final Circle profileCircle = new Circle(20, Color.valueOf("#FA4506"));  // Increased size to 20
     private final Text initialsText = new Text();
     private final StringProperty displayName = new SimpleStringProperty("Guest");
-    
+
     private ContextMenu profileMenu;
     private Consumer<AuthState> authStateListener;
-    
+
     public ProfileButton() {
         this.getStyleClass().add("profile-button-container");
-        
+
         // Initialize login button
         loginButton.getStyleClass().add("mfx-button-login");
         loginButton.setOnAction(e -> handleLoginClick());
-        
+
         // Initialize profile button
         profileButton.getStyleClass().add("profile-button");
         initialsText.setFill(Color.WHITE);
         profileButton.setGraphic(createProfileGraphic());
-        
+
         // Create profile menu
         createProfileMenu();
-        
+
         // Add the login button initially
         this.getChildren().add(loginButton);
-        
+
         // Subscribe to auth state changes
         subscribeToAuthState();
-        
+
         // Initialize with current auth state
         javafx.application.Platform.runLater(this::initializeWithCurrentAuthState);
     }
-    
+
     /**
      * Initialize the button with the current auth state when loaded
      */
@@ -80,7 +82,7 @@ public class ProfileButton extends HBox {
             System.err.println("Error initializing ProfileButton: " + e.getMessage());
         }
     }
-    
+
     /**
      * Force update the UI with current auth state
      * This can be called from controllers to ensure the button shows the correct state
@@ -94,7 +96,7 @@ public class ProfileButton extends HBox {
             System.out.println("ProfileButton explicitly refreshed with current auth state");
         }
     }
-    
+
     /**
      * Create the profile graphic with circle and initials
      */
@@ -133,9 +135,9 @@ public class ProfileButton extends HBox {
     private void createProfileMenu() {
         profileMenu = new ContextMenu();
         profileMenu.getStyleClass().add("profile-context-menu");
-        
+
         // Don't add any items here - we'll add them dynamically in updateMenuForUserRole
-        
+
         // Show menu on profile button click
         profileButton.setOnAction(e -> {
             if (profileMenu != null) {
@@ -223,7 +225,7 @@ public class ProfileButton extends HBox {
          */
         private void updateMenuForUserRole(String role) {
             System.out.println("Updating menu for role: " + role);
-            
+
             // Clear existing menu items
             profileMenu.getItems().clear();
 
@@ -234,7 +236,7 @@ public class ProfileButton extends HBox {
 
             // Normalize role to lowercase for case-insensitive comparison
             String normalizedRole = (role != null) ? role.toLowerCase().trim() : "";
-            
+
             // Add role-specific menu items with styling
             if (normalizedRole.equals("student")) {
                 System.out.println("Building student menu items");
@@ -276,9 +278,6 @@ public class ProfileButton extends HBox {
                 publishResultMenuItem.setStyle("-fx-text-fill: #2E3B55; -fx-padding: 8 15;");
                 publishResultMenuItem.setOnAction(e -> navigateTo("publishresult"));
 
-                MenuItem approveApplicationMenuItem = new MenuItem("Approve Application");
-                approveApplicationMenuItem.setStyle("-fx-text-fill: #2E3B55; -fx-padding: 8 15;");
-                approveApplicationMenuItem.setOnAction(e -> navigateTo("approveapplication"));
 
                 MenuItem addQuestionMenuItem = new MenuItem("Add Question Paper");
                 addQuestionMenuItem.setStyle("-fx-text-fill: #2E3B55; -fx-padding: 8 15;");
@@ -294,7 +293,6 @@ public class ProfileButton extends HBox {
                     manageAdminMenuItem,
                     examScheduleMenuItem,
                     publishResultMenuItem,
-                    approveApplicationMenuItem,
                     addQuestionMenuItem,
                     monitorExamMenuItem
                 );
@@ -313,7 +311,7 @@ public class ProfileButton extends HBox {
             logoutMenuItem.setStyle("-fx-text-fill: #FF3B30; -fx-font-weight: bold; -fx-padding: 8 15;");
             logoutMenuItem.setOnAction(e -> handleLogoutClick());
             profileMenu.getItems().add(logoutMenuItem);
-            
+
             System.out.println("Menu updated. Total menu items: " + profileMenu.getItems().size());
         }
 
@@ -323,19 +321,21 @@ public class ProfileButton extends HBox {
         private void navigateTo(String screen) {
             System.out.println("Navigate to " + screen + " screen");
             try {
-                // Use NavigationUtil instead of NavigationManager
-                String fxmlPath;
-                
-                // Special case for application screen which is in a subdirectory
+                // Create an ActionEvent to use with NavigationUtil methods
+                ActionEvent event = new ActionEvent(this, null);
+
+                // Use specific navigation methods for special screens
                 if (screen.equals("application")) {
-                    fxmlPath = "/com.ueadmission/application/application.fxml";
+                    com.ueadmission.navigation.NavigationUtil.navigateToApplications(event);
+                } else if (screen.equals("managestudent")) {
+                    com.ueadmission.navigation.NavigationUtil.navigateToManageStudent(event);
                 } else {
-                    fxmlPath = "/com.ueadmission/" + screen + ".fxml";
+                    // For other screens, use the generic approach
+                    String fxmlPath = "/com.ueadmission/" + screen + ".fxml";
+                    String title = "UeAdmission - " + screen.substring(0, 1).toUpperCase() + screen.substring(1);
+                    Stage currentStage = (Stage) this.getScene().getWindow();
+                    com.ueadmission.navigation.NavigationUtil.navigateTo(currentStage, fxmlPath, title);
                 }
-                
-                String title = "UeAdmission - " + screen.substring(0, 1).toUpperCase() + screen.substring(1);
-                Stage currentStage = (Stage) this.getScene().getWindow();
-                com.ueadmission.navigation.NavigationUtil.navigateTo(currentStage, fxmlPath, title);
             } catch (Exception e) {
                 System.err.println("Error navigating to " + screen + ": " + e.getMessage());
                 e.printStackTrace();
@@ -465,4 +465,3 @@ public class ProfileButton extends HBox {
         profileCircle.setFill(color);
     }
 }
-
