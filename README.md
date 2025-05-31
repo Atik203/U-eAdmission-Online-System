@@ -101,6 +101,8 @@ For detailed information about the chat system, including how to run the standal
 
 ## 🎬 Demo Videos
 
+You can view all demo videos in this YouTube playlist: [Click Here](https://www.youtube.com/playlist?list=PLAx69bW5jdxy166ou_cxcnilEsfeJcDrH)
+
 ### Admin Login Demo
 
 https://github.com/user-attachments/assets/7efe35cc-1f5f-4181-82ac-e3400ee76fcf
