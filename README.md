@@ -16,7 +16,8 @@ The U-eAdmission Online System is a comprehensive JavaFX application designed to
 - **Role-Specific Dashboards**: Custom interfaces for students and administrators
 - **Notification System**: Email/SMS alerts for deadlines, exam schedules, and results
 - **Exam Portal**: Online admission testing with instant feedback
-- **Live Support**: In-app chat and one-to-one video meeting functionality
+- **Live Support**: In-app chat system for real-time communication between students and administrators
+- **Standalone Chat Server**: Support for multiple application instances connecting to a single chat server
 
 ## 📸 Screenshots
 
@@ -83,6 +84,21 @@ The U-eAdmission Online System is a comprehensive JavaFX application designed to
 
 ![Application Screen](img/application-1.png)
 
+### Chat System
+
+![Chat System](img/chat-1.png)
+
+<details>
+  <summary><b>Show More Chat Screenshots</b></summary>
+
+### Additional Chat System Views
+
+![Chat System 2](img/chat-2.png)
+
+</details>
+
+For detailed information about the chat system, including how to run the standalone chat server and configure the chat system, please refer to the [Chat System Documentation](README-CHAT.md).
+
 ## 🎬 Demo Videos
 
 ### Admin Login Demo
@@ -100,6 +116,10 @@ https://github.com/user-attachments/assets/66ad1f9d-0fab-46f4-a57c-f1cbc99951e1
 ### Application and Payment Process Demo
 
 https://github.com/user-attachments/assets/e63f30b4-4c4e-4b9c-82a4-31008c1d5175
+
+### Chat System Demo
+
+https://github.com/user-attachments/assets/ac55f256-61a3-4b03-820f-6400489a019c
 
 ## 🛠️ Technologies
 
@@ -154,6 +174,7 @@ The U-eAdmission Online System is built using the following technologies:
 U-eAdmission/
 ├── img/                       # Screenshots and images
 ├── lib/                       # External libraries and dependencies
+├── README-CHAT.md             # Chat system documentation
 ├── src/
 │   ├── main/
 │   │   ├── java/
