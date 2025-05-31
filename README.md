@@ -97,6 +97,32 @@ The U-eAdmission Online System is a comprehensive JavaFX application designed to
 
 </details>
 
+### Manage Student Screen
+
+![Manage Student Screen](img/manage-student-1.png)
+
+<details>
+  <summary><b>Show More Manage Student Screenshots</b></summary>
+
+### Additional Manage Student Screen Views
+
+![Manage Student Screen 2](img/manage-student-2.png)
+
+</details>
+
+### Manage User Screen
+
+![Manage User Screen](img/manage-user-1.png)
+
+<details>
+  <summary><b>Show More Manage User Screenshots</b></summary>
+
+### Additional Manage User Screen Views
+
+![Manage User Screen 2](img/manage-user-2.png)
+
+</details>
+
 For detailed information about the chat system, including how to run the standalone chat server and configure the chat system, please refer to the [Chat System Documentation](README-CHAT.md).
 
 ## 🎬 Demo Videos
