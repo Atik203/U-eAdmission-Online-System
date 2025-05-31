@@ -3,7 +3,7 @@ module com.u.eadmission.ueadmission {
     requires javafx.fxml;
     requires javafx.web;
     requires javafx.swing;
-    
+
     requires org.controlsfx.controls;
     requires com.dlsc.formsfx;
     requires net.synedra.validatorfx;
@@ -36,7 +36,8 @@ module com.u.eadmission.ueadmission {
     opens com.ueadmission.exam to javafx.fxml;
     opens com.ueadmission.mockTest to javafx.fxml;
     opens com.ueadmission.chat to javafx.fxml;
-    
+    opens com.ueadmission.managestudent to javafx.fxml;
+
     exports com.ueadmission;
     exports com.ueadmission.about;
     exports com.ueadmission.admission;
@@ -52,4 +53,5 @@ module com.u.eadmission.ueadmission {
     exports com.ueadmission.exam;
     exports com.ueadmission.mockTest;
     exports com.ueadmission.chat;
+    exports com.ueadmission.managestudent;
 }

@@ -33,7 +33,7 @@
             <MFXButton id="nav-button" fx:id="admissionButton" styleClass="mfx-button" text="Admission" onAction="#navigateToAdmission" />
             <MFXButton id="nav-button" fx:id="examPortalButton" styleClass="mfx-button" text="Exam Portal" onAction="#navigateToExamPortal" />
             <MFXButton id="nav-button" fx:id="contactButton" styleClass="mfx-button" text="Contact" onAction="#navigateToContact" />
-         
+
             <!-- Profile button container - always visible when in this screen -->
             <HBox fx:id="profileButtonContainer" alignment="CENTER">
                 <children>
@@ -47,7 +47,7 @@
             <padding>
                 <Insets top="40" right="20" bottom="30" left="20" />
             </padding>
-            
+
             <Label styleClass="page-title" text="My Applications" />
             <Label styleClass="page-subtitle" text="View and manage your admission applications" />
 
@@ -58,19 +58,19 @@
                 <MFXButton fx:id="refreshButton" text="Refresh" styleClass="mfx-button-outline" onAction="#refreshApplications" />
             </HBox>
         </VBox>
-        
+
         <!-- Applications Content Section -->
         <VBox fx:id="applicationContainer" id="applications-content" spacing="20" alignment="CENTER">
             <padding>
                 <Insets top="20" right="30" bottom="40" left="30" />
             </padding>
-            
+
             <!-- Applications List -->
-            <VBox id="applications-list" spacing="20" styleClass="content-panel" alignment="CENTER" maxWidth="1000" prefWidth="1000">
+            <VBox id="applications-list" spacing="20" styleClass="content-panel" alignment="CENTER" maxWidth="1200" prefWidth="1200">
                 <padding>
                     <Insets top="25" right="30" bottom="25" left="30" />
                 </padding>
-                
+
                 <!-- Loading Spinner (Hidden by default) -->
                 <StackPane fx:id="loaderContainer" visible="false" managed="true" styleClass="loader-container">
                     <VBox alignment="CENTER" spacing="15">
@@ -78,7 +78,7 @@
                         <Label text="Loading applications..." styleClass="loader-text" />
                     </VBox>
                 </StackPane>
-                
+
                 <!-- Application List Section -->
                 <VBox spacing="20">
                     <HBox styleClass="application-list-header">
@@ -91,17 +91,17 @@
                         <Label text="Status" styleClass="header-cell" HBox.hgrow="ALWAYS" maxWidth="100" />
                         <Label text="Action" styleClass="header-cell" HBox.hgrow="ALWAYS" maxWidth="120" />
                     </HBox>
-                    
+
                     <!-- Application List View -->
                     <ListView fx:id="applicationListView" styleClass="application-list-view" prefHeight="400" VBox.vgrow="ALWAYS" />
                 </VBox>
-                
+
                 <!-- No Applications Message -->
                 <Label fx:id="noApplicationsLabel" text="No applications found. Apply for admission to see your applications here." 
                        styleClass="no-data-label" visible="false" managed="true" />
             </VBox>
         </VBox>
-        
+
         <!-- Footer -->
         <VBox id="footer" alignment="CENTER" spacing="30" style="-fx-background-color: #222222;">
             <padding>

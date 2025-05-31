@@ -25,10 +25,10 @@ import javafx.stage.Stage;
  */
 public class NavigationUtil {
     private static final Logger LOGGER = Logger.getLogger(NavigationUtil.class.getName());
-    
+
     // Static variable to hold main stage reference
     private static Stage mainStage;
-    
+
     /**
      * Set the main stage reference
      * @param stage The main application stage
@@ -37,7 +37,7 @@ public class NavigationUtil {
         mainStage = stage;
         LOGGER.info("Main stage reference set in NavigationUtil");
     }
-    
+
     /**
      * Navigate to a screen using the event source to determine the current stage
      * This is the main navigation method that should be used in event handlers
@@ -52,7 +52,7 @@ public class NavigationUtil {
             LOGGER.severe("Cannot navigate: event or source is null");
             return false;
         }
-        
+
         try {
             // Get current stage from event source
             Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -62,7 +62,7 @@ public class NavigationUtil {
             return false;
         }
     }
-    
+
     /**
      * Navigate to a screen using an explicit current stage
      * 
@@ -76,47 +76,47 @@ public class NavigationUtil {
             LOGGER.severe("Cannot navigate: current stage is null");
             return false;
         }
-        
+
         try {
             // Save current window properties
             WindowProperties props = captureWindowProperties(currentStage);
-            
+
             // Get current auth state
             AuthState currentAuthState = AuthStateManager.getInstance().getState();
             boolean isAuthenticated = (currentAuthState != null && currentAuthState.isAuthenticated());
             LOGGER.info("Navigating to " + fxmlPath + " with auth state: " + 
                       (isAuthenticated ? "authenticated" : "not authenticated"));
-            
+
             // Load new scene
             FXMLLoader loader = new FXMLLoader(NavigationUtil.class.getResource(fxmlPath));
             Parent root = loader.load();
-            
+
             // Create the new scene with current dimensions
             Scene scene = new Scene(root, props.width, props.height);
-            
+
             // Update the current stage's scene instead of creating a new stage
             currentStage.setTitle(title);
             currentStage.setScene(scene);
-            
+
             // Restore window properties
             currentStage.setX(props.x);
             currentStage.setY(props.y);
             currentStage.setWidth(props.width);
             currentStage.setHeight(props.height);
             currentStage.setMaximized(props.maximized);
-            
+
             // Set the controller as user data if it's a MainController
             Object controller = loader.getController();
             if (controller instanceof MainController) {
                 root.setUserData(controller);
             }
-            
+
             // Ensure UI updates with the current auth state
             refreshControllerUI(controller, currentAuthState);
-            
+
             // Apply fade-in transition using TransitionUtil
             TransitionUtil.applyFadeInTransition(root);
-            
+
             return true;
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, "Failed to load FXML: " + e.getMessage(), e);
@@ -126,7 +126,7 @@ public class NavigationUtil {
             return false;
         }
     }
-    
+
     /**
      * Navigate with transition effect between two stages
      * 
@@ -140,14 +140,14 @@ public class NavigationUtil {
             LOGGER.severe("Cannot navigate: old stage is null");
             return false;
         }
-        
+
         try {
             // Save window properties
             WindowProperties props = captureWindowProperties(oldStage);
 
             // Get current auth state
             AuthState currentAuthState = AuthStateManager.getInstance().getState();
-            
+
             // Load the FXML
             FXMLLoader loader = new FXMLLoader(NavigationUtil.class.getResource(fxmlPath));
             Parent root = loader.load();
@@ -184,14 +184,14 @@ public class NavigationUtil {
 
             // Start the transition
             fadeOut.play();
-            
+
             return true;
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, "Failed to navigate with transition: " + e.getMessage(), e);
             return false;
         }
     }
-    
+
     /**
      * Navigate to login screen
      * 
@@ -201,7 +201,7 @@ public class NavigationUtil {
     public static boolean navigateToLogin(Event event) {
         return navigateTo(event, "/com.ueadmission/auth/login.fxml", "Login - UeAdmission");
     }
-    
+
     /**
      * Navigate to home screen
      * 
@@ -211,7 +211,7 @@ public class NavigationUtil {
     public static boolean navigateToHome(Event event) {
         return navigateTo(event, "/com.ueadmission/main.fxml", "UeAdmission - Home");
     }
-    
+
     /**
      * Navigate to about screen
      * 
@@ -221,7 +221,7 @@ public class NavigationUtil {
     public static boolean navigateToAbout(Event event) {
         return navigateTo(event, "/com.ueadmission/about/about.fxml", "About - UeAdmission");
     }
-    
+
     /**
      * Navigate to admission screen
      * 
@@ -231,7 +231,7 @@ public class NavigationUtil {
     public static boolean navigateToAdmission(Event event) {
         return navigateTo(event, "/com.ueadmission/admission/admission.fxml", "Admission - UeAdmission");
     }
-    
+
     /**
      * Navigate to profile screen
      * 
@@ -241,7 +241,7 @@ public class NavigationUtil {
     public static boolean navigateToProfile(Event event) {
         return navigateTo(event, "/com.ueadmission/profile/profile.fxml", "My Profile - UeAdmission");
     }
-    
+
     /**
      * Navigate to registration screen
      * 
@@ -251,7 +251,7 @@ public class NavigationUtil {
     public static boolean navigateToRegistration(Event event) {
         return navigateTo(event, "/com.ueadmission/auth/registration.fxml", "Registration - UeAdmission");
     }
-    
+
     /**
      * Navigate to contact screen
      * 
@@ -270,7 +270,7 @@ public class NavigationUtil {
     public static boolean navigateToApplications(Event event) {
         return navigateTo(event, "/com.ueadmission/application/application.fxml", "My Applications - UeAdmission");
     }
-    
+
     /**
      * Navigate to exam portal screen
      * 
@@ -280,7 +280,17 @@ public class NavigationUtil {
     public static boolean navigateToExamPortal(Event event) {
         return navigateTo(event, "/com.ueadmission/examPortal/exam-portal.fxml", "Exam Portal - UeAdmission");
     }
-    
+
+    /**
+     * Navigate to manage student screen
+     * 
+     * @param event The event that triggered navigation
+     * @return true if navigation was successful, false otherwise
+     */
+    public static boolean navigateToManageStudent(Event event) {
+        return navigateTo(event, "/com.ueadmission/manageStudent/managestudent.fxml", "Manage Students - UeAdmission");
+    }
+
     /**
      * Get the current stage from known references
      * @return The current stage or null if not found
@@ -303,7 +313,7 @@ public class NavigationUtil {
 
         return null;
     }
-    
+
     /**
      * Capture window properties for consistent navigation
      * 
@@ -319,7 +329,7 @@ public class NavigationUtil {
         props.maximized = stage.isMaximized();
         return props;
     }
-    
+
     /**
      * Apply a smooth transition between stages
      * 
@@ -330,7 +340,7 @@ public class NavigationUtil {
         // Use the new TransitionUtil class for stage transitions
         TransitionUtil.applyStageTransition(oldStage, newStage);
     }
-    
+
     /**
      * Try to refresh the controller's UI with authentication state
      * Uses multiple approaches to ensure the UI is updated correctly
@@ -340,9 +350,9 @@ public class NavigationUtil {
      */
     private static void refreshControllerUI(Object controller, AuthState authState) {
         if (controller == null) return;
-        
+
         LOGGER.info("Refreshing UI for controller: " + controller.getClass().getSimpleName());
-        
+
         try {
             // First check if controller implements our new AuthStateAware interface
             if (controller instanceof AuthStateAware) {
@@ -350,14 +360,14 @@ public class NavigationUtil {
                 LOGGER.info("Called refreshUI on AuthStateAware controller");
                 return;
             }
-            
+
             // Legacy compatibility with the old interface
             if (controller instanceof NavigationUtil.AuthStateAware) {
                 ((NavigationUtil.AuthStateAware) controller).refreshUI();
                 LOGGER.info("Called refreshUI on legacy AuthStateAware controller");
                 return;
             }
-            
+
             // Try standard methods via reflection for backward compatibility
             try {
                 java.lang.reflect.Method refreshUIMethod = 
@@ -368,7 +378,7 @@ public class NavigationUtil {
             } catch (NoSuchMethodException e) {
                 // Continue to next method
             }
-            
+
             try {
                 java.lang.reflect.Method onSceneActiveMethod = 
                     controller.getClass().getMethod("onSceneActive");
@@ -378,7 +388,7 @@ public class NavigationUtil {
             } catch (NoSuchMethodException e) {
                 // Continue to next method
             }
-            
+
             try {
                 java.lang.reflect.Method updateAuthUIMethod = 
                     controller.getClass().getMethod("updateAuthUI", AuthState.class);
@@ -388,7 +398,7 @@ public class NavigationUtil {
             } catch (NoSuchMethodException e) {
                 // Continue to next approach
             }
-            
+
             // Try to use AuthUIUpdater if we can get the scene
             try {
                 java.lang.reflect.Method getSceneMethod = 
@@ -402,25 +412,25 @@ public class NavigationUtil {
             } catch (NoSuchMethodException e) {
                 // Continue to next approach
             }
-            
+
             // Fall back to direct container updates
             try {
                 // Let's use our AuthUIUpdater utility class
                 boolean isAuthenticated = (authState != null && authState.isAuthenticated());
-                
+
                 // Try to get containers via reflection
                 java.lang.reflect.Field loginContainerField = 
                     controller.getClass().getDeclaredField("loginButtonContainer");
                 loginContainerField.setAccessible(true);
                 javafx.scene.layout.HBox loginContainer = 
                     (javafx.scene.layout.HBox)loginContainerField.get(controller);
-                
+
                 java.lang.reflect.Field profileContainerField = 
                     controller.getClass().getDeclaredField("profileButtonContainer");
                 profileContainerField.setAccessible(true);
                 javafx.scene.layout.HBox profileContainer = 
                     (javafx.scene.layout.HBox)profileContainerField.get(controller);
-                
+
                 // Update container visibility
                 AuthUIUpdater.updateContainersVisibility(loginContainer, profileContainer, isAuthenticated);
                 LOGGER.info("Updated containers visibility directly");
@@ -431,7 +441,7 @@ public class NavigationUtil {
             LOGGER.warning("Error during UI refresh: " + e.getMessage());
         }
     }
-    
+
     /**
      * Simple class to hold window properties
      */
@@ -442,7 +452,7 @@ public class NavigationUtil {
         double y;
         boolean maximized;
     }
-    
+
     /**
      * @deprecated Use {@link com.ueadmission.auth.state.AuthStateAware} instead
      * Interface for controllers that can handle auth state changes
