@@ -336,6 +336,8 @@ public class ProfileButton extends HBox {
                     com.ueadmission.navigation.NavigationUtil.navigateToManageStudent(event);
                 } else if (screen.equals("manageuser")) {
                     com.ueadmission.navigation.NavigationUtil.navigateToManageUser(event);
+                } else if (screen.equals("addquestion")) {
+                    com.ueadmission.navigation.NavigationUtil.navigateToQuestionPaper(event);
                 } else {
                     // For other screens, use the generic approach
                     String fxmlPath = "/com.ueadmission/" + screen + ".fxml";

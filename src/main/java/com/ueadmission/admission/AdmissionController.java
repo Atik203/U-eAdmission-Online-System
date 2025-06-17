@@ -50,7 +50,7 @@ public class AdmissionController {
 
     private static final Logger LOGGER = Logger.getLogger(AdmissionController.class.getName());
     private Consumer<AuthState> authStateListener;
-    
+
     // Store the current application ID for payment processing
     private int currentApplicationId = -1;
 
@@ -129,35 +129,35 @@ public class AdmissionController {
 
     @FXML
     private DatePicker dobPicker;
-    
+
     @FXML
     private MFXComboBox<String> genderComboBox;
-    
+
     @FXML
     private MFXTextField addressField;
-    
+
     @FXML
     private MFXTextField cityField;
-    
+
     @FXML
     private MFXTextField postalCodeField;
 
     // Guardian Information Fields
     @FXML
     private MFXTextField fatherNameField;
-    
+
     @FXML
     private MFXTextField fatherOccupationField;
-    
+
     @FXML
     private MFXTextField motherNameField;
-    
+
     @FXML
     private MFXTextField motherOccupationField;
-    
+
     @FXML
     private MFXTextField guardianPhoneField;
-    
+
     @FXML
     private MFXTextField guardianEmailField;
 
@@ -173,13 +173,13 @@ public class AdmissionController {
 
     @FXML
     private MFXTextField hscGpaField;
-    
+
     @FXML
     private MFXTextField sscYearField;
-    
+
     @FXML
     private MFXTextField hscYearField;
-    
+
     @FXML
     private MFXCheckbox declarationCheckbox;
 
@@ -295,18 +295,18 @@ public class AdmissionController {
     void showApplicationForm(ActionEvent event) {
         // Auto-populate fields from the current user data
         populateUserData();
-        
+
         applicationFormContainer.setVisible(true);
         applicationFormContainer.setManaged(true);
         applicationFormContainer.toFront();
     }
-    
+
     /**
      * Auto-populate form fields from the current user data
      */
     private void populateUserData() {
         User currentUser = AuthStateManager.getInstance().getState().getUser();
-        
+
         if (currentUser != null) {
             // Populate personal information fields
             firstNameField.setText(currentUser.getFirstName());
@@ -315,7 +315,7 @@ public class AdmissionController {
             phoneField.setText(currentUser.getPhoneNumber());
             addressField.setText(currentUser.getAddress());
             cityField.setText(currentUser.getCity());
-            
+
             // Make email field read-only
             emailField.setEditable(false);
             // Apply a style to show it's read-only
@@ -335,16 +335,16 @@ public class AdmissionController {
         // Clear all form fields - Personal Information
         firstNameField.clear();
         lastNameField.clear();
-        
+
         // Don't clear email field, it will be auto-populated and read-only
-        
+
         phoneField.clear();
         dobPicker.setValue(null); 
         genderComboBox.clear();
         addressField.clear();
         cityField.clear();
         postalCodeField.clear();
-        
+
         // Clear Guardian Information
         fatherNameField.clear();
         fatherOccupationField.clear();
@@ -352,7 +352,7 @@ public class AdmissionController {
         motherOccupationField.clear();
         guardianPhoneField.clear();
         guardianEmailField.clear();
-        
+
         // Clear Academic Information
         programComboBox.clear();
         institutionField.clear();
@@ -360,12 +360,12 @@ public class AdmissionController {
         hscGpaField.clear();
         sscYearField.clear();
         hscYearField.clear();
-        
+
         // Uncheck declaration
         if (declarationCheckbox != null) {
             declarationCheckbox.setSelected(false);
         }
-        
+
         // Re-populate user data after reset
         populateUserData();
     }
@@ -387,7 +387,7 @@ public class AdmissionController {
             institutionField.getText().isEmpty() ||
             sscGpaField.getText().isEmpty() ||
             hscGpaField.getText().isEmpty()) {
-            
+
             // Show error message or alert
             Alert alert = new Alert(
                 Alert.AlertType.ERROR,
@@ -398,7 +398,7 @@ public class AdmissionController {
             alert.show();
             return;
         }
-        
+
         // Check if declaration is checked
         if (declarationCheckbox != null && !declarationCheckbox.isSelected()) {
             Alert alert = new Alert(
@@ -410,7 +410,7 @@ public class AdmissionController {
             alert.show();
             return;
         }
-        
+
         // Validate email format
         if (!isValidEmail(emailField.getText())) {
             Alert alert = new Alert(
@@ -422,13 +422,13 @@ public class AdmissionController {
             alert.show();
             return;
         }
-        
+
         // Validate GPA values
         double sscGpa, hscGpa;
         try {
             sscGpa = Double.parseDouble(sscGpaField.getText());
             hscGpa = Double.parseDouble(hscGpaField.getText());
-            
+
             if (sscGpa < 0 || sscGpa > 5 || hscGpa < 0 || hscGpa > 5) {
                 Alert alert = new Alert(
                     Alert.AlertType.ERROR,
@@ -449,11 +449,11 @@ public class AdmissionController {
             alert.show();
             return;
         }
-        
+
         // If validation passes, save application to database
         try {
             User currentUser = AuthStateManager.getInstance().getState().getUser();
-            
+
             if (currentUser == null) {
                 Alert alert = new Alert(
                     Alert.AlertType.ERROR,
@@ -464,7 +464,7 @@ public class AdmissionController {
                 alert.show();
                 return;
             }
-            
+
             // Create Application object
             Application application = new Application(
                 currentUser.getId(),
@@ -490,10 +490,10 @@ public class AdmissionController {
                 sscYearField.getText(),
                 hscYearField.getText()
             );
-            
+
             // Save to database
             currentApplicationId = ApplicationDAO.createApplication(application);
-            
+
             if (currentApplicationId > 0) {
                 // Show success message with payment button
                 showSuccessWithPaymentOption();
@@ -510,7 +510,7 @@ public class AdmissionController {
         } catch (Exception e) {
             LOGGER.severe("Error submitting application: " + e.getMessage());
             e.printStackTrace();
-            
+
             // Show error message
             Alert alert = new Alert(
                 Alert.AlertType.ERROR,
@@ -521,67 +521,67 @@ public class AdmissionController {
             alert.show();
         }
     }
-    
+
     private void showSuccessWithPaymentOption() {
         // First, hide the application form to ensure it's closed before showing the dialog
         hideApplicationForm(null);
-        
+
         // Create a standard JavaFX dialog styled to match our theme
         Dialog<ButtonType> dialog = new Dialog<>();
         dialog.setTitle("Application Submitted");
-        
+
         // Create the DialogPane (where we can apply styling)
         DialogPane dialogPane = dialog.getDialogPane();
-        
+
         // Apply CSS styling from your application theme
         dialogPane.getStylesheets().add(getClass().getResource("/com.ueadmission/common.css").toExternalForm());
         dialogPane.getStylesheets().add(getClass().getResource("/com.ueadmission/main.css").toExternalForm());
-        
+
         // Custom styles for this specific dialog to match your theme
         dialogPane.setStyle("-fx-background-color: white; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 10, 0, 0, 4);");
-        
+
         // Create content
         VBox content = new VBox(15);
         content.setPadding(new Insets(20));
         content.setAlignment(Pos.CENTER);
         content.setMinWidth(450);
         content.setMaxWidth(450);
-        
+
         // Create styled components
         Label message = new Label("Application Submitted Successfully!");
         message.setStyle("-fx-font-weight: bold; -fx-font-size: 18px; -fx-text-fill: #2D8E36;");
-        
+
         Label paymentLabel = new Label("To finalize your application, please complete the payment.");
         paymentLabel.setStyle("-fx-font-size: 14px; -fx-text-fill: #333333;");
         paymentLabel.setWrapText(true);
-        
+
         Label amountLabel = new Label("Application Fee: 1000 Tk");
         amountLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 16px; -fx-text-fill: #333333;");
-        
+
         // Add components to content
         content.getChildren().addAll(message, paymentLabel, amountLabel);
-        
+
         // Set custom content to the dialog
         dialogPane.setContent(content);
-        
+
         // Remove the header text that comes by default
         dialog.setHeaderText(null);
-        
+
         // Create custom buttons with your app's styling
         ButtonType payButtonType = new ButtonType("Pay Now (1000 Tk)", ButtonBar.ButtonData.OK_DONE);
         ButtonType closeButtonType = new ButtonType("Close", ButtonBar.ButtonData.CANCEL_CLOSE);
-        
+
         dialogPane.getButtonTypes().addAll(closeButtonType, payButtonType);
-        
+
         // Style the buttons to match your theme
         Button payButton = (Button) dialogPane.lookupButton(payButtonType);
         payButton.setStyle("-fx-background-color: #fa4506; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 12 20; -fx-background-radius: 5;");
         payButton.setPrefWidth(200);
-        
+
         Button closeButton = (Button) dialogPane.lookupButton(closeButtonType);
         closeButton.setStyle("-fx-background-color: #dddddd; -fx-text-fill: #333333; -fx-padding: 12 20; -fx-background-radius: 5;");
         closeButton.setPrefWidth(120);
-        
+
         // Show dialog and handle the result
         try {
             Optional<ButtonType> result = dialog.showAndWait();
@@ -591,11 +591,11 @@ public class AdmissionController {
         } catch (Exception e) {
             LOGGER.severe("Error showing payment dialog: " + e.getMessage());
             e.printStackTrace();
-            
+
             // Fallback to simple notification if dialog fails
             MFXNotifications.showSuccess("Application Submitted", 
                 "Your application has been submitted successfully. Please proceed to payment.");
-                
+
             // Try direct payment initiation
             initiateSSLCommerzPayment();
         }
@@ -609,14 +609,14 @@ public class AdmissionController {
             MFXNotifications.showError("Payment Error", "Cannot process payment. Application ID is invalid.");
             return;
         }
-        
+
         // Get current user info for the payment
         User currentUser = AuthStateManager.getInstance().getState().getUser();
         if (currentUser == null) {
             MFXNotifications.showError("Payment Error", "User information is not available.");
             return;
         }
-        
+
         // Create SSLCommerz payment object
         SSLCommerzPayment payment = new SSLCommerzPayment(1000.0, "UIU Admission Application Fee")
             .withCustomer(
@@ -625,18 +625,16 @@ public class AdmissionController {
                 currentUser.getPhoneNumber()
             )
             .withParam("application_id", String.valueOf(currentApplicationId));
-        
+
         // Start payment process
         payment.startPayment(result -> {
             if (result.isSuccessful()) {
                 // Update payment status in database
                 boolean success = ApplicationDAO.updatePaymentStatus(currentApplicationId, true);
-                
+
                 if (success) {
-                    MFXNotifications.showSuccess("Payment Successful", 
-                        "Your payment of 1000 Tk has been processed successfully.\n" +
-                        "Transaction ID: " + result.getTransactionId() + "\n" +
-                        "Your application status is now Approved.");
+                    // Show the custom payment success notification
+                    MFXNotifications.showPaymentSuccess(result.getTransactionId(), "1000 Tk");
                 } else {
                     MFXNotifications.showError("Database Error", 
                         "Payment was successful, but we couldn't update your application status.\n" +
@@ -704,7 +702,7 @@ public class AdmissionController {
         }        if (contactButton != null) {
             contactButton.setOnAction(event -> navigateToContact(event));
         }
-        
+
         // Configure Exam Portal navigation button
         if (examPortalButton != null) {
             examPortalButton.setOnAction(event -> navigateToExamPortal(event));
@@ -728,12 +726,12 @@ public class AdmissionController {
                 "Pharmacy", "Biotech and Genetic Engineering"
             );
         }
-        
+
         // Initialize gender combo box
         if (genderComboBox != null) {
             genderComboBox.getItems().addAll("Male", "Female", "Other");
         }
-        
+
         // Configure DatePicker format
         if (dobPicker != null) {
             // Set the prompt text and converter for the standard DatePicker
@@ -990,7 +988,7 @@ public class AdmissionController {
         cleanup();
         com.ueadmission.navigation.NavigationUtil.navigateToLogin(event);
     }
-    
+
     /**
      * Navigates to the Exam Portal page with transition effects
      * @param event The event that triggered this action
@@ -1032,11 +1030,3 @@ public class AdmissionController {
         }
     }
 }
-
-
-
-
-
-
-
-
