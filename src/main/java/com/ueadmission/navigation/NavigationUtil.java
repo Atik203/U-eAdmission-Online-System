@@ -322,6 +322,16 @@ public class NavigationUtil {
     }
 
     /**
+     * Navigate to question paper screen
+     * 
+     * @param event The event that triggered navigation
+     * @return true if navigation was successful, false otherwise
+     */
+    public static boolean navigateToQuestionPaper(Event event) {
+        return navigateTo(event, "/com.ueadmission/questionPaper/question-paper.fxml", "Question Paper - UeAdmission");
+    }
+
+    /**
      * Get the current stage from known references
      * @return The current stage or null if not found
      */

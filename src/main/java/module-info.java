@@ -21,6 +21,11 @@ module com.u.eadmission.ueadmission {
     requires transitive javafx.base;
     requires transitive javafx.graphics;
 
+    // Added for Cloudinary and dotenv support
+    requires cloudinary.core;
+    requires cloudinary.http5;
+    requires java.dotenv;
+
     opens com.ueadmission to javafx.fxml;
     opens com.ueadmission.about to javafx.fxml;
     opens com.ueadmission.admission to javafx.fxml;
@@ -38,6 +43,7 @@ module com.u.eadmission.ueadmission {
     opens com.ueadmission.chat to javafx.fxml;
     opens com.ueadmission.managestudent to javafx.fxml;
     opens com.ueadmission.manageUser to javafx.fxml;
+    opens com.ueadmission.questionPaper to javafx.fxml;
 
     exports com.ueadmission;
     exports com.ueadmission.about;
@@ -56,4 +62,5 @@ module com.u.eadmission.ueadmission {
     exports com.ueadmission.chat;
     exports com.ueadmission.managestudent;
     exports com.ueadmission.manageUser;
+    exports com.ueadmission.questionPaper;
 }
