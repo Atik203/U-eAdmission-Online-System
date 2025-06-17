@@ -60,6 +60,7 @@
   -fx-effect: dropshadow(gaussian, -shadow-color, 5, 0, 0, 1);
 }
 
+
 /* Enhanced MFX Controls Styling */
 .mfx-text-field {
   -fx-background-color: white;
@@ -183,6 +184,17 @@
   -fx-font-size: 14px;
   -fx-text-fill: #e53935;
   -fx-font-weight: bold;
+}
+
+/* Remaining Questions Label */
+.remaining-questions-label {
+  -fx-font-size: 14px;
+  -fx-text-fill: #2196F3;
+  -fx-font-weight: bold;
+  -fx-background-color: #E3F2FD;
+  -fx-background-radius: 4;
+  -fx-border-radius: 4;
+  -fx-padding: 5 10;
 }
 
 /* LaTeX Support */
