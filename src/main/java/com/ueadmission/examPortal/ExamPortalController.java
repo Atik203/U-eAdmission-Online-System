@@ -156,6 +156,10 @@ public class ExamPortalController {
 
         // Navigate to the appropriate screen based on the button text
         if (buttonText.equals("Start Test")) {
+            // Set the selected school in MockTestController
+            com.ueadmission.mockTest.MockTestController.setSelectedSchoolStatic(examTitle);
+            LOGGER.log(Level.INFO, "Set selected school for mock test: {0}", examTitle);
+
             // Navigate to the mock test screen for practice tests
             LOGGER.log(Level.INFO, "Navigating to mock test screen");
             com.ueadmission.navigation.NavigationUtil.navigateToMockTest(event);
