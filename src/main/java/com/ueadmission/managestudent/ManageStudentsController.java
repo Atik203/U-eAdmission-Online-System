@@ -45,48 +45,48 @@ import javafx.util.Callback;
  * This page allows administrators to view all student applications
  */
 public class ManageStudentsController {
-    
+
     private static final Logger LOGGER = Logger.getLogger(ManageStudentsController.class.getName());
-    
+
     @FXML
     private ListView<Application> applicationListView;
-    
+
     @FXML
     private Label noApplicationsLabel;
-    
+
     @FXML
     private StackPane loaderContainer;
-    
+
     @FXML
     private VBox applicationContainer;
-    
+
     @FXML
     private MFXButton homeButton;
-    
+
     @FXML
     private MFXButton aboutButton;
-    
+
     @FXML
     private MFXButton admissionButton;
-    
+
     @FXML
     private MFXButton examPortalButton;
-    
+
     @FXML
     private MFXButton contactButton;
-    
+
     @FXML
     private HBox loginButtonContainer;
-    
+
     @FXML
     private HBox profileButtonContainer;
-    
+
     @FXML
     private MFXButton refreshButton;
-    
+
     @FXML
     private MFXSpinner<?> spinner;
-    
+
     // Application details labels
     @FXML private Label programLabel;
     @FXML private Label nameLabel;
@@ -110,16 +110,16 @@ public class ManageStudentsController {
     @FXML private Label statusLabel;
     @FXML private Label paymentStatusLabel;
     @FXML private Label applicationDateLabel;
-    
+
     // Observable list to hold applications
     private final ObservableList<Application> applications = FXCollections.observableArrayList();
-    
+
     // Currently selected application
     private final ObjectProperty<Application> selectedApplication = new SimpleObjectProperty<>();
-    
+
     // Date formatter for display
     private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy");
-    
+
     /**
      * Initialize the controller
      */
@@ -128,13 +128,13 @@ public class ManageStudentsController {
         // Set up ListView with custom cell factory
         applicationListView.setItems(applications);
         applicationListView.setCellFactory(createCellFactory());
-        
+
         // Add selection change listener to update details when a row is selected
         applicationListView.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             selectedApplication.set(newVal);
             updateApplicationDetails(newVal);
         });
-        
+
         // Set up navigation buttons with null checks
         if (homeButton != null) {
             homeButton.setOnAction(this::navigateToHome);
@@ -154,15 +154,15 @@ public class ManageStudentsController {
         if (refreshButton != null) {
             refreshButton.setOnAction(e -> refreshApplications());
         }
-        
+
         // Load applications data
         showLoader();
         loadAllApplications();
-        
+
         // Update UI based on authentication state
         refreshUI();
     }
-    
+
     /**
      * Create the cell factory for the application list view
      */
@@ -177,13 +177,13 @@ public class ManageStudentsController {
             private final Label dateLabel = new Label();
             private final Label statusLabel = new Label();
             private final Label paymentLabel = new Label();
-            
+
             {
                 // Configure the cell layout
                 container.getStyleClass().add("application-list-item");
                 container.setSpacing(10);
                 container.setAlignment(Pos.CENTER_LEFT);
-                
+
                 // Configure the labels with specific column classes
                 nameLabel.getStyleClass().addAll("cell-label", "name-column");
                 emailLabel.getStyleClass().addAll("cell-label", "email-column");
@@ -193,38 +193,38 @@ public class ManageStudentsController {
                 dateLabel.getStyleClass().addAll("cell-label", "date-column");
                 statusLabel.getStyleClass().addAll("cell-label", "status-column");
                 paymentLabel.getStyleClass().addAll("cell-label", "payment-column");
-                
+
                 // Add to container
                 container.getChildren().addAll(
                     nameLabel, emailLabel, programLabel, semesterLabel, yearLabel, dateLabel, statusLabel, paymentLabel);
             }
-            
+
             @Override
             protected void updateItem(Application app, boolean empty) {
                 super.updateItem(app, empty);
-                
+
                 if (empty || app == null) {
                     setGraphic(null);
                     setText(null);
                     return;
                 }
-                
+
                 // Update the labels with application data
                 nameLabel.setText(app.getApplicantName());
                 emailLabel.setText(app.getEmail());
                 programLabel.setText(app.getProgramName());
-                
+
                 // Extract semester and year from app.getSemesterAndYear() (which returns "Summer 2025")
                 String[] semesterYear = app.getSemesterAndYear().split(" ");
                 semesterLabel.setText(semesterYear.length > 0 ? semesterYear[0] : "");
                 yearLabel.setText(semesterYear.length > 1 ? semesterYear[1] : "");
-                
+
                 dateLabel.setText(app.getApplicationDate().format(dateFormatter));
-                
+
                 // Set status with appropriate style
                 statusLabel.setText(app.getStatus().getDisplayName());
                 statusLabel.getStyleClass().setAll("cell-label", "status-column", app.getStatus().getStyleClass());
-                
+
                 // Set payment status
                 if (app.isPaymentComplete()) {
                     paymentLabel.setText("Paid");
@@ -233,12 +233,12 @@ public class ManageStudentsController {
                     paymentLabel.setText("Pending");
                     paymentLabel.getStyleClass().setAll("cell-label", "status-pending");
                 }
-                
+
                 setGraphic(container);
             }
         };
     }
-    
+
     /**
      * Show the loader animation
      */
@@ -247,13 +247,13 @@ public class ManageStudentsController {
         loaderContainer.setVisible(true);
         noApplicationsLabel.setVisible(false);
     }
-    
+
     /**
      * Hide the loader animation
      */
     private void hideLoader() {
         loaderContainer.setVisible(false);
-        
+
         // Show appropriate container based on applications list
         if (applications.isEmpty()) {
             noApplicationsLabel.setVisible(true);
@@ -263,7 +263,7 @@ public class ManageStudentsController {
             applicationContainer.setVisible(true);
         }
     }
-    
+
     /**
      * Load all applications from the database
      * This method fetches all applications for admin view
@@ -271,7 +271,7 @@ public class ManageStudentsController {
     private void loadAllApplications() {
         CompletableFuture.supplyAsync(() -> {
             List<Application> appList = new ArrayList<>();
-            
+
             try (Connection conn = DatabaseConnection.getConnection()) {
                 String query = "SELECT * FROM applications ORDER BY application_date DESC";
                 try (PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -284,19 +284,19 @@ public class ManageStudentsController {
             } catch (SQLException e) {
                 LOGGER.log(Level.SEVERE, "Error fetching all applications", e);
             }
-            
+
             return appList;
         }).thenAccept(appList -> {
             Platform.runLater(() -> {
                 applications.clear();
                 applications.addAll(appList);
                 hideLoader();
-                
+
                 // Select the first application if available
                 if (!applications.isEmpty()) {
                     applicationListView.getSelectionModel().selectFirst();
                 }
-                
+
                 LOGGER.log(Level.INFO, "Loaded {0} applications", appList.size());
             });
         }).exceptionally(ex -> {
@@ -308,7 +308,7 @@ public class ManageStudentsController {
             return null;
         });
     }
-    
+
     /**
      * Map a ResultSet row to an Application object
      * 
@@ -320,7 +320,7 @@ public class ManageStudentsController {
         String firstName = rs.getString("first_name");
         String lastName = rs.getString("last_name");
         String fullName = firstName + " " + lastName;
-        
+
         // Safely convert status string to enum - handle case properly
         ApplicationStatus status;
         try {
@@ -332,7 +332,7 @@ public class ManageStudentsController {
                           ". Defaulting to PENDING. Error: " + e.getMessage());
             status = ApplicationStatus.PENDING;
         }
-        
+
         return new Application(
             rs.getString("id"),
             rs.getString("program"),
@@ -363,7 +363,7 @@ public class ManageStudentsController {
             rs.getString("guardian_email")
         );
     }
-    
+
     /**
      * Refresh applications list
      */
@@ -372,7 +372,7 @@ public class ManageStudentsController {
         showLoader();
         loadAllApplications();
     }
-    
+
     /**
      * Update the application details panel with the selected application
      */
@@ -380,13 +380,13 @@ public class ManageStudentsController {
         if (application == null) {
             return;
         }
-        
+
         // Update labels if they exist
         if (programLabel != null) programLabel.setText(application.getProgramName());
         if (nameLabel != null) nameLabel.setText(application.getApplicantName());
         if (emailLabel != null) emailLabel.setText(application.getEmail());
         if (phoneLabel != null) phoneLabel.setText(application.getPhoneNumber());
-        
+
         // Format date of birth if available
         if (dobLabel != null) {
             if (application.getDateOfBirth() != null) {
@@ -395,18 +395,18 @@ public class ManageStudentsController {
                 dobLabel.setText("-");
             }
         }
-        
+
         if (genderLabel != null) genderLabel.setText(application.getGender());
         if (addressLabel != null) addressLabel.setText(application.getAddress());
         if (cityLabel != null) cityLabel.setText(application.getCity());
         if (postalCodeLabel != null) postalCodeLabel.setText(application.getPostalCode());
-        
+
         // Academic information
         if (sscGpaLabel != null) sscGpaLabel.setText(String.format("%.2f", application.getSscGpa()));
         if (hscGpaLabel != null) hscGpaLabel.setText(String.format("%.2f", application.getHscGpa()));
         if (sscYearLabel != null) sscYearLabel.setText(application.getSscYear());
         if (hscYearLabel != null) hscYearLabel.setText(application.getHscYear());
-        
+
         // Guardian information
         if (fatherNameLabel != null) fatherNameLabel.setText(application.getFatherName());
         if (fatherOccupationLabel != null) fatherOccupationLabel.setText(application.getFatherOccupation());
@@ -414,23 +414,23 @@ public class ManageStudentsController {
         if (motherOccupationLabel != null) motherOccupationLabel.setText(application.getMotherOccupation());
         if (guardianPhoneLabel != null) guardianPhoneLabel.setText(application.getGuardianPhone());
         if (guardianEmailLabel != null) guardianEmailLabel.setText(application.getGuardianEmail());
-        
+
         // Status information
         if (statusLabel != null) {
             statusLabel.setText(application.getStatus().getDisplayName());
             statusLabel.getStyleClass().setAll("detail-value", "status-label", application.getStatus().getStyleClass());
         }
-        
+
         if (paymentStatusLabel != null) {
             paymentStatusLabel.setText(application.isPaymentComplete() ? "Paid" : "Pending");
             paymentStatusLabel.getStyleClass().setAll("detail-value", "payment-status-label", 
                 application.isPaymentComplete() ? "status-approved" : "status-pending");
         }
-        
+
         // Format application date
         if (applicationDateLabel != null) applicationDateLabel.setText(application.getApplicationDate().format(dateFormatter));
     }
-    
+
     /**
      * Show an error alert
      */
@@ -441,7 +441,7 @@ public class ManageStudentsController {
         alert.setContentText(message);
         alert.showAndWait();
     }
-    
+
     /**
      * Called when scene becomes visible or active
      */
@@ -449,7 +449,7 @@ public class ManageStudentsController {
         refreshUI();
         refreshApplications();
     }
-    
+
     /**
      * Refresh the UI based on the current auth state
      */
@@ -457,18 +457,18 @@ public class ManageStudentsController {
         AuthState state = AuthStateManager.getInstance().getState();
         boolean isAuthenticated = (state != null && state.isAuthenticated());
         boolean isAdmin = isAuthenticated && "admin".equalsIgnoreCase(state.getUser().getRole());
-        
+
         // Update visibility based on auth state - Add null checks
         if (loginButtonContainer != null) {
             loginButtonContainer.setVisible(!isAuthenticated);
             loginButtonContainer.setManaged(!isAuthenticated);
         }
-        
+
         if (profileButtonContainer != null) {
             profileButtonContainer.setVisible(isAuthenticated);
             profileButtonContainer.setManaged(isAuthenticated);
         }
-        
+
         // If not authenticated or not admin, redirect to home
         if (!isAuthenticated || !isAdmin) {
             Platform.runLater(() -> {
@@ -479,7 +479,7 @@ public class ManageStudentsController {
             });
         }
     }
-    
+
     /**
      * Cleanup resources before navigating away
      */
@@ -489,7 +489,7 @@ public class ManageStudentsController {
             applicationListView.getScene().getRoot().setOpacity(1.0);
         }
     }
-    
+
     /**
      * Navigate to the Home screen
      */
@@ -498,7 +498,7 @@ public class ManageStudentsController {
         cleanup();
         NavigationUtil.navigateToHome(event);
     }
-    
+
     /**
      * Navigate to the About screen
      */
@@ -507,7 +507,7 @@ public class ManageStudentsController {
         cleanup();
         NavigationUtil.navigateToAbout(event);
     }
-    
+
     /**
      * Navigate to the Admission screen
      */
@@ -516,17 +516,16 @@ public class ManageStudentsController {
         cleanup();
         NavigationUtil.navigateToAdmission(event);
     }
-    
+
     /**
      * Navigate to the Exam Portal screen
      */
     @FXML
     private void navigateToExamPortal(ActionEvent event) {
         cleanup();
-        // Not implemented yet
-        System.out.println("Navigate to Exam Portal page (not implemented yet)");
+        NavigationUtil.navigateToExamPortal(event);
     }
-    
+
     /**
      * Navigate to the Contact screen
      */
