@@ -9,6 +9,7 @@ import com.ueadmission.auth.state.AuthStateManager;
 import com.ueadmission.context.ApplicationContext;
 import com.ueadmission.db.DatabaseManager;
 import com.ueadmission.navigation.NavigationUtil;
+import com.ueadmission.questionPaper.QuestionPaperDAO;
 import com.ueadmission.utils.MFXNotifications;
 
 import javafx.application.Application;
@@ -43,6 +44,18 @@ public class Main extends Application {
                         LOGGER.info("Database sample data initialized successfully");
                     } else {
                         LOGGER.warning("Database sample data initialization failed but continuing");
+                    }
+
+                    // Initialize question paper schema
+                    try {
+                        boolean questionPaperSchemaInitialized = QuestionPaperDAO.initializeQuestionPaperSchema();
+                        if (questionPaperSchemaInitialized) {
+                            LOGGER.info("Question paper schema initialized successfully");
+                        } else {
+                            LOGGER.warning("Question paper schema initialization failed but continuing");
+                        }
+                    } catch (Exception qpEx) {
+                        LOGGER.log(Level.WARNING, "Question paper schema initialization failed", qpEx);
                     }
                 } else {
                     LOGGER.warning("Database schema initialization failed but continuing");
