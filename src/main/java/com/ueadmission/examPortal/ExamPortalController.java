@@ -22,10 +22,10 @@ import javafx.scene.layout.VBox;
  * Handles user interactions and navigation for the Exam Portal screen
  */
 public class ExamPortalController {
-    
+
     private static final Logger LOGGER = Logger.getLogger(ExamPortalController.class.getName());
     private Consumer<AuthState> authStateListener;
-    
+
     // UI Elements - Navigation
     @FXML private MFXButton homeButton;
     @FXML private MFXButton aboutButton;
@@ -37,14 +37,14 @@ public class ExamPortalController {
     @FXML private HBox loginButtonContainer;
     @FXML private HBox profileButtonContainer;
     @FXML private ProfileButton profileButton;
-    
+
     // Exam Portal specific elements
     @FXML private MFXButton viewSyllabusButton;    @FXML
     public void initialize() {        
         // Configure navigation buttons
         homeButton.setOnAction(event -> navigateToHome(event));
         aboutButton.setOnAction(event -> navigateToAbout(event));
-        
+
         // Exam Portal button with authentication check
         examPortalButton.setOnAction(event -> {
             // If already on Exam Portal, do nothing to avoid unnecessary refreshes
@@ -54,7 +54,7 @@ public class ExamPortalController {
                 LOGGER.info("Already on Exam Portal, no navigation needed");
                 return;
             }
-            
+
             // Check authentication before navigating
             if (AuthStateManager.getInstance().isAuthenticated()) {
                 navigateToExamPortal(event);
@@ -65,9 +65,9 @@ public class ExamPortalController {
                 navigateToLogin(event);
             }
         });
-        
+
         contactButton.setOnAction(event -> navigateToContact(event));
-        
+
         // Configure login button if it exists
         if (loginButton != null) {
             loginButton.setOnAction(event -> navigateToLogin(event));
@@ -77,17 +77,17 @@ public class ExamPortalController {
             try {
                 initializeContainersIfNull();
                 LOGGER.info("Initialized containers on startup");
-                
+
                 // After initialization, immediately update UI with current auth state
                 refreshUI();
             } catch (Exception e) {
                 LOGGER.log(Level.SEVERE, "Error initializing containers during startup: {0}", e.getMessage());
             }
         });
-        
+
         // Setup profile button action
         setupProfileButtonAction();
-        
+
         // Configure admission button with authentication check
         if (admissionButton != null) {
             admissionButton.setOnAction(event -> {
@@ -98,17 +98,17 @@ public class ExamPortalController {
                 }
             });
         }
-        
+
         // Subscribe to auth state changes
         subscribeToAuthStateChanges();
-        
+
         // Refresh UI with current auth state
         refreshUI();
-        
+
         // Call onSceneActive to ensure UI is updated when scene is shown
         javafx.application.Platform.runLater(this::onSceneActive);
     }
-    
+
     /**
      * Setup profile button click action
      */
@@ -116,10 +116,10 @@ public class ExamPortalController {
         // The ProfileButton already has its internal click handlers
         // No need to set an action explicitly, as it's handled internally
         // in the ProfileButton.handleProfileClick() method
-        
+
         // Call this method in initialize() to ensure the ProfileButton is properly set up
     }
-    
+
     /**
      * Start an exam or test
      * @param event The event that triggered this action
@@ -133,23 +133,41 @@ public class ExamPortalController {
             navigateToLogin(event);
             return;
         }
-        
+
         // Get the button that was clicked
         MFXButton button = (MFXButton) event.getSource();
-        
+
         // Get the exam card container
         VBox examCard = (VBox) button.getParent().getParent();
-        
+
         // Get the exam title
         Label titleLabel = (Label) examCard.getChildren().get(0);
         String examTitle = titleLabel.getText();
-        
+
         // Show confirmation dialog
         MFXNotifications.showInfo("Starting Exam", 
                 "You are about to start the " + examTitle + " exam. Make sure you have a stable internet connection and a quiet environment.");
-        
-        // TODO: Implement actual exam start logic
-        LOGGER.log(Level.INFO, "User starting exam: {0}", examTitle);
+
+        // Get the button text to determine which screen to navigate to
+        String buttonText = button.getText();
+        LOGGER.log(Level.INFO, "User starting exam: {0} with button text: {1}", new Object[]{examTitle, buttonText});
+
+        cleanup();
+
+        // Navigate to the appropriate screen based on the button text
+        if (buttonText.equals("Start Test")) {
+            // Navigate to the mock test screen for practice tests
+            LOGGER.log(Level.INFO, "Navigating to mock test screen");
+            com.ueadmission.navigation.NavigationUtil.navigateToMockTest(event);
+        } else if (buttonText.equals("Start Exam")) {
+            // Navigate to the actual exam screen for official exams
+            LOGGER.log(Level.INFO, "Navigating to exam screen");
+            com.ueadmission.navigation.NavigationUtil.navigateToExam(event);
+        } else {
+            // Default to mock test if button text is unknown
+            LOGGER.log(Level.WARNING, "Unknown button text: {0}, defaulting to mock test", buttonText);
+            com.ueadmission.navigation.NavigationUtil.navigateToMockTest(event);
+        }
     }    /**
      * View exam or test syllabus
      * @param event The event that triggered this action
@@ -162,18 +180,18 @@ public class ExamPortalController {
             if (viewSyllabusButton != null && event.getSource() == viewSyllabusButton) {
                 // Future implementation: Different handling for the main syllabus button
             }
-            
+
             // For now, just show a notification
             MFXNotifications.showInfo("Syllabus", 
                     "The syllabus information will be displayed in a future update. For now, please visit our website.");
-            
+
             LOGGER.info("User requested to view syllabus.");
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Error viewing syllabus", e);
             MFXNotifications.showError("Error", "Could not open syllabus information. Please try again later.");
         }
     }
-    
+
     /**
      * Register for an actual admission exam
      * @param event The event that triggered this action
@@ -187,7 +205,7 @@ public class ExamPortalController {
             navigateToLogin(event);
             return;
         }
-        
+
         // For now, navigate to the application page
         try {
             MFXNotifications.showInfo("Application Process", 
@@ -198,7 +216,7 @@ public class ExamPortalController {
             MFXNotifications.showError("Error", "Could not navigate to the application page. Please try again later.");
         }
     }
-    
+
     /**
      * View more details about an exam
      * @param event The event that triggered this action
@@ -208,31 +226,31 @@ public class ExamPortalController {
         // For now, just show a notification
         MFXNotifications.showInfo("Exam Details", 
                 "Detailed information about the exam will be available in a future update.");
-        
+
         LOGGER.info("User requested to view exam details.");
     }
-    
+
     /**
      * Cleanup method to ensure any transitions are completed and opacity is reset
      * Called before navigating away from the Exam Portal screen
      */
     void cleanup() {
         LOGGER.info("Cleaning up ExamPortalController before navigation");
-        
+
         // Reset opacity on the scene root if available
         if (examPortalButton != null && examPortalButton.getScene() != null && 
                 examPortalButton.getScene().getRoot() != null) {
             examPortalButton.getScene().getRoot().setOpacity(1.0);
             LOGGER.info("Reset opacity to 1.0 during cleanup");
         }
-        
+
         // Unsubscribe from auth state changes
         if (authStateListener != null) {
             AuthStateManager.getInstance().unsubscribe(authStateListener);
             LOGGER.info("Unsubscribed from auth state changes during cleanup");
         }
     }
-    
+
     /**
      * Subscribe to authentication state changes to update UI
      */
@@ -240,7 +258,7 @@ public class ExamPortalController {
         // Create auth state listener
         authStateListener = newState -> {
             LOGGER.info("Auth state change detected in ExamPortalController");
-            
+
             boolean isAuthenticated = (newState != null && newState.isAuthenticated() && newState.getUser() != null);
             String userEmail = "none";
             if (isAuthenticated && newState != null && newState.getUser() != null) {
@@ -253,7 +271,7 @@ public class ExamPortalController {
                 javafx.application.Platform.runLater(() -> {
                     // Update UI based on new state
                     updateContainersVisibility(isAuthenticated);
-                    
+
                     // Update profile button if authenticated
                     if (profileButton != null) {
                         profileButton.updateUIFromAuthState(newState);
@@ -263,7 +281,7 @@ public class ExamPortalController {
             } else {
                 // Update UI based on new state
                 updateContainersVisibility(isAuthenticated);
-                
+
                 // Update profile button if authenticated
                 if (profileButton != null) {
                     profileButton.updateUIFromAuthState(newState);
@@ -271,11 +289,11 @@ public class ExamPortalController {
                 }
             }
         };
-        
+
         // Subscribe to auth state changes
         AuthStateManager.getInstance().subscribe(authStateListener);
         LOGGER.info("Subscribed to auth state changes in ExamPortalController");
-        
+
         // Force an initial update
         AuthState currentState = AuthStateManager.getInstance().getState();
         if (currentState != null) {
@@ -287,11 +305,11 @@ public class ExamPortalController {
      * This ensures the UI is updated with current auth state
      */    public void onSceneActive() {
         LOGGER.info("Exam Portal scene became active, refreshing auth UI");
-        
+
         // Check authentication status first
         boolean isAuthenticated = AuthStateManager.getInstance().isAuthenticated();
         LOGGER.log(Level.INFO, "Authentication status on scene activation: {0}", isAuthenticated);
-        
+
         // Try to initialize containers if they are null - do this first to ensure we have the containers
         try {
             initializeContainersIfNull();
@@ -299,10 +317,10 @@ public class ExamPortalController {
         } catch (Exception e) {
             LOGGER.log(Level.WARNING, "Error initializing containers on scene activation: {0}", e.getMessage());
         }
-        
+
         // Refresh UI with current auth state
         refreshUI();
-        
+
         // Check authentication as this is a private route
         if (!isAuthenticated) {
             LOGGER.info("User not authenticated on scene activation, redirecting to login");
@@ -318,7 +336,7 @@ public class ExamPortalController {
                 LOGGER.info("Explicitly refreshed profile button on scene activation");
             } else {
                 LOGGER.warning("Profile button is null on scene activation, trying to find it");
-                
+
                 // Try one more time to find it using multiple approaches
                 javafx.scene.Scene scene = getScene();
                 if (scene != null) {
@@ -347,20 +365,20 @@ public class ExamPortalController {
             }
         }
     }
-    
+
     /**
      * Manually refresh the UI state based on current auth state
      */
     public void refreshUI() {
         LOGGER.info("Refreshing ExamPortalController UI");
-        
+
         // Get the current auth state
         AuthState currentState = AuthStateManager.getInstance().getState();
         boolean isAuthenticated = (currentState != null && currentState.isAuthenticated()
                 && currentState.getUser() != null);
-        
+
         LOGGER.log(Level.INFO, "Current auth state in refreshUI: {0}", isAuthenticated);
-        
+
         // Ensure we're on the JavaFX Application Thread for UI updates
         if (!javafx.application.Platform.isFxApplicationThread()) {
             javafx.application.Platform.runLater(() -> {
@@ -370,7 +388,7 @@ public class ExamPortalController {
             updateUIComponents(currentState, isAuthenticated);
         }
     }
-    
+
     /**
      * Helper method to update UI components based on auth state
      */
@@ -378,14 +396,14 @@ public class ExamPortalController {
         try {
             // Update container visibility
             updateContainersVisibility(isAuthenticated);
-            
+
             // Update profile button if it exists
             if (profileButton != null) {
                 profileButton.updateUIFromAuthState(currentState);
                 LOGGER.info("Updated profile button in Exam Portal page");
             } else {
                 LOGGER.warning("Profile button is null in ExamPortalController");
-                
+
                 // Try to find profile button by lookup
                 if (examPortalButton != null && examPortalButton.getScene() != null) {
                     Node foundProfileButton = examPortalButton.getScene().lookup(".profile-button-container");
@@ -407,7 +425,7 @@ public class ExamPortalController {
             try {
                 // Try to initialize containers if they are null first to ensure we have the containers
                 initializeContainersIfNull();
-                
+
                 // Update login container visibility
                 if (loginButtonContainer != null) {
                     loginButtonContainer.setVisible(!isAuthenticated);
@@ -454,7 +472,7 @@ public class ExamPortalController {
                         }
                     }
                 }
-                
+
                 // Update profile container visibility with similar approach
                 if (profileButtonContainer != null) {
                     profileButtonContainer.setVisible(isAuthenticated);
@@ -481,7 +499,7 @@ public class ExamPortalController {
                                 container.setManaged(isAuthenticated);
                                 profileButtonContainer = container;
                                 LOGGER.info("Found profile button and updated its parent container: " + container.getId());
-                                
+
                                 // Also update the profile button reference if needed
                                 if (profileButton == null && profileBtn instanceof ProfileButton) {
                                     profileButton = (ProfileButton) profileBtn;
@@ -507,13 +525,13 @@ public class ExamPortalController {
                         }
                     }
                 }
-                
+
                 // Update profile button if we have it
                 if (profileButton != null && isAuthenticated) {
                     profileButton.refreshAuthState();
                     LOGGER.info("Refreshed profile button during container update");
                 }
-                
+
                 // Verify the containers after updating
                 if (loginButtonContainer != null) {
                     LOGGER.info("Login container visibility after update: " + loginButtonContainer.isVisible());
@@ -536,7 +554,7 @@ public class ExamPortalController {
                 LOGGER.warning("Scene is null, cannot initialize containers");
                 return;
             }
-            
+
             // Find loginButtonContainer if it's null
             if (loginButtonContainer == null) {
                 // First try with fx:id (FXML injection should already have handled this)
@@ -556,7 +574,7 @@ public class ExamPortalController {
                     }
                 }
             }
-            
+
             // Find profileButtonContainer if it's null
             if (profileButtonContainer == null) {
                 // First try with fx:id (FXML injection should already have handled this)
@@ -576,14 +594,14 @@ public class ExamPortalController {
                     }
                 }
             }
-            
+
             // Try to find profile button if it's null
             if (profileButton == null) {
                 Node node = scene.lookup(".profile-button-container"); // Use CSS class selector with . prefix
                 if (node instanceof ProfileButton) {
                     profileButton = (ProfileButton) node;
                     LOGGER.info("Initialized profileButton via scene lookup with class");
-                    
+
                     // Initialize the profile button with current auth state
                     profileButton.refreshAuthState();
                 } else {
@@ -594,7 +612,7 @@ public class ExamPortalController {
                             if (child instanceof ProfileButton) {
                                 profileButton = (ProfileButton) child;
                                 LOGGER.info("Found profileButton as child of profileButtonContainer");
-                                
+
                                 // Initialize the profile button with current auth state
                                 profileButton.refreshAuthState();
                                 break;
@@ -603,7 +621,7 @@ public class ExamPortalController {
                     }
                 }
             }
-            
+
             // Output debugging info about the found elements
             if (loginButtonContainer != null) {
                 LOGGER.info("loginButtonContainer found: " + loginButtonContainer.getId() + ", visible: " + loginButtonContainer.isVisible());
@@ -619,7 +637,7 @@ public class ExamPortalController {
             e.printStackTrace();
         }
     }
-    
+
     /**
      * Get the current scene
      * @return The current scene or null if not available
@@ -635,7 +653,7 @@ public class ExamPortalController {
         } else if (profileButton != null && profileButton.getScene() != null) {
             return profileButton.getScene();
         }
-        
+
         // No scene found
         return null;
     }
@@ -647,7 +665,7 @@ public class ExamPortalController {
         cleanup();
         com.ueadmission.navigation.NavigationUtil.navigateToHome(event);
     }
-    
+
     /**
      * Navigates to the About screen
      * @param event The event that triggered this action
@@ -656,7 +674,7 @@ public class ExamPortalController {
         cleanup();
         com.ueadmission.navigation.NavigationUtil.navigateToAbout(event);
     }
-    
+
     /**
      * Navigates to the Admission screen
      * @param event The event that triggered this action
@@ -665,7 +683,7 @@ public class ExamPortalController {
         cleanup();
         com.ueadmission.navigation.NavigationUtil.navigateToAdmission(event);
     }
-    
+
     /**
      * Navigates to the Exam Portal screen (refresh)
      * @param event The event that triggered this action
@@ -676,7 +694,7 @@ public class ExamPortalController {
             examPortalButton.getScene() != null &&
             examPortalButton.getScene().getRoot().getId() != null &&
             examPortalButton.getScene().getRoot().getId().equals("examPortalRoot")) {
-            
+
             LOGGER.info("Already on Exam Portal, refreshing instead of navigating");
             // Just refresh the UI instead of full navigation
             refreshUI();
@@ -688,12 +706,12 @@ public class ExamPortalController {
             navigateToLogin(event);
             return;
         }
-        
+
         // Normal navigation flow
         cleanup();
         com.ueadmission.navigation.NavigationUtil.navigateToExamPortal(event);
     }
-    
+
     /**
      * Navigates to the Contact screen
      * @param event The event that triggered this action
@@ -702,7 +720,7 @@ public class ExamPortalController {
         cleanup();
         com.ueadmission.navigation.NavigationUtil.navigateToContact(event);
     }
-    
+
     /**
      * Navigates to the Login screen
      * @param event The event that triggered this action
@@ -719,7 +737,7 @@ public class ExamPortalController {
         cleanup();
         com.ueadmission.navigation.NavigationUtil.navigateToLogin(event);
     }
-    
+
     /**
      * Navigates to the Application screen
      * @param event The event that triggered this action
@@ -729,7 +747,7 @@ public class ExamPortalController {
         cleanup();
         com.ueadmission.navigation.NavigationUtil.navigateToApplications(event);
     }
-    
+
     /**
      * Handle mouse click navigation to Home in the footer
      * @param event The mouse event that triggered this action
@@ -739,7 +757,7 @@ public class ExamPortalController {
         cleanup();
         com.ueadmission.navigation.NavigationUtil.navigateToHome(event);
     }
-    
+
     /**
      * Handle mouse click navigation to About in the footer
      * @param event The mouse event that triggered this action
@@ -749,7 +767,7 @@ public class ExamPortalController {
         cleanup();
         com.ueadmission.navigation.NavigationUtil.navigateToAbout(event);
     }
-    
+
     /**
      * Handle mouse click navigation to Admission in the footer
      * @param event The mouse event that triggered this action
@@ -762,11 +780,11 @@ public class ExamPortalController {
             com.ueadmission.navigation.NavigationUtil.navigateToLogin(event);
             return;
         }
-        
+
         cleanup();
         com.ueadmission.navigation.NavigationUtil.navigateToAdmission(event);
     }
-    
+
     /**
      * Handle mouse click navigation to Exam Portal in the footer
      * @param event The mouse event that triggered this action
@@ -779,11 +797,11 @@ public class ExamPortalController {
             com.ueadmission.navigation.NavigationUtil.navigateToLogin(event);
             return;
         }
-        
+
         cleanup();
         com.ueadmission.navigation.NavigationUtil.navigateToExamPortal(event);
     }
-    
+
     /**
      * Handle mouse click navigation to Contact in the footer
      * @param event The mouse event that triggered this action
