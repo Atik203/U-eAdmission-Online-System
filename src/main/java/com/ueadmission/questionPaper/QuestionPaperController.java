@@ -48,6 +48,11 @@ public class QuestionPaperController {
     private QuestionPaper currentQuestionPaper;
     private List<Question> questions = new ArrayList<>();
 
+    // Map to track questions per subject
+    private java.util.Map<String, Integer> questionsPerSubjectMap = new java.util.HashMap<>();
+    private java.util.Map<String, Integer> maxQuestionsPerSubjectMap = new java.util.HashMap<>();
+    private String currentSelectedSubject;
+
     // UI Elements - Navigation
     @FXML private MFXButton homeButton;
     @FXML private MFXButton aboutButton;
@@ -65,6 +70,9 @@ public class QuestionPaperController {
     @FXML private MFXCheckbox mockExamCheckbox;
     @FXML private MFXCheckbox actualExamCheckbox;
     @FXML private MFXComboBox<String> schoolComboBox;
+    @FXML private MFXComboBox<String> subjectComboBox;
+    @FXML private Label remainingQuestionsLabel;
+    @FXML private Label subjectErrorLabel;
     @FXML private TextArea questionTextArea;
     @FXML private MFXToggleButton includeImageToggle;
     @FXML private MFXButton uploadImageButton;
@@ -171,6 +179,27 @@ public class QuestionPaperController {
             "School of Life Sciences"
         );
         schoolComboBox.getItems().addAll(schools);
+
+        // Initialize subject combo box (will be populated based on selected school)
+        subjectComboBox.setDisable(true);
+
+        // Set up school combo box listener to update subject combo box
+        schoolComboBox.valueProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                updateSubjectsForSchool(newVal);
+            } else {
+                subjectComboBox.getItems().clear();
+                subjectComboBox.setDisable(true);
+                remainingQuestionsLabel.setText("Remaining: 0");
+            }
+        });
+
+        // Set up subject combo box listener to update remaining questions count
+        subjectComboBox.valueProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                updateRemainingQuestionsCount(newVal);
+            }
+        });
 
         // Set up toggle for image upload button
         includeImageToggle.selectedProperty().addListener((obs, oldVal, newVal) -> {
@@ -715,6 +744,12 @@ public class QuestionPaperController {
         latexSupportToggle.setSelected(false);
         imageNameLabel.setText("No file selected");
 
+        // If a school is selected, reset the subject dropdown to the first subject
+        if (schoolComboBox.getValue() != null && !subjectComboBox.getItems().isEmpty()) {
+            subjectComboBox.setValue(subjectComboBox.getItems().get(0));
+            updateRemainingQuestionsCount(subjectComboBox.getValue());
+        }
+
         // Reset image preview
         imagePreviewContainer.setVisible(false);
         imagePreviewContainer.setManaged(false);
@@ -752,6 +787,8 @@ public class QuestionPaperController {
         questionTextErrorLabel.setManaged(false);
         schoolErrorLabel.setVisible(false);
         schoolErrorLabel.setManaged(false);
+        subjectErrorLabel.setVisible(false);
+        subjectErrorLabel.setManaged(false);
         optionsErrorLabel.setVisible(false);
         optionsErrorLabel.setManaged(false);
         correctOptionErrorLabel.setVisible(false);
@@ -759,15 +796,101 @@ public class QuestionPaperController {
     }
 
     /**
+     * Update the subjects dropdown based on the selected school
+     * @param school The selected school
+     */
+    private void updateSubjectsForSchool(String school) {
+        // Clear previous items
+        subjectComboBox.getItems().clear();
+        questionsPerSubjectMap.clear();
+        maxQuestionsPerSubjectMap.clear();
+
+        // Get subjects for the selected school
+        List<String> subjects = new ArrayList<>();
+        String[] subjectCounts = null;
+
+        if (school.equals("School of Engineering & Technology")) {
+            subjects.add("English");
+            subjects.add("General Mathematics");
+            subjects.add("Higher Math & Physics");
+            subjectCounts = new String[]{"30", "15", "30"};
+        } else if (school.equals("School of Business & Economics")) {
+            subjects.add("English");
+            subjects.add("General Mathematics");
+            subjects.add("Business & Economics");
+            subjectCounts = new String[]{"30", "15", "30"};
+        } else if (school.equals("School of Humanities & Social Sciences")) {
+            subjects.add("English");
+            subjects.add("General Mathematics");
+            subjects.add("Current Affairs");
+            subjects.add("Higher English & Logical Reasoning");
+            subjectCounts = new String[]{"30", "15", "15", "15"};
+        } else if (school.equals("School of Life Sciences")) {
+            subjects.add("English");
+            subjects.add("General Mathematics");
+            subjects.add("Biology & Chemistry");
+            subjectCounts = new String[]{"30", "15", "30"};
+        }
+
+        // Add subjects to combo box
+        subjectComboBox.getItems().addAll(subjects);
+
+        // Initialize question count maps
+        for (int i = 0; i < subjects.size(); i++) {
+            String subject = subjects.get(i);
+            int maxQuestions = Integer.parseInt(subjectCounts[i]);
+            questionsPerSubjectMap.put(subject, 0);
+            maxQuestionsPerSubjectMap.put(subject, maxQuestions);
+        }
+
+        // Enable subject combo box
+        subjectComboBox.setDisable(false);
+
+        // Select first subject by default
+        if (!subjects.isEmpty()) {
+            subjectComboBox.setValue(subjects.get(0));
+            currentSelectedSubject = subjects.get(0);
+            updateRemainingQuestionsCount(subjects.get(0));
+        }
+    }
+
+    /**
+     * Update the remaining questions count for the selected subject
+     * @param subject The selected subject
+     */
+    private void updateRemainingQuestionsCount(String subject) {
+        currentSelectedSubject = subject;
+
+        // Get current and max questions for the subject
+        int currentQuestions = questionsPerSubjectMap.getOrDefault(subject, 0);
+        int maxQuestions = maxQuestionsPerSubjectMap.getOrDefault(subject, 0);
+
+        // Calculate remaining questions
+        int remainingQuestions = maxQuestions - currentQuestions;
+
+        // Update label
+        remainingQuestionsLabel.setText("Remaining: " + remainingQuestions);
+    }
+
+    /**
      * Initialize the question paper database schema
      */
     private void initializeQuestionPaperSchema() {
         try {
-            boolean success = QuestionPaperDAO.initializeQuestionPaperSchema();
-            if (success) {
-                LOGGER.info("Question paper schema initialized successfully");
+            // First reset all question paper related tables
+            boolean resetSuccess = QuestionPaperDAO.resetQuestionPaperTables();
+            if (resetSuccess) {
+                LOGGER.info("Question paper tables reset successfully");
             } else {
-                LOGGER.warning("Failed to initialize question paper schema");
+                LOGGER.warning("Failed to reset question paper tables, attempting to initialize schema anyway");
+
+                // Try to initialize the schema even if reset failed
+                boolean success = QuestionPaperDAO.initializeQuestionPaperSchema();
+                if (success) {
+                    LOGGER.info("Question paper schema initialized successfully");
+                } else {
+                    LOGGER.warning("Failed to initialize question paper schema");
+                }
             }
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Error initializing question paper schema", e);
@@ -794,12 +917,47 @@ public class QuestionPaperController {
                 return -1;
             }
 
-            // Create the question paper
-            int questionPaperId = QuestionPaperDAO.createQuestionPaper(title, description, school, isMockExam, userId);
+            // Use static values from exam portal instead of UI fields
+            Integer totalQuestions = null;
+            String subjects = null;
+            String questionsPerSubject = null;
+            Integer timeLimitMinutes = null;
+            Integer totalMarks = null;
+
+            // Set default values based on school
+            setDefaultValuesBasedOnSchool(school, isMockExam);
+
+            // Use the values set by the default method
+            if (school.equals("School of Engineering & Technology")) {
+                subjects = "English, General Mathematics, Higher Math & Physics";
+                questionsPerSubject = "30, 15, 30";
+            } else if (school.equals("School of Business & Economics")) {
+                subjects = "English, General Mathematics, Business & Economics";
+                questionsPerSubject = "30, 15, 30";
+            } else if (school.equals("School of Humanities & Social Sciences")) {
+                subjects = "English, General Mathematics, Current Affairs, Higher English & Logical Reasoning";
+                questionsPerSubject = "30, 15, 15, 15";
+            } else if (school.equals("School of Life Sciences")) {
+                subjects = "English, General Mathematics, Biology & Chemistry";
+                questionsPerSubject = "30, 15, 30";
+            }
+
+            totalQuestions = isMockExam ? 75 : 100;
+            timeLimitMinutes = isMockExam ? 75 : 120;
+            totalMarks = isMockExam ? 75 : 100;
+
+            // Create the question paper with all fields
+            int questionPaperId = QuestionPaperDAO.createQuestionPaper(
+                title, description, school, isMockExam, 
+                totalQuestions, subjects, questionsPerSubject, 
+                timeLimitMinutes, totalMarks, userId);
 
             if (questionPaperId != -1) {
-                // Create a new QuestionPaper object
-                currentQuestionPaper = new QuestionPaper(title, description, school, isMockExam, userId);
+                // Create a new QuestionPaper object with all fields
+                currentQuestionPaper = new QuestionPaper(
+                    title, description, school, isMockExam, 
+                    totalQuestions, subjects, questionsPerSubject, 
+                    timeLimitMinutes, totalMarks, userId);
                 currentQuestionPaper.setId(questionPaperId);
 
                 LOGGER.info("Created question paper with ID: " + questionPaperId);
@@ -812,6 +970,18 @@ public class QuestionPaperController {
             LOGGER.log(Level.SEVERE, "Error creating question paper", e);
             return -1;
         }
+    }
+
+    /**
+     * Set default values for exam fields based on the selected school and exam type
+     * 
+     * @param school The school the question paper belongs to
+     * @param isMockExam Whether this is a mock exam or actual exam
+     */
+    private void setDefaultValuesBasedOnSchool(String school, boolean isMockExam) {
+        // This method now only logs the action since we're using static values
+        // and no longer setting UI fields
+        LOGGER.info("Using default values for " + school + " - Mock Exam: " + isMockExam);
     }
 
     /**
@@ -871,6 +1041,33 @@ public class QuestionPaperController {
             hasErrors = true;
         }
 
+        if (subjectComboBox.getValue() == null) {
+            // Show error message
+            MFXNotifications.showError("Error", "Please select a subject");
+            subjectErrorLabel.setText("Please select a subject");
+            subjectErrorLabel.setVisible(true);
+            subjectErrorLabel.setManaged(true);
+            LOGGER.warning("No subject selected");
+            hasErrors = true;
+        }
+
+        // Check if we've reached the maximum number of questions for this subject
+        if (subjectComboBox.getValue() != null) {
+            String subject = subjectComboBox.getValue();
+            int currentQuestions = questionsPerSubjectMap.getOrDefault(subject, 0);
+            int maxQuestions = maxQuestionsPerSubjectMap.getOrDefault(subject, 0);
+
+            if (currentQuestions >= maxQuestions) {
+                // Show error message
+                MFXNotifications.showError("Error", "Maximum number of questions reached for this subject");
+                subjectErrorLabel.setText("Maximum number of questions reached for this subject");
+                subjectErrorLabel.setVisible(true);
+                subjectErrorLabel.setManaged(true);
+                LOGGER.warning("Maximum number of questions reached for subject: " + subject);
+                hasErrors = true;
+            }
+        }
+
         // If there are validation errors, don't proceed
         if (hasErrors) {
             return;
@@ -889,6 +1086,7 @@ public class QuestionPaperController {
         boolean latexSupport = latexSupportToggle.isSelected();
         String imagePath = includeImage ? (uploadedImageUrl != null ? uploadedImageUrl : imageNameLabel.getText()) : null;
         String school = schoolComboBox.getValue();
+        String subject = subjectComboBox.getValue();
         boolean isMockExam = mockExamCheckbox.isSelected();
 
         try {
@@ -920,7 +1118,8 @@ public class QuestionPaperController {
                 imagePath,
                 latexSupport,
                 options,
-                correctOptionIndex
+                correctOptionIndex,
+                subject
             );
 
             if (questionId != -1) {
@@ -930,9 +1129,17 @@ public class QuestionPaperController {
                     questionText,
                     includeImage,
                     imagePath,
-                    latexSupport
+                    latexSupport,
+                    subject
                 );
                 question.setId(questionId);
+
+                // Update the questions count for this subject
+                int currentCount = questionsPerSubjectMap.getOrDefault(subject, 0);
+                questionsPerSubjectMap.put(subject, currentCount + 1);
+
+                // Update the remaining questions count display
+                updateRemainingQuestionsCount(subject);
 
                 // Add options to the question
                 for (int i = 0; i < options.size(); i++) {

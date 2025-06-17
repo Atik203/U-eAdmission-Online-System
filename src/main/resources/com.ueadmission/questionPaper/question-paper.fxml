@@ -89,6 +89,19 @@
                         </VBox>
                     </HBox>
 
+                    <!-- Subject Selection -->
+                    <HBox spacing="20" alignment="CENTER_LEFT">
+                        <Label styleClass="form-label" text="Subject:" />
+                        <VBox spacing="5">
+                            <MFXComboBox fx:id="subjectComboBox" prefWidth="400" promptText="Select Subject" styleClass="mfx-combo-box">
+                                <!-- Items will be added programmatically -->
+                            </MFXComboBox>
+                            <Label fx:id="subjectErrorLabel" styleClass="error-label" visible="false" managed="false" />
+                        </VBox>
+                        <Label fx:id="remainingQuestionsLabel" styleClass="remaining-questions-label" text="Remaining: 0" />
+                    </HBox>
+
+
                     <!-- Question Form -->
                     <VBox spacing="15" styleClass="question-form">
                         <Label styleClass="form-section-title" text="Add New Question" />
