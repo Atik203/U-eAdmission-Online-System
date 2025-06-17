@@ -277,6 +277,65 @@ public class QuestionPaperDAO {
     }
 
     /**
+     * Get the most recent question paper
+     * 
+     * @return The most recent question paper, or null if none exists
+     */
+    public static QuestionPaper getMostRecentQuestionPaper() {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        QuestionPaper paper = null;
+
+        try {
+            conn = DatabaseConnection.getConnection();
+
+            String sql = "SELECT * FROM question_papers ORDER BY created_at DESC LIMIT 1";
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                paper = new QuestionPaper();
+                paper.setId(rs.getInt("id"));
+                paper.setTitle(rs.getString("title"));
+                paper.setDescription(rs.getString("description"));
+                paper.setSchool(rs.getString("school"));
+                paper.setMockExam(rs.getBoolean("is_mock_exam"));
+
+                // Get the new fields, handling null values
+                try {
+                    paper.setTotalQuestions(rs.getObject("total_questions") != null ? rs.getInt("total_questions") : null);
+                    paper.setSubjects(rs.getString("subjects"));
+                    paper.setQuestionsPerSubject(rs.getString("questions_per_subject"));
+                    paper.setTimeLimitMinutes(rs.getObject("time_limit_minutes") != null ? rs.getInt("time_limit_minutes") : null);
+                    paper.setTotalMarks(rs.getObject("total_marks") != null ? rs.getInt("total_marks") : null);
+                } catch (SQLException e) {
+                    // Log but continue - this might happen if the columns don't exist yet
+                    LOGGER.log(Level.WARNING, "Error getting new fields from question_papers table: " + e.getMessage());
+                }
+
+                paper.setCreatedBy(rs.getInt("created_by"));
+                paper.setCreatedAt(rs.getTimestamp("created_at"));
+                paper.setUpdatedAt(rs.getTimestamp("updated_at"));
+
+                // Load questions for this paper
+                List<Question> questions = getQuestionsForPaper(paper.getId());
+                for (Question question : questions) {
+                    paper.addQuestion(question);
+                }
+
+                LOGGER.info("Loaded most recent question paper with ID: " + paper.getId() + " and " + questions.size() + " questions");
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error getting most recent question paper", e);
+        } finally {
+            DatabaseConnection.closeResources(ps, rs);
+        }
+
+        return paper;
+    }
+
+    /**
      * Get questions for a question paper
      * 
      * @param questionPaperId The ID of the question paper

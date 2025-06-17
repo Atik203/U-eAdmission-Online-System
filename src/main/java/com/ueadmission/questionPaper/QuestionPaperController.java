@@ -1,5 +1,9 @@
 package com.ueadmission.questionPaper;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -10,6 +14,7 @@ import java.util.logging.Logger;
 import com.ueadmission.auth.state.AuthState;
 import com.ueadmission.auth.state.AuthStateManager;
 import com.ueadmission.components.ProfileButton;
+import com.ueadmission.db.DatabaseConnection;
 import com.ueadmission.navigation.NavigationUtil;
 import com.ueadmission.utils.MFXNotifications;
 
@@ -171,6 +176,9 @@ public class QuestionPaperController {
      * Initialize question paper specific elements
      */
     private void initializeQuestionPaperElements() {
+        // Try to load the most recent question paper
+        loadMostRecentQuestionPaper();
+
         // Initialize school combo box with the 4 schools
         List<String> schools = Arrays.asList(
             "School of Engineering & Technology",
@@ -179,6 +187,9 @@ public class QuestionPaperController {
             "School of Life Sciences"
         );
         schoolComboBox.getItems().addAll(schools);
+
+        // Set the first school as default
+        schoolComboBox.setValue(schools.get(0));
 
         // Initialize subject combo box (will be populated based on selected school)
         subjectComboBox.setDisable(true);
@@ -846,6 +857,11 @@ public class QuestionPaperController {
         // Enable subject combo box
         subjectComboBox.setDisable(false);
 
+        // Reload question counts for subjects in this school
+        if (currentQuestionPaper != null) {
+            updateQuestionCountsPerSubject();
+        }
+
         // Select first subject by default
         if (!subjects.isEmpty()) {
             subjectComboBox.setValue(subjects.get(0));
@@ -861,12 +877,52 @@ public class QuestionPaperController {
     private void updateRemainingQuestionsCount(String subject) {
         currentSelectedSubject = subject;
 
-        // Get current and max questions for the subject
-        int currentQuestions = questionsPerSubjectMap.getOrDefault(subject, 0);
+        // Get maximum questions allowed for the subject
         int maxQuestions = maxQuestionsPerSubjectMap.getOrDefault(subject, 0);
+
+        // Query database for current question count for this subject and school
+        int currentQuestions = 0;
+
+        try {
+            // Check if we have a valid question paper
+            if (currentQuestionPaper != null) {
+                String school = currentQuestionPaper.getSchool();
+                boolean isMockExam = currentQuestionPaper.isMockExam();
+
+                // Get connection
+                Connection conn = DatabaseConnection.getConnection();
+
+                // Query to count questions by subject and school
+                String sql = "SELECT COUNT(*) FROM questions q " +
+                             "JOIN question_papers qp ON q.question_paper_id = qp.id " +
+                             "WHERE qp.school = ? AND qp.is_mock_exam = ? AND q.subject = ?";
+
+                try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                    stmt.setString(1, school);
+                    stmt.setBoolean(2, isMockExam);
+                    stmt.setString(3, subject);
+
+                    try (ResultSet rs = stmt.executeQuery()) {
+                        if (rs.next()) {
+                            currentQuestions = rs.getInt(1);
+                        }
+                    }
+                }
+            } else {
+                // Fallback to instance map if no current paper
+                currentQuestions = questionsPerSubjectMap.getOrDefault(subject, 0);
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.WARNING, "Error getting question count from database", e);
+            // Fallback to instance map if database query fails
+            currentQuestions = questionsPerSubjectMap.getOrDefault(subject, 0);
+        }
 
         // Calculate remaining questions
         int remainingQuestions = maxQuestions - currentQuestions;
+
+        // Update the instance map with the current count from database
+        questionsPerSubjectMap.put(subject, currentQuestions);
 
         // Update label
         remainingQuestionsLabel.setText("Remaining: " + remainingQuestions);
@@ -877,23 +933,84 @@ public class QuestionPaperController {
      */
     private void initializeQuestionPaperSchema() {
         try {
-            // First reset all question paper related tables
-            boolean resetSuccess = QuestionPaperDAO.resetQuestionPaperTables();
-            if (resetSuccess) {
-                LOGGER.info("Question paper tables reset successfully");
+            // Only initialize the schema if needed, don't reset tables
+            boolean success = QuestionPaperDAO.initializeQuestionPaperSchema();
+            if (success) {
+                LOGGER.info("Question paper schema initialized successfully");
             } else {
-                LOGGER.warning("Failed to reset question paper tables, attempting to initialize schema anyway");
-
-                // Try to initialize the schema even if reset failed
-                boolean success = QuestionPaperDAO.initializeQuestionPaperSchema();
-                if (success) {
-                    LOGGER.info("Question paper schema initialized successfully");
-                } else {
-                    LOGGER.warning("Failed to initialize question paper schema");
-                }
+                LOGGER.warning("Failed to initialize question paper schema");
             }
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Error initializing question paper schema", e);
+        }
+    }
+
+    /**
+     * Load the most recent question paper from the database
+     */
+    private void loadMostRecentQuestionPaper() {
+        try {
+            // Get the most recent question paper
+            QuestionPaper paper = QuestionPaperDAO.getMostRecentQuestionPaper();
+
+            if (paper != null) {
+                // Set as current question paper
+                currentQuestionPaper = paper;
+
+                // Don't load previous questions - we want to start with a fresh list
+                // Just store the reference to the paper
+                questions.clear();
+
+                // Set school in UI if available
+                if (paper.getSchool() != null && !paper.getSchool().isEmpty()) {
+                    schoolComboBox.setValue(paper.getSchool());
+
+                    // This will update maxQuestionsPerSubjectMap based on the school
+                    updateSubjectsForSchool(paper.getSchool());
+                }
+
+                // Update question counts per subject
+                // Only count questions in the current session
+                updateQuestionCountsPerSubject();
+
+                // Reset the question list - only show questions added in current session
+                updateQuestionList();
+
+                LOGGER.info("Loaded most recent question paper with ID: " + paper.getId() + 
+                           " and " + paper.getQuestions().size() + " total questions");
+
+                // Set mock exam checkbox
+                mockExamCheckbox.setSelected(paper.isMockExam());
+                actualExamCheckbox.setSelected(!paper.isMockExam());
+            } else {
+                LOGGER.info("No existing question paper found");
+            }
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Error loading most recent question paper", e);
+        }
+    }
+
+    /**
+     * Update question counts per subject based on loaded questions
+     */
+    private void updateQuestionCountsPerSubject() {
+        // Reset counts to zero for all subjects in the current school
+        for (String subject : maxQuestionsPerSubjectMap.keySet()) {
+            questionsPerSubjectMap.put(subject, 0);
+        }
+
+        // Only count questions from the current session
+        for (Question question : questions) {
+            String subject = question.getSubject();
+            if (subject != null && !subject.isEmpty() && questionsPerSubjectMap.containsKey(subject)) {
+                int count = questionsPerSubjectMap.getOrDefault(subject, 0);
+                questionsPerSubjectMap.put(subject, count + 1);
+            }
+        }
+
+        // Update remaining questions count if a subject is selected
+        if (subjectComboBox.getValue() != null) {
+            updateRemainingQuestionsCount(subjectComboBox.getValue());
         }
     }
 
@@ -1092,14 +1209,20 @@ public class QuestionPaperController {
         try {
             // Create or get the current question paper
             if (currentQuestionPaper == null) {
-                String title = "Question Paper - " + school;
-                String description = "Question paper for " + (isMockExam ? "mock exam" : "actual exam");
+                // First try to load the most recent question paper
+                loadMostRecentQuestionPaper();
 
-                int questionPaperId = createQuestionPaper(title, description, school, isMockExam);
+                // If still null, create a new one
+                if (currentQuestionPaper == null) {
+                    String title = "Question Paper - " + school;
+                    String description = "Question paper for " + (isMockExam ? "mock exam" : "actual exam");
 
-                if (questionPaperId == -1) {
-                    MFXNotifications.showError("Error", "Failed to create question paper");
-                    return;
+                    int questionPaperId = createQuestionPaper(title, description, school, isMockExam);
+
+                    if (questionPaperId == -1) {
+                        MFXNotifications.showError("Error", "Failed to create question paper");
+                        return;
+                    }
                 }
             }
 

@@ -3,12 +3,6 @@
 -- Use the database
 USE uiu_admission_db;
 
--- Drop tables if they exist (in reverse order of dependencies)
-DROP TABLE IF EXISTS exam_sessions;
-DROP TABLE IF EXISTS student_responses;
-DROP TABLE IF EXISTS question_options;
-DROP TABLE IF EXISTS questions;
-DROP TABLE IF EXISTS question_papers;
 
 -- Table for storing question papers (collections of questions)
 CREATE TABLE IF NOT EXISTS question_papers (
