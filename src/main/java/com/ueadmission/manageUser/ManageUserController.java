@@ -458,8 +458,7 @@ public class ManageUserController {
     @FXML
     private void navigateToExamPortal(ActionEvent event) {
         cleanup();
-        // Not implemented yet
-        System.out.println("Navigate to Exam Portal page (not implemented yet)");
+        NavigationUtil.navigateToExamPortal(event);
     }
 
     /**

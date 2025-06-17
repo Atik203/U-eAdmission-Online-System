@@ -302,6 +302,26 @@ public class NavigationUtil {
     }
 
     /**
+     * Navigate to mock test screen
+     * 
+     * @param event The event that triggered navigation
+     * @return true if navigation was successful, false otherwise
+     */
+    public static boolean navigateToMockTest(Event event) {
+        return navigateTo(event, "/com.ueadmission/mockTest/mock-test.fxml", "Mock Test - UeAdmission");
+    }
+
+    /**
+     * Navigate to exam screen
+     * 
+     * @param event The event that triggered navigation
+     * @return true if navigation was successful, false otherwise
+     */
+    public static boolean navigateToExam(Event event) {
+        return navigateTo(event, "/com.ueadmission/exam/exam.fxml", "Exam - UeAdmission");
+    }
+
+    /**
      * Get the current stage from known references
      * @return The current stage or null if not found
      */
