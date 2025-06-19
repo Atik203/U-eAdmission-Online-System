@@ -110,6 +110,24 @@
   -fx-max-width: 450;
 }
 
+/* Marks Container Styling */
+.marks-container {
+  -fx-background-color: #f0f8ff;
+  -fx-padding: 15;
+  -fx-border-color: #4CAF50;
+  -fx-border-width: 2;
+  -fx-border-radius: 5;
+  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 1);
+  -fx-margin: 0 0 20 0;
+}
+
+.total-marks-obtained {
+  -fx-font-size: 18px;
+  -fx-font-weight: bold;
+  -fx-text-fill: #4CAF50;
+  -fx-alignment: center;
+}
+
 .question-number {
   -fx-font-size: 14px;
   -fx-font-weight: bold;
