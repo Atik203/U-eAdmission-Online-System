@@ -210,6 +210,9 @@ public class MockTestController {
         // Retrieve questions for the selected school
         retrieveQuestionsForSchool(selectedSchool);
 
+        // Shuffle questions to randomize order
+        shuffleQuestions();
+
         // Display questions using WebView
         displayQuestionsWithWebView();
 
@@ -233,10 +236,10 @@ public class MockTestController {
     private void setExamParametersForSchool(String school) {
         // Default values for mock exam
         int timeLimitMinutes = 75;
-        totalMarks = 75;
 
-        // Update UI
-        totalMarksLabel.setText(String.valueOf(totalMarks));
+        // Set total marks based on the number of questions (each question is worth 1 mark)
+        // This will be updated after questions are retrieved
+        totalMarks = 0;
 
         // Set remaining time in seconds
         remainingTimeInSeconds = timeLimitMinutes * 60;
@@ -275,6 +278,11 @@ public class MockTestController {
             questions = QuestionPaperDAO.getQuestionsForPaper(mockPaper.getId());
             LOGGER.info("Retrieved " + questions.size() + " questions for school: " + school);
 
+            // Set total marks based on the number of questions (each question is worth 1 mark)
+            totalMarks = questions.size();
+            totalMarksLabel.setText(String.valueOf(totalMarks));
+            LOGGER.info("Total marks set to: " + totalMarks);
+
             // If no questions found, show error
             if (questions.isEmpty()) {
                 MFXNotifications.showWarning("Warning", "No questions found for this mock exam");
@@ -287,6 +295,7 @@ public class MockTestController {
 
     /**
      * Display questions using WebView with LaTeX support in a two-column layout
+     * Questions are grouped by subject
      */
     private void displayQuestionsWithWebView() {
         // Clear previous content
@@ -300,40 +309,169 @@ public class MockTestController {
             return;
         }
 
-        // Create a two-column layout using GridPane
-        javafx.scene.layout.GridPane gridPane = new javafx.scene.layout.GridPane();
-        gridPane.setHgap(20);
-        gridPane.setVgap(20);
+        // Initialize question counter for sequential numbering regardless of question IDs
+        int questionCounter = 1;
 
-        // Set column constraints for equal width columns
-        javafx.scene.layout.ColumnConstraints col1 = new javafx.scene.layout.ColumnConstraints();
-        col1.setPercentWidth(50);
-        javafx.scene.layout.ColumnConstraints col2 = new javafx.scene.layout.ColumnConstraints();
-        col2.setPercentWidth(50);
-        gridPane.getColumnConstraints().addAll(col1, col2);
+        // If showing results, add the marks summary at the top
+        if (showingResults) {
+            // Get marks data that was calculated in submitAnswers
+            int correctAnswers = 0;
+            for (Question question : questions) {
+                int questionId = question.getId();
+                if (userAnswers.containsKey(questionId)) {
+                    QuestionOption correctOption = question.getCorrectOption();
+                    if (correctOption != null && userAnswers.get(questionId).equals(correctOption.getOptionText())) {
+                        correctAnswers++;
+                    }
+                }
+            }
 
-        // Add the grid to the container
-        questionListContainer.getChildren().add(gridPane);
+            // Each correct answer is worth 1 mark
+            int earnedMarks = correctAnswers;
+            double scorePercentage = questions.size() > 0 ? (correctAnswers * 100.0 / questions.size()) : 0;
 
-        // Prepare all questions in a flat list
-        List<Question> allQuestions = new ArrayList<>(questions);
+            // Create a marks summary container with improved styling
+            VBox marksContainer = new VBox(15);
+            marksContainer.setAlignment(javafx.geometry.Pos.CENTER);
+            marksContainer.getStyleClass().add("marks-container");
+            marksContainer.setStyle("-fx-background-color: linear-gradient(to bottom, #f9f9f9, #f0f8ff); " +
+                    "-fx-padding: 20px; " +
+                    "-fx-border-color: #4CAF50; " +
+                    "-fx-border-width: 2px; " +
+                    "-fx-border-radius: 10px; " +
+                    "-fx-margin-bottom: 25px; " +
+                    "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 10, 0, 0, 4);");
 
-        // Calculate how many questions should go in each column
-        int totalQuestions = allQuestions.size();
-        int questionsPerColumn = (totalQuestions + 1) / 2; // Ceiling division to ensure all questions fit
+            Label marksHeader = new Label("Exam Results");
+            marksHeader.setStyle("-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #333333; -fx-underline: true;");
 
-        // Add questions to the grid
-        for (int i = 0; i < totalQuestions; i++) {
-            Question question = allQuestions.get(i);
+            // Create a more visually appealing marks display
+            HBox marksBox = new HBox(20);
+            marksBox.setAlignment(javafx.geometry.Pos.CENTER);
+            marksBox.setPadding(new javafx.geometry.Insets(10, 0, 10, 0));
 
-            // Determine column and row
-            int column = i < questionsPerColumn ? 0 : 1;
-            int row = i < questionsPerColumn ? i : i - questionsPerColumn;
+            Label marksObtained = new Label(String.format("%d", earnedMarks));
+            marksObtained.setStyle("-fx-font-size: 36px; -fx-font-weight: bold; -fx-text-fill: #4CAF50;");
 
-            // Create and add the question WebView
-            WebView webView = createQuestionWebView(question, showingResults);
-            setupWebViewClickHandler(webView, question);
-            gridPane.add(webView, column, row, 1, 1);
+            Label marksOutOf = new Label(String.format("out of %d", totalMarks));
+            marksOutOf.setStyle("-fx-font-size: 18px; -fx-text-fill: #555555; -fx-padding: 8 0 0 0;");
+
+            VBox marksVBox = new VBox(0);
+            marksVBox.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+            marksVBox.getChildren().addAll(marksObtained, marksOutOf);
+
+            // Create a circular progress indicator for the score percentage
+            double scoreDecimal = scorePercentage / 100.0;
+            javafx.scene.layout.StackPane scoreCircle = new javafx.scene.layout.StackPane();
+            scoreCircle.setMinSize(80, 80);
+            scoreCircle.setMaxSize(80, 80);
+
+            // Background circle
+            javafx.scene.shape.Circle bgCircle = new javafx.scene.shape.Circle(40);
+            bgCircle.setFill(javafx.scene.paint.Color.web("#f0f0f0"));
+            bgCircle.setStroke(javafx.scene.paint.Color.web("#dddddd"));
+            bgCircle.setStrokeWidth(2);
+
+            // Score text
+            Label scoreLabel = new Label(String.format("%.1f%%", scorePercentage));
+            scoreLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #2196F3;");
+
+            scoreCircle.getChildren().addAll(bgCircle, scoreLabel);
+
+            marksBox.getChildren().addAll(marksVBox, scoreCircle);
+
+            // Add performance rating based on score
+            String performanceText;
+            String performanceColor;
+            if (scorePercentage >= 80) {
+                performanceText = "Excellent!";
+                performanceColor = "#4CAF50";
+            } else if (scorePercentage >= 60) {
+                performanceText = "Good";
+                performanceColor = "#8BC34A";
+            } else if (scorePercentage >= 40) {
+                performanceText = "Fair";
+                performanceColor = "#FFC107";
+            } else if (scorePercentage >= 20) {
+                performanceText = "Needs Improvement";
+                performanceColor = "#FF9800";
+            } else {
+                performanceText = "Poor";
+                performanceColor = "#F44336";
+            }
+
+            Label performanceLabel = new Label("Performance: " + performanceText);
+            performanceLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: " + performanceColor + ";");
+
+            marksContainer.getChildren().addAll(marksHeader, marksBox, performanceLabel);
+            questionListContainer.getChildren().add(marksContainer);
+        }
+
+        // Create a VBox to hold subject sections
+        VBox subjectsContainer = new VBox(20);
+        questionListContainer.getChildren().add(subjectsContainer);
+
+        // Group questions by subject
+        Map<String, List<Question>> questionsBySubject = new HashMap<>();
+
+        for (Question question : questions) {
+            String subject = question.getSubject();
+            if (subject == null || subject.isEmpty()) {
+                subject = "General";
+            }
+
+            if (!questionsBySubject.containsKey(subject)) {
+                questionsBySubject.put(subject, new ArrayList<>());
+            }
+            questionsBySubject.get(subject).add(question);
+        }
+
+        // Display questions by subject
+        for (Map.Entry<String, List<Question>> entry : questionsBySubject.entrySet()) {
+            String subject = entry.getKey();
+            List<Question> subjectQuestions = entry.getValue();
+
+            // Create subject header
+            Label subjectLabel = new Label(subject);
+            subjectLabel.getStyleClass().add("subject-header");
+            subjectLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-padding: 10px 0;");
+
+            // Create a container for this subject
+            VBox subjectContainer = new VBox(10);
+            subjectContainer.getChildren().add(subjectLabel);
+
+            // Create a two-column layout for this subject's questions
+            javafx.scene.layout.GridPane gridPane = new javafx.scene.layout.GridPane();
+            gridPane.setHgap(20);
+            gridPane.setVgap(20);
+
+            // Set column constraints for equal width columns
+            javafx.scene.layout.ColumnConstraints col1 = new javafx.scene.layout.ColumnConstraints();
+            col1.setPercentWidth(50);
+            javafx.scene.layout.ColumnConstraints col2 = new javafx.scene.layout.ColumnConstraints();
+            col2.setPercentWidth(50);
+            gridPane.getColumnConstraints().addAll(col1, col2);
+
+            // Calculate how many questions should go in each column
+            int totalQuestions = subjectQuestions.size();
+            int questionsPerColumn = (totalQuestions + 1) / 2; // Ceiling division to ensure all questions fit
+
+            // Add questions to the grid
+            for (int i = 0; i < totalQuestions; i++) {
+                Question question = subjectQuestions.get(i);
+
+                // Determine column and row
+                int column = i < questionsPerColumn ? 0 : 1;
+                int row = i < questionsPerColumn ? i : i - questionsPerColumn;
+
+                // Create and add the question WebView with sequential numbering
+                WebView webView = createQuestionWebView(question, showingResults, questionCounter++);
+                setupWebViewClickHandler(webView, question);
+                gridPane.add(webView, column, row, 1, 1);
+            }
+
+            subjectContainer.getChildren().add(gridPane);
+            subjectsContainer.getChildren().add(subjectContainer);
         }
     }
 
@@ -343,17 +481,28 @@ public class MockTestController {
      * @param showResults Whether to show correct answers
      * @return A WebView containing the question and options
      */
-    private WebView createQuestionWebView(Question question, boolean showResults) {
+    private WebView createQuestionWebView(Question question, boolean showResults, int questionNumber) {
         // Create a WebView for the question
         WebView webView = new WebView();
-        webView.setPrefWidth(400);
-        webView.setPrefHeight(300);
+        webView.setPrefWidth(500); // Increased width from 400 to 500
+        webView.setPrefHeight(500); // Increased height to avoid vertical scrollbar
         WebEngine engine = webView.getEngine();
+
+        // Add subject as a data attribute for reference
+        String subject = question.getSubject();
+        if (subject != null && !subject.isEmpty()) {
+            webView.getProperties().put("subject", subject);
+        }
 
         // Build HTML content for the question
         StringBuilder htmlContent = new StringBuilder();
         htmlContent.append("<!DOCTYPE html><html><head>");
         htmlContent.append("<meta charset='UTF-8'>");
+
+        // Add subject label if available
+        if (subject != null && !subject.isEmpty()) {
+            htmlContent.append("<div style='background-color: #f0f0f0; padding: 5px; margin-bottom: 10px; border-radius: 4px; font-size: 12px;'>Subject: " + subject + "</div>");
+        }
         htmlContent.append("<script type='text/javascript' id='MathJax-script' async ");
         htmlContent.append("src='https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js'></script>");
         htmlContent.append("<script type='text/x-mathjax-config'>");
@@ -362,6 +511,22 @@ public class MockTestController {
         htmlContent.append("CommonHTML: {linebreaks: {automatic: true}},");
         htmlContent.append("SVG: {linebreaks: {automatic: true}}");
         htmlContent.append("});</script>");
+
+        // Add JavaScript function to handle radio button clicks
+        htmlContent.append("<script type='text/javascript'>");
+        htmlContent.append("function handleRadioClick(radio, questionId, optionText) {");
+        htmlContent.append("  console.log('Radio clicked: ' + questionId + ' - ' + optionText);");
+        htmlContent.append("  // Find all option containers in this question");
+        htmlContent.append("  var optionContainers = document.querySelectorAll('.option');");
+        htmlContent.append("  // Remove selected class from all options");
+        htmlContent.append("  for (var i = 0; i < optionContainers.length; i++) {");
+        htmlContent.append("    optionContainers[i].classList.remove('selected-option');");
+        htmlContent.append("  }");
+        htmlContent.append("  // Add selected class to the parent of the selected radio");
+        htmlContent.append("  radio.parentNode.classList.add('selected-option');");
+        htmlContent.append("}");
+        htmlContent.append("</script>");
+
         htmlContent.append("<style>");
         htmlContent.append("body { font-family: 'Segoe UI', Arial, sans-serif; margin: 10px; font-size: 16px; background-color: #fff; }");
         htmlContent.append(".question-container { margin-bottom: 15px; border: 1px solid #e0e0e0; border-radius: 8px; padding: 15px; }");
@@ -369,13 +534,15 @@ public class MockTestController {
         htmlContent.append(".question-text { font-weight: bold; font-size: 16px; margin-bottom: 10px; }");
         htmlContent.append(".question-image { max-width: 300px; max-height: 200px; width: auto; height: auto; display: block; margin: 10px auto; }");
         htmlContent.append(".options-container { margin-top: 10px; }");
-        htmlContent.append(".option { margin: 5px 0; padding: 5px; }");
-        htmlContent.append(".option-checkbox { margin-right: 10px; }");
-        htmlContent.append(".option-checkbox:checked { accent-color: #fa4506; }"); // Primary color from common.css
-        htmlContent.append(".correct-option { color: #4CAF50; font-weight: bold; }");
-        htmlContent.append(".selected-option { background-color: #f0f0f0; }");
-        htmlContent.append(".correct-and-selected { background-color: #e8f5e9; }");
-        htmlContent.append(".incorrect-selected { background-color: #ffebee; }");
+        htmlContent.append(".option { margin: 5px 0; padding: 5px; display: flex; align-items: center; padding: 8px; border-radius: 4px; transition: all 0.3s; }");
+        htmlContent.append(".option-radio { margin-right: 10px; cursor: pointer; width: 18px; height: 18px; }");
+        htmlContent.append(".option-radio:checked { accent-color: #fa4506; }"); // Primary color from common.css
+        htmlContent.append(".option-radio:hover { cursor: pointer; }");
+        htmlContent.append(".option:hover { background-color: #f5f5f5; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }");
+        htmlContent.append(".correct-option { color: #4CAF50; font-weight: bold; border-left: 4px solid #4CAF50; padding-left: 12px; }");
+        htmlContent.append(".selected-option { background-color: #f0f0f0; border-left: 4px solid #2196F3; padding-left: 12px; }");
+        htmlContent.append(".correct-and-selected { background-color: #e8f5e9; border-left: 4px solid #4CAF50; padding-left: 12px; box-shadow: 0 2px 8px rgba(76,175,80,0.3); }");
+        htmlContent.append(".incorrect-selected { background-color: #ffebee; border-left: 4px solid #F44336; padding-left: 12px; box-shadow: 0 2px 8px rgba(244,67,54,0.3); }");
         htmlContent.append(".mjx-chtml { display: inline-block !important; }");
         htmlContent.append("</style>");
         htmlContent.append("</head><body>");
@@ -383,8 +550,8 @@ public class MockTestController {
         // Question container
         htmlContent.append("<div class='question-container'>");
 
-        // Question number and text
-        htmlContent.append("<span class='question-number'>Question ").append(question.getId()).append(". </span>");
+        // Question number and text (using sequential number instead of question ID)
+        htmlContent.append("<span class='question-number'>Question ").append(questionNumber).append(". </span>");
 
         // Process question text for LaTeX if needed
         String questionText = question.getQuestionText();
@@ -412,6 +579,19 @@ public class MockTestController {
         QuestionOption correctOption = question.getCorrectOption();
         String correctOptionText = correctOption != null ? correctOption.getOptionText() : "";
 
+        // Add marks information when showing results
+        if (showResults) {
+            boolean isCorrect = userAnswer != null && userAnswer.equals(correctOptionText);
+            String marksText = isCorrect ? "✓ 1 Mark" : "✗ 0 Marks";
+            String marksColor = isCorrect ? "#4CAF50" : "#F44336";
+            String bgColor = isCorrect ? "rgba(76,175,80,0.1)" : "rgba(244,67,54,0.1)";
+            String borderColor = isCorrect ? "#4CAF50" : "#F44336";
+            htmlContent.append("<div style='float: right; font-weight: bold; color: " + marksColor + 
+                "; margin-right: 10px; padding: 5px 10px; border-radius: 15px; background-color: " + 
+                bgColor + "; border: 1px solid " + borderColor + "; box-shadow: 0 1px 3px rgba(0,0,0,0.1);'>" + 
+                marksText + "</div>");
+        }
+
         // Add options with checkboxes
         for (QuestionOption option : question.getOptions()) {
             String optionText = option.getOptionText();
@@ -434,9 +614,11 @@ public class MockTestController {
 
             htmlContent.append("<div class='").append(optionClass).append("'>");
 
-            // Add checkbox
+            // Add radio button instead of checkbox
             String checkedAttr = isSelected ? "checked" : "";
-            htmlContent.append("<input type='checkbox' class='option-checkbox' onclick='handleCheckboxClick(this, \"")
+            htmlContent.append("<input type='radio' name='question-")
+                    .append(question.getId())
+                    .append("' class='option-radio' onclick='handleRadioClick(this, \"")
                     .append(question.getId()).append("\", \"")
                     .append(optionText.replace("\"", "\\\"")).append("\")' ")
                     .append(checkedAttr).append(">");
@@ -453,27 +635,7 @@ public class MockTestController {
             htmlContent.append("</div>");
         }
 
-        // Add JavaScript for handling checkbox clicks
-        // Since we can't use Java callbacks, we'll use a simpler approach
-        htmlContent.append("<script>");
-        htmlContent.append("function handleCheckboxClick(checkbox, questionId, optionText) {");
-        htmlContent.append("  // Uncheck all other checkboxes in the same question");
-        htmlContent.append("  var options = checkbox.parentNode.parentNode.getElementsByTagName('input');");
-        htmlContent.append("  for (var i = 0; i < options.length; i++) {");
-        htmlContent.append("    if (options[i] !== checkbox) {");
-        htmlContent.append("      options[i].checked = false;");
-        htmlContent.append("    }");
-        htmlContent.append("  }");
-        htmlContent.append("  // Add a class to the parent div to show it's selected");
-        htmlContent.append("  var optionDivs = checkbox.parentNode.parentNode.getElementsByClassName('option');");
-        htmlContent.append("  for (var i = 0; i < optionDivs.length; i++) {");
-        htmlContent.append("    optionDivs[i].classList.remove('selected-option');");
-        htmlContent.append("  }");
-        htmlContent.append("  if (checkbox.checked) {");
-        htmlContent.append("    checkbox.parentNode.classList.add('selected-option');");
-        htmlContent.append("  }");
-        htmlContent.append("}");
-        htmlContent.append("</script>");
+        // JavaScript for handling radio button clicks is now added in setupWebViewClickHandler
 
         htmlContent.append("</div>"); // Close options container
         htmlContent.append("</div>"); // Close question container
@@ -483,10 +645,10 @@ public class MockTestController {
         engine.loadContent(htmlContent.toString());
 
         // Since we can't use JavaScript bridge due to module restrictions,
-        // we'll make the checkboxes read-only in results view
+        // we'll make the radio buttons read-only in results view
         if (showResults) {
-            // Disable checkboxes when showing results
-            engine.executeScript("document.querySelectorAll('input[type=\"checkbox\"]').forEach(function(cb) { cb.disabled = true; });");
+            // Disable radio buttons when showing results
+            engine.executeScript("document.querySelectorAll('input[type=\"radio\"]').forEach(function(rb) { rb.disabled = true; });");
         }
 
         return webView;
@@ -504,22 +666,20 @@ public class MockTestController {
                 return; // Don't allow changes when showing results
             }
 
-            // Get all checkboxes in the WebView
+            // Get the WebEngine for checking radio button states
             WebEngine engine = webView.getEngine();
-            String script = "document.querySelectorAll('input[type=\"checkbox\"]');";
-            Object result = engine.executeScript(script);
 
-            // We can't directly access the checkboxes, so we'll need to poll them
-            // Schedule a task to check which checkbox is selected after a short delay
+            // We can't directly access the radio buttons, so we'll need to poll them
+            // Schedule a task to check which radio button is selected after a short delay
             Timer timer = new Timer();
             timer.schedule(new TimerTask() {
                 @Override
                 public void run() {
                     Platform.runLater(() -> {
-                        // For each option, check if its checkbox is selected
+                        // For each option, check if its radio button is selected
                         for (int i = 0; i < question.getOptions().size(); i++) {
                             QuestionOption option = question.getOptions().get(i);
-                            String checkScript = "document.querySelectorAll('input[type=\"checkbox\"]')[" + i + "].checked;";
+                            String checkScript = "document.querySelectorAll('input[name=\"question-" + question.getId() + "\"]')[" + i + "].checked;";
                             Boolean checked = (Boolean) engine.executeScript(checkScript);
 
                             if (checked) {
@@ -533,7 +693,7 @@ public class MockTestController {
                         }
                     });
                 }
-            }, 100); // Short delay to allow the checkbox state to update
+            }, 100); // Short delay to allow the radio button state to update
         });
     }
 
@@ -595,38 +755,191 @@ public class MockTestController {
             return;
         }
 
+        // Update total marks obtained label
+        Label totalMarksObtainedLabel = new Label();
+        totalMarksObtainedLabel.setId("totalMarksObtainedLabel");
+        totalMarksObtainedLabel.getStyleClass().add("total-marks-obtained");
+
         // Stop the timer
         if (countdownTimer != null) {
             countdownTimer.cancel();
             countdownTimer = null;
         }
 
-        // Calculate score
+        // Calculate overall score
         int correctAnswers = 0;
         int totalAnswered = userAnswers.size();
 
+        // Calculate score by subject
+        Map<String, Integer> correctBySubject = new HashMap<>();
+        Map<String, Integer> totalBySubject = new HashMap<>();
+
         for (Question question : questions) {
+            // Get subject, default to "General" if not set
+            String subject = question.getSubject();
+            if (subject == null || subject.isEmpty()) {
+                subject = "General";
+            }
+
+            // Initialize counters for this subject if not already done
+            if (!totalBySubject.containsKey(subject)) {
+                totalBySubject.put(subject, 0);
+                correctBySubject.put(subject, 0);
+            }
+
+            // Increment total questions for this subject
+            totalBySubject.put(subject, totalBySubject.get(subject) + 1);
+
+            // Check if answer is correct
             int questionId = question.getId();
             if (userAnswers.containsKey(questionId)) {
                 QuestionOption correctOption = question.getCorrectOption();
                 if (correctOption != null && userAnswers.get(questionId).equals(correctOption.getOptionText())) {
                     correctAnswers++;
+                    correctBySubject.put(subject, correctBySubject.get(subject) + 1);
                 }
             }
         }
 
-        // Calculate total marks
+            // Calculate total marks - each correct answer is worth 1 mark
+        int earnedMarks = correctAnswers;
+        // Calculate percentage based on the number of questions, not the totalMarks (which might be different)
         double scorePercentage = questions.size() > 0 ? (correctAnswers * 100.0 / questions.size()) : 0;
-        int earnedMarks = (int) Math.round(totalMarks * scorePercentage / 100.0);
+        LOGGER.info("Earned marks: " + earnedMarks + " out of " + totalMarks + " (" + scorePercentage + "%)");
 
-        // Show results with total marks
-        String message = String.format(
-            "You answered %d out of %d questions.\nCorrect answers: %d\nScore: %.1f%%\nTotal Marks: %d/%d",
+        // Build detailed results message with subject breakdown
+        StringBuilder messageBuilder = new StringBuilder();
+        // Add a prominent display of total marks obtained
+        messageBuilder.append(String.format(
+            "✅ TOTAL MARKS OBTAINED: %d out of %d ✅\n\n",
+            earnedMarks, totalMarks
+        ));
+
+        // Create a marks summary container with improved styling
+        VBox marksContainer = new VBox(15);
+        marksContainer.setAlignment(javafx.geometry.Pos.CENTER);
+        marksContainer.getStyleClass().add("marks-container");
+        marksContainer.setStyle("-fx-background-color: linear-gradient(to bottom, #f9f9f9, #f0f8ff); " +
+                "-fx-padding: 20px; " +
+                "-fx-border-color: #4CAF50; " +
+                "-fx-border-width: 2px; " +
+                "-fx-border-radius: 10px; " +
+                "-fx-margin-bottom: 25px; " +
+                "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 10, 0, 0, 4);");
+
+        Label marksHeader = new Label("Exam Results");
+        marksHeader.setStyle("-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #333333; -fx-underline: true;");
+
+        // Create a more visually appealing marks display
+        HBox marksBox = new HBox(20);
+        marksBox.setAlignment(javafx.geometry.Pos.CENTER);
+        marksBox.setPadding(new javafx.geometry.Insets(10, 0, 10, 0));
+
+        Label marksObtained = new Label(String.format("%d", earnedMarks));
+        marksObtained.setStyle("-fx-font-size: 36px; -fx-font-weight: bold; -fx-text-fill: #4CAF50;");
+
+        Label marksOutOf = new Label(String.format("out of %d", totalMarks));
+        marksOutOf.setStyle("-fx-font-size: 18px; -fx-text-fill: #555555; -fx-padding: 8 0 0 0;");
+
+        VBox marksVBox = new VBox(0);
+        marksVBox.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+        marksVBox.getChildren().addAll(marksObtained, marksOutOf);
+
+        // Create a circular progress indicator for the score percentage
+        double scoreDecimal = scorePercentage / 100.0;
+        javafx.scene.layout.StackPane scoreCircle = new javafx.scene.layout.StackPane();
+        scoreCircle.setMinSize(80, 80);
+        scoreCircle.setMaxSize(80, 80);
+
+        // Background circle
+        javafx.scene.shape.Circle bgCircle = new javafx.scene.shape.Circle(40);
+        bgCircle.setFill(javafx.scene.paint.Color.web("#f0f0f0"));
+        bgCircle.setStroke(javafx.scene.paint.Color.web("#dddddd"));
+        bgCircle.setStrokeWidth(2);
+
+        // Score text
+        Label scoreLabel = new Label(String.format("%.1f%%", scorePercentage));
+        scoreLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #2196F3;");
+
+        scoreCircle.getChildren().addAll(bgCircle, scoreLabel);
+
+        marksBox.getChildren().addAll(marksVBox, scoreCircle);
+
+        // Add performance rating based on score
+        String performanceText;
+        String performanceColor;
+        if (scorePercentage >= 80) {
+            performanceText = "Excellent!";
+            performanceColor = "#4CAF50";
+        } else if (scorePercentage >= 60) {
+            performanceText = "Good";
+            performanceColor = "#8BC34A";
+        } else if (scorePercentage >= 40) {
+            performanceText = "Fair";
+            performanceColor = "#FFC107";
+        } else if (scorePercentage >= 20) {
+            performanceText = "Needs Improvement";
+            performanceColor = "#FF9800";
+        } else {
+            performanceText = "Poor";
+            performanceColor = "#F44336";
+        }
+
+        Label performanceLabel = new Label("Performance: " + performanceText);
+        performanceLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: " + performanceColor + ";");
+
+        marksContainer.getChildren().addAll(marksHeader, marksBox, performanceLabel);
+
+        // Add the marks container at the top of the question list container
+        questionListContainer.getChildren().clear();
+        questionListContainer.getChildren().add(marksContainer);
+
+        // Build a more visually appealing message
+        messageBuilder.append(String.format(
+            "📊 EXAM SUMMARY 📊\n\n" +
+            "You answered %d out of %d questions.\n" +
+            "Correct answers: %d\n" +
+            "Score: %.1f%%\n\n",
             totalAnswered, questions.size(), correctAnswers,
-            scorePercentage, earnedMarks, totalMarks
-        );
+            scorePercentage
+        ));
 
-        MFXNotifications.showInfo("Exam Completed", message);
+        // Add subject breakdown with improved formatting
+        messageBuilder.append("📚 SUBJECT BREAKDOWN 📚\n");
+        for (String subject : totalBySubject.keySet()) {
+            int subjectTotal = totalBySubject.get(subject);
+            int subjectCorrect = correctBySubject.get(subject);
+            double subjectPercentage = subjectTotal > 0 ? (subjectCorrect * 100.0 / subjectTotal) : 0;
+
+            // Add star indicators and emoji based on performance
+            String performance;
+            String emoji;
+            if (subjectPercentage >= 80) {
+                performance = "★★★★★ Excellent!";
+                emoji = "🏆";
+            } else if (subjectPercentage >= 60) {
+                performance = "★★★★☆ Good";
+                emoji = "👍";
+            } else if (subjectPercentage >= 40) {
+                performance = "★★★☆☆ Fair";
+                emoji = "🔍";
+            } else if (subjectPercentage >= 20) {
+                performance = "★★☆☆☆ Needs Improvement";
+                emoji = "📝";
+            } else {
+                performance = "★☆☆☆☆ Poor";
+                emoji = "⚠️";
+            }
+
+            messageBuilder.append(String.format(
+                "\n%s %s: %d/%d (%.1f%%)\n   %s\n",
+                emoji, subject, subjectCorrect, subjectTotal, subjectPercentage, performance
+            ));
+        }
+
+        // Show results with total marks and subject breakdown
+        String title = String.format("🎓 Exam Completed - Score: %.1f%%", scorePercentage);
+        MFXNotifications.showInfo(title, messageBuilder.toString());
 
         // Set flag to show results
         showingResults = true;
@@ -1018,5 +1331,22 @@ public class MockTestController {
     public void navigateToContact(javafx.scene.input.MouseEvent event) {
         cleanup();
         NavigationUtil.navigateToContact(event);
+    }
+
+    /**
+     * Shuffle the questions to randomize their order
+     * This helps prevent cheating by ensuring students don't get questions in the same order
+     */
+    private void shuffleQuestions() {
+        if (questions == null || questions.isEmpty()) {
+            return;
+        }
+
+        LOGGER.info("Shuffling " + questions.size() + " questions");
+
+        // Use Collections.shuffle to randomize the order
+        java.util.Collections.shuffle(questions);
+
+        LOGGER.info("Questions shuffled successfully");
     }
 }
