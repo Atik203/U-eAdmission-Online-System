@@ -43,3 +43,114 @@
   -fx-opacity: 0.6;
   -fx-font-style: italic;
 }
+
+/* Form Elements */
+.form-label {
+  -fx-font-size: 14px;
+  -fx-font-weight: bold;
+  -fx-text-fill: -text-dark;
+}
+
+.mfx-combo-box {
+  -fx-background-color: white;
+  -fx-border-color: -border-color;
+  -fx-border-radius: 4;
+  -fx-background-radius: 4;
+  -fx-font-size: 14px;
+}
+
+/* Exam Information */
+.info-box {
+  -fx-background-color: white;
+  -fx-border-color: -border-color;
+  -fx-border-radius: 6;
+  -fx-background-radius: 6;
+  -fx-padding: 10 20;
+  -fx-min-width: 150;
+  -fx-effect: dropshadow(gaussian, -shadow-color, 5, 0, 0, 1);
+}
+
+.info-label {
+  -fx-font-size: 12px;
+  -fx-text-fill: -text-dark;
+  -fx-opacity: 0.7;
+}
+
+.info-value {
+  -fx-font-size: 18px;
+  -fx-font-weight: bold;
+  -fx-text-fill: -primary-color;
+}
+
+/* Timer Styling */
+#timeRemainingLabel {
+  -fx-font-size: 20px;
+  -fx-font-weight: bold;
+}
+
+/* Question Styling */
+.question-card {
+  -fx-background-color: white;
+  -fx-border-color: -border-color;
+  -fx-border-radius: 6;
+  -fx-background-radius: 6;
+  -fx-padding: 15;
+  -fx-effect: dropshadow(gaussian, -shadow-color, 5, 0, 0, 1);
+}
+
+/* WebView Styling */
+.web-view {
+  -fx-background-color: white;
+  -fx-border-color: -border-color;
+  -fx-border-radius: 6;
+  -fx-background-radius: 6;
+  -fx-effect: dropshadow(gaussian, -shadow-color, 5, 0, 0, 1);
+  -fx-min-height: 200;
+  -fx-pref-width: 400;
+  -fx-max-width: 450;
+}
+
+/* Question-related styles */
+.question-number {
+  -fx-font-size: 14px;
+  -fx-font-weight: bold;
+  -fx-text-fill: -primary-color;
+}
+
+.question-text {
+  -fx-font-size: 14px;
+  -fx-text-fill: -text-dark;
+  -fx-wrap-text: true;
+  -fx-padding: 5 0 10 0;
+}
+
+.question-option {
+  -fx-padding: 5 0;
+}
+
+.subject-header {
+  -fx-font-size: 16px;
+  -fx-font-weight: bold;
+  -fx-text-fill: -primary-color;
+  -fx-padding: 10 0;
+  -fx-border-color: transparent transparent -border-color transparent;
+  -fx-border-width: 0 0 1 0;
+}
+
+/* Marks Container Styling */
+.marks-container {
+  -fx-background-color: #f0f8ff;
+  -fx-padding: 15;
+  -fx-border-color: #4CAF50;
+  -fx-border-width: 2;
+  -fx-border-radius: 5;
+  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 1);
+  -fx-margin: 0 0 20 0;
+}
+
+.total-marks-obtained {
+  -fx-font-size: 18px;
+  -fx-font-weight: bold;
+  -fx-text-fill: #4CAF50;
+  -fx-alignment: center;
+}

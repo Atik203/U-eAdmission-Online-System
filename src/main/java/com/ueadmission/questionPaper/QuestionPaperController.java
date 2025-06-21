@@ -53,6 +53,10 @@ public class QuestionPaperController {
     private QuestionPaper currentQuestionPaper;
     private List<Question> questions = new ArrayList<>();
 
+    // Separate lists for mock exam and actual exam questions
+    private List<Question> mockExamQuestions = new ArrayList<>();
+    private List<Question> actualExamQuestions = new ArrayList<>();
+
     // Map to track questions per subject
     private java.util.Map<String, Integer> questionsPerSubjectMap = new java.util.HashMap<>();
     private java.util.Map<String, Integer> maxQuestionsPerSubjectMap = new java.util.HashMap<>();
@@ -194,10 +198,17 @@ public class QuestionPaperController {
         // Initialize subject combo box (will be populated based on selected school)
         subjectComboBox.setDisable(true);
 
-        // Set up school combo box listener to update subject combo box
+        // Set up school combo box listener to update subject combo box and reload question paper
         schoolComboBox.valueProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null) {
                 updateSubjectsForSchool(newVal);
+
+                // Reset current question paper when school changes
+                currentQuestionPaper = null;
+                questions.clear();
+
+                // Load the appropriate question paper for the new school and current exam type
+                loadMostRecentQuestionPaper();
             } else {
                 subjectComboBox.getItems().clear();
                 subjectComboBox.setDisable(true);
@@ -327,16 +338,44 @@ public class QuestionPaperController {
         correctOption3Checkbox.selectedProperty().addListener(checkboxListener);
         correctOption4Checkbox.selectedProperty().addListener(checkboxListener);
 
-        // Group checkboxes for exam type
+        // Group checkboxes for exam type and switch between question lists when exam type changes
         mockExamCheckbox.selectedProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal) {
                 actualExamCheckbox.setSelected(false);
+
+                // Reset current question paper when exam type changes
+                currentQuestionPaper = null;
+
+                // Switch to mock exam questions without clearing them
+                questions.clear();
+                questions.addAll(mockExamQuestions);
+
+                // Update the UI with the mock exam questions
+                updateQuestionCountsPerSubject();
+                updateQuestionList();
+
+                // Load the appropriate question paper for the current school and new exam type
+                loadMostRecentQuestionPaper();
             }
         });
 
         actualExamCheckbox.selectedProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal) {
                 mockExamCheckbox.setSelected(false);
+
+                // Reset current question paper when exam type changes
+                currentQuestionPaper = null;
+
+                // Switch to actual exam questions without clearing them
+                questions.clear();
+                questions.addAll(actualExamQuestions);
+
+                // Update the UI with the actual exam questions
+                updateQuestionCountsPerSubject();
+                updateQuestionList();
+
+                // Load the appropriate question paper for the current school and new exam type
+                loadMostRecentQuestionPaper();
             }
         });
     }
@@ -816,40 +855,16 @@ public class QuestionPaperController {
         questionsPerSubjectMap.clear();
         maxQuestionsPerSubjectMap.clear();
 
-        // Get subjects for the selected school
-        List<String> subjects = new ArrayList<>();
-        String[] subjectCounts = null;
-
-        if (school.equals("School of Engineering & Technology")) {
-            subjects.add("English");
-            subjects.add("General Mathematics");
-            subjects.add("Higher Math & Physics");
-            subjectCounts = new String[]{"30", "15", "30"};
-        } else if (school.equals("School of Business & Economics")) {
-            subjects.add("English");
-            subjects.add("General Mathematics");
-            subjects.add("Business & Economics");
-            subjectCounts = new String[]{"30", "15", "30"};
-        } else if (school.equals("School of Humanities & Social Sciences")) {
-            subjects.add("English");
-            subjects.add("General Mathematics");
-            subjects.add("Current Affairs");
-            subjects.add("Higher English & Logical Reasoning");
-            subjectCounts = new String[]{"30", "15", "15", "15"};
-        } else if (school.equals("School of Life Sciences")) {
-            subjects.add("English");
-            subjects.add("General Mathematics");
-            subjects.add("Biology & Chemistry");
-            subjectCounts = new String[]{"30", "15", "30"};
-        }
+        // Get subjects for the selected school from the database
+        boolean isMockExam = mockExamCheckbox.isSelected();
+        List<String> subjects = QuestionPaperDAO.getSubjectsForSchool(school, isMockExam);
 
         // Add subjects to combo box
         subjectComboBox.getItems().addAll(subjects);
 
         // Initialize question count maps
-        for (int i = 0; i < subjects.size(); i++) {
-            String subject = subjects.get(i);
-            int maxQuestions = Integer.parseInt(subjectCounts[i]);
+        for (String subject : subjects) {
+            int maxQuestions = QuestionPaperDAO.getMaxQuestions(school, isMockExam, subject);
             questionsPerSubjectMap.put(subject, 0);
             maxQuestionsPerSubjectMap.put(subject, maxQuestions);
         }
@@ -882,6 +897,8 @@ public class QuestionPaperController {
 
         // Query database for current question count for this subject and school
         int currentQuestions = 0;
+        int totalCurrentQuestions = 0;
+        int totalMaxQuestions = 0;
 
         try {
             // Check if we have a valid question paper
@@ -889,43 +906,42 @@ public class QuestionPaperController {
                 String school = currentQuestionPaper.getSchool();
                 boolean isMockExam = currentQuestionPaper.isMockExam();
 
-                // Get connection
-                Connection conn = DatabaseConnection.getConnection();
-
-                // Query to count questions by subject and school
-                String sql = "SELECT COUNT(*) FROM questions q " +
-                             "JOIN question_papers qp ON q.question_paper_id = qp.id " +
-                             "WHERE qp.school = ? AND qp.is_mock_exam = ? AND q.subject = ?";
-
-                try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-                    stmt.setString(1, school);
-                    stmt.setBoolean(2, isMockExam);
-                    stmt.setString(3, subject);
-
-                    try (ResultSet rs = stmt.executeQuery()) {
-                        if (rs.next()) {
-                            currentQuestions = rs.getInt(1);
-                        }
-                    }
-                }
+                // Use QuestionPaperDAO methods to get question counts
+                currentQuestions = QuestionPaperDAO.getQuestionCount(school, isMockExam, subject);
+                totalCurrentQuestions = QuestionPaperDAO.getTotalQuestionCount(school, isMockExam);
+                totalMaxQuestions = QuestionPaperDAO.getTotalMaxQuestions(school, isMockExam);
             } else {
                 // Fallback to instance map if no current paper
                 currentQuestions = questionsPerSubjectMap.getOrDefault(subject, 0);
+
+                // Calculate total current and max questions
+                for (String subj : maxQuestionsPerSubjectMap.keySet()) {
+                    totalCurrentQuestions += questionsPerSubjectMap.getOrDefault(subj, 0);
+                    totalMaxQuestions += maxQuestionsPerSubjectMap.getOrDefault(subj, 0);
+                }
             }
-        } catch (SQLException e) {
+        } catch (Exception e) {
             LOGGER.log(Level.WARNING, "Error getting question count from database", e);
             // Fallback to instance map if database query fails
             currentQuestions = questionsPerSubjectMap.getOrDefault(subject, 0);
+
+            // Calculate total current and max questions
+            for (String subj : maxQuestionsPerSubjectMap.keySet()) {
+                totalCurrentQuestions += questionsPerSubjectMap.getOrDefault(subj, 0);
+                totalMaxQuestions += maxQuestionsPerSubjectMap.getOrDefault(subj, 0);
+            }
         }
 
         // Calculate remaining questions
         int remainingQuestions = maxQuestions - currentQuestions;
+        int totalRemainingQuestions = totalMaxQuestions - totalCurrentQuestions;
 
         // Update the instance map with the current count from database
         questionsPerSubjectMap.put(subject, currentQuestions);
 
-        // Update label
-        remainingQuestionsLabel.setText("Remaining: " + remainingQuestions);
+        // Update label with both subject-specific and total counts
+        remainingQuestionsLabel.setText(String.format("Remaining: %d (Subject: %s) / Total: %d", 
+                                       remainingQuestions, subject, totalRemainingQuestions));
     }
 
     /**
@@ -950,16 +966,43 @@ public class QuestionPaperController {
      */
     private void loadMostRecentQuestionPaper() {
         try {
-            // Get the most recent question paper
-            QuestionPaper paper = QuestionPaperDAO.getMostRecentQuestionPaper();
+            // Get the most recent question paper based on the selected school and exam type
+            boolean isMockExam = mockExamCheckbox.isSelected();
+            String school = schoolComboBox.getValue();
+
+            // Only proceed if a school is selected
+            if (school == null || school.isEmpty()) {
+                LOGGER.info("No school selected, cannot load question paper");
+                return;
+            }
+
+            QuestionPaper paper = QuestionPaperDAO.getMostRecentQuestionPaper(isMockExam, school);
 
             if (paper != null) {
                 // Set as current question paper
                 currentQuestionPaper = paper;
 
-                // Don't load previous questions - we want to start with a fresh list
-                // Just store the reference to the paper
-                questions.clear();
+                // Load existing questions from the database
+                List<Question> existingQuestions = QuestionPaperDAO.getQuestionsForPaper(paper.getId());
+
+                // Store questions in the appropriate list based on exam type
+                if (isMockExam) {
+                    // For mock exams, update the mockExamQuestions list
+                    mockExamQuestions.clear();
+                    mockExamQuestions.addAll(existingQuestions);
+
+                    // Update the main questions list for display
+                    questions.clear();
+                    questions.addAll(mockExamQuestions);
+                } else {
+                    // For actual exams, update the actualExamQuestions list
+                    actualExamQuestions.clear();
+                    actualExamQuestions.addAll(existingQuestions);
+
+                    // Update the main questions list for display
+                    questions.clear();
+                    questions.addAll(actualExamQuestions);
+                }
 
                 // Set school in UI if available
                 if (paper.getSchool() != null && !paper.getSchool().isEmpty()) {
@@ -977,13 +1020,14 @@ public class QuestionPaperController {
                 updateQuestionList();
 
                 LOGGER.info("Loaded most recent question paper with ID: " + paper.getId() + 
-                           " and " + paper.getQuestions().size() + " total questions");
+                           " and " + paper.getQuestions().size() + " total questions" +
+                           " for school: " + school + " and mock exam: " + isMockExam);
 
                 // Set mock exam checkbox
                 mockExamCheckbox.setSelected(paper.isMockExam());
                 actualExamCheckbox.setSelected(!paper.isMockExam());
             } else {
-                LOGGER.info("No existing question paper found");
+                LOGGER.info("No existing question paper found for school: " + school + " and mock exam: " + isMockExam);
             }
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Error loading most recent question paper", e);
@@ -1066,7 +1110,7 @@ public class QuestionPaperController {
             // Create the question paper with all fields
             int questionPaperId = QuestionPaperDAO.createQuestionPaper(
                 title, description, school, isMockExam, 
-                totalQuestions, subjects, questionsPerSubject, 
+                totalQuestions, subjects, questionsPerSubject,
                 timeLimitMinutes, totalMarks, userId);
 
             if (questionPaperId != -1) {
@@ -1277,6 +1321,15 @@ public class QuestionPaperController {
 
                 // Add the question to the current question paper
                 currentQuestionPaper.addQuestion(question);
+
+                // Add the question to the appropriate list based on exam type
+                if (isMockExam) {
+                    mockExamQuestions.add(question);
+                } else {
+                    actualExamQuestions.add(question);
+                }
+
+                // Add to the main questions list for display
                 questions.add(question);
 
                 // Show success message

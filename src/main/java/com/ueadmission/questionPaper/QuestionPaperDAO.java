@@ -15,6 +15,7 @@ import com.ueadmission.db.DatabaseConnection;
 /**
  * Data Access Object for Question Paper operations
  * Handles database operations for question papers, questions, and options
+ * Updated to work with the new database schema
  */
 public class QuestionPaperDAO {
     private static final Logger LOGGER = Logger.getLogger(QuestionPaperDAO.class.getName());
@@ -34,27 +35,10 @@ public class QuestionPaperDAO {
         Integer totalQuestions = isMockExam ? 75 : 100;
         Integer timeLimitMinutes = isMockExam ? 75 : 120;
         Integer totalMarks = isMockExam ? 75 : 100;
-        String subjects = "";
-        String questionsPerSubject = "";
-
-        if (school.equals("School of Engineering & Technology")) {
-            subjects = "English, General Mathematics, Higher Math & Physics";
-            questionsPerSubject = "30, 15, 30";
-        } else if (school.equals("School of Business & Economics")) {
-            subjects = "English, General Mathematics, Business & Economics";
-            questionsPerSubject = "30, 15, 30";
-        } else if (school.equals("School of Humanities & Social Sciences")) {
-            subjects = "English, General Mathematics, Current Affairs, Higher English & Logical Reasoning";
-            questionsPerSubject = "30, 15, 15, 15";
-        } else if (school.equals("School of Life Sciences")) {
-            subjects = "English, General Mathematics, Biology & Chemistry";
-            questionsPerSubject = "30, 15, 30";
-        }
 
         // Call the full version of the method with the default values
         return createQuestionPaper(title, description, school, isMockExam, 
-                                  totalQuestions, subjects, questionsPerSubject, 
-                                  timeLimitMinutes, totalMarks, createdBy);
+                                  totalQuestions, timeLimitMinutes, totalMarks, createdBy);
     }
 
     /**
@@ -65,15 +49,34 @@ public class QuestionPaperDAO {
      * @param school The school the question paper belongs to
      * @param isMockExam Whether this is a mock exam or actual exam
      * @param totalQuestions The total number of questions
-     * @param subjects The subjects included in the exam
-     * @param questionsPerSubject The number of questions per subject
      * @param timeLimitMinutes The time limit in minutes
      * @param totalMarks The total marks for the exam
      * @param createdBy The ID of the user who created the question paper
      * @return The ID of the newly created question paper, or -1 if creation failed
      */
     public static int createQuestionPaper(String title, String description, String school, boolean isMockExam, 
-                                         Integer totalQuestions, String subjects, String questionsPerSubject, 
+                                         Integer totalQuestions, Integer timeLimitMinutes, Integer totalMarks, int createdBy) {
+        return createQuestionPaper(title, description, school, isMockExam, 
+                                  totalQuestions, null, null, timeLimitMinutes, totalMarks, createdBy);
+    }
+
+    /**
+     * Create a new question paper with subjects and questionsPerSubject
+     * 
+     * @param title The title of the question paper
+     * @param description The description of the question paper
+     * @param school The school the question paper belongs to
+     * @param isMockExam Whether this is a mock exam or actual exam
+     * @param totalQuestions The total number of questions
+     * @param subjects The subjects included in the exam (comma-separated)
+     * @param questionsPerSubject The number of questions per subject (comma-separated)
+     * @param timeLimitMinutes The time limit in minutes
+     * @param totalMarks The total marks for the exam
+     * @param createdBy The ID of the user who created the question paper
+     * @return The ID of the newly created question paper, or -1 if creation failed
+     */
+    public static int createQuestionPaper(String title, String description, String school, boolean isMockExam, 
+                                         Integer totalQuestions, String subjects, String questionsPerSubject,
                                          Integer timeLimitMinutes, Integer totalMarks, int createdBy) {
         Connection conn = null;
         PreparedStatement ps = null;
@@ -83,14 +86,23 @@ public class QuestionPaperDAO {
         try {
             conn = DatabaseConnection.getConnection();
 
-            String sql = "INSERT INTO question_papers (title, description, school, is_mock_exam, total_questions, subjects, " +
-                         "questions_per_subject, time_limit_minutes, total_marks, created_by) " +
+            // First, get the school_id and exam_type_id
+            int schoolId = getSchoolId(conn, school);
+            int examTypeId = getExamTypeId(conn, isMockExam);
+
+            if (schoolId == -1 || examTypeId == -1) {
+                LOGGER.warning("Failed to get school_id or exam_type_id");
+                return -1;
+            }
+
+            String sql = "INSERT INTO question_papers (title, description, school_id, exam_type_id, " +
+                         "total_questions, subjects, questions_per_subject, time_limit_minutes, total_marks, created_by) " +
                          "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, title);
             ps.setString(2, description);
-            ps.setString(3, school);
-            ps.setBoolean(4, isMockExam);
+            ps.setInt(3, schoolId);
+            ps.setInt(4, examTypeId);
 
             // Set the new fields, handling null values
             if (totalQuestions != null) {
@@ -99,6 +111,7 @@ public class QuestionPaperDAO {
                 ps.setNull(5, java.sql.Types.INTEGER);
             }
 
+            // Set subjects and questionsPerSubject
             ps.setString(6, subjects);
             ps.setString(7, questionsPerSubject);
 
@@ -134,6 +147,90 @@ public class QuestionPaperDAO {
     }
 
     /**
+     * Get the school ID from the school name
+     * 
+     * @param conn The database connection
+     * @param schoolName The name of the school
+     * @return The ID of the school, or -1 if not found
+     */
+    private static int getSchoolId(Connection conn, String schoolName) throws SQLException {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        int schoolId = -1;
+
+        try {
+            String sql = "SELECT id FROM schools WHERE name = ?";
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, schoolName);
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                schoolId = rs.getInt("id");
+            }
+        } finally {
+            DatabaseConnection.closeResources(ps, rs);
+        }
+
+        return schoolId;
+    }
+
+    /**
+     * Get the exam type ID from the is_mock_exam flag
+     * 
+     * @param conn The database connection
+     * @param isMockExam Whether this is a mock exam or actual exam
+     * @return The ID of the exam type, or -1 if not found
+     */
+    private static int getExamTypeId(Connection conn, boolean isMockExam) throws SQLException {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        int examTypeId = -1;
+
+        try {
+            String sql = "SELECT id FROM exam_types WHERE is_mock_exam = ?";
+            ps = conn.prepareStatement(sql);
+            ps.setBoolean(1, isMockExam);
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                examTypeId = rs.getInt("id");
+            }
+        } finally {
+            DatabaseConnection.closeResources(ps, rs);
+        }
+
+        return examTypeId;
+    }
+
+    /**
+     * Get the subject ID from the subject name
+     * 
+     * @param conn The database connection
+     * @param subjectName The name of the subject
+     * @return The ID of the subject, or -1 if not found
+     */
+    private static int getSubjectId(Connection conn, String subjectName) throws SQLException {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        int subjectId = -1;
+
+        try {
+            String sql = "SELECT id FROM subjects WHERE name = ?";
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, subjectName);
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                subjectId = rs.getInt("id");
+            }
+        } finally {
+            DatabaseConnection.closeResources(ps, rs);
+        }
+
+        return subjectId;
+    }
+
+    /**
      * Add a question to a question paper
      * 
      * @param questionPaperId The ID of the question paper
@@ -157,15 +254,22 @@ public class QuestionPaperDAO {
             conn = DatabaseConnection.getConnection();
             conn.setAutoCommit(false); // Start transaction
 
+            // Get the subject ID
+            int subjectId = getSubjectId(conn, subject);
+            if (subjectId == -1) {
+                LOGGER.warning("Subject not found: " + subject);
+                return -1;
+            }
+
             // Insert question
-            String sql = "INSERT INTO questions (question_paper_id, question_text, has_image, image_path, has_latex, subject) VALUES (?, ?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO questions (question_paper_id, subject_id, question_text, has_image, image_path, has_latex) VALUES (?, ?, ?, ?, ?, ?)";
             ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             ps.setInt(1, questionPaperId);
-            ps.setString(2, questionText);
-            ps.setBoolean(3, hasImage);
-            ps.setString(4, imagePath);
-            ps.setBoolean(5, hasLatex);
-            ps.setString(6, subject);
+            ps.setInt(2, subjectId);
+            ps.setString(3, questionText);
+            ps.setBoolean(4, hasImage);
+            ps.setString(5, imagePath);
+            ps.setBoolean(6, hasLatex);
 
             int affectedRows = ps.executeUpdate();
             if (affectedRows > 0) {
@@ -237,7 +341,11 @@ public class QuestionPaperDAO {
         try {
             conn = DatabaseConnection.getConnection();
 
-            String sql = "SELECT * FROM question_papers ORDER BY created_at DESC";
+            String sql = "SELECT qp.*, s.name as school_name, et.is_mock_exam " +
+                         "FROM question_papers qp " +
+                         "JOIN schools s ON qp.school_id = s.id " +
+                         "JOIN exam_types et ON qp.exam_type_id = et.id " +
+                         "ORDER BY qp.created_at DESC";
             ps = conn.prepareStatement(sql);
             rs = ps.executeQuery();
 
@@ -246,7 +354,7 @@ public class QuestionPaperDAO {
                 paper.setId(rs.getInt("id"));
                 paper.setTitle(rs.getString("title"));
                 paper.setDescription(rs.getString("description"));
-                paper.setSchool(rs.getString("school"));
+                paper.setSchool(rs.getString("school_name"));
                 paper.setMockExam(rs.getBoolean("is_mock_exam"));
 
                 // Get the new fields, handling null values
@@ -282,6 +390,29 @@ public class QuestionPaperDAO {
      * @return The most recent question paper, or null if none exists
      */
     public static QuestionPaper getMostRecentQuestionPaper() {
+        return getMostRecentQuestionPaper(null);
+    }
+
+    /**
+     * Get the most recent question paper with the specified mock exam status
+     * 
+     * @param isMockExam Boolean flag indicating whether to get a mock exam paper (true) or a real exam paper (false).
+     *                   If null, returns the most recent paper regardless of type.
+     * @return The most recent question paper matching the criteria, or null if none exists
+     */
+    public static QuestionPaper getMostRecentQuestionPaper(Boolean isMockExam) {
+        return getMostRecentQuestionPaper(isMockExam, null);
+    }
+
+    /**
+     * Get the most recent question paper with the specified mock exam status and school
+     * 
+     * @param isMockExam Boolean flag indicating whether to get a mock exam paper (true) or a real exam paper (false).
+     *                   If null, returns the most recent paper regardless of type.
+     * @param school The school to filter by. If null, returns papers from any school.
+     * @return The most recent question paper matching the criteria, or null if none exists
+     */
+    public static QuestionPaper getMostRecentQuestionPaper(Boolean isMockExam, String school) {
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -290,8 +421,42 @@ public class QuestionPaperDAO {
         try {
             conn = DatabaseConnection.getConnection();
 
-            String sql = "SELECT * FROM question_papers ORDER BY created_at DESC LIMIT 1";
+            String sql = "SELECT qp.*, s.name as school_name, et.is_mock_exam " +
+                         "FROM question_papers qp " +
+                         "JOIN schools s ON qp.school_id = s.id " +
+                         "JOIN exam_types et ON qp.exam_type_id = et.id";
+            boolean hasWhere = false;
+
+            if (isMockExam != null) {
+                sql += " WHERE et.is_mock_exam = ?";
+                hasWhere = true;
+            }
+
+            if (school != null && !school.isEmpty()) {
+                if (hasWhere) {
+                    sql += " AND s.name = ?";
+                } else {
+                    sql += " WHERE s.name = ?";
+                    hasWhere = true;
+                }
+            }
+
+            sql += " ORDER BY qp.created_at DESC LIMIT 1";
+
             ps = conn.prepareStatement(sql);
+
+            int paramIndex = 1;
+            if (isMockExam != null) {
+                ps.setBoolean(paramIndex++, isMockExam);
+                LOGGER.info("Filtering question papers by isMockExam = " + isMockExam);
+            }
+
+            if (school != null && !school.isEmpty()) {
+                ps.setString(paramIndex++, school);
+                LOGGER.info("Filtering question papers by school = " + school);
+            }
+
+            LOGGER.info("Executing SQL: " + sql);
             rs = ps.executeQuery();
 
             if (rs.next()) {
@@ -299,7 +464,7 @@ public class QuestionPaperDAO {
                 paper.setId(rs.getInt("id"));
                 paper.setTitle(rs.getString("title"));
                 paper.setDescription(rs.getString("description"));
-                paper.setSchool(rs.getString("school"));
+                paper.setSchool(rs.getString("school_name"));
                 paper.setMockExam(rs.getBoolean("is_mock_exam"));
 
                 // Get the new fields, handling null values
@@ -324,7 +489,13 @@ public class QuestionPaperDAO {
                     paper.addQuestion(question);
                 }
 
-                LOGGER.info("Loaded most recent question paper with ID: " + paper.getId() + " and " + questions.size() + " questions");
+                LOGGER.info("Loaded most recent question paper with ID: " + paper.getId() + 
+                           ", school: " + paper.getSchool() + 
+                           ", isMockExam: " + paper.isMockExam() + 
+                           ", subjects: " + paper.getSubjects() + 
+                           " and " + questions.size() + " questions");
+            } else {
+                LOGGER.warning("No question paper found for school: " + school + ", isMockExam: " + isMockExam);
             }
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, "Error getting most recent question paper", e);
@@ -350,7 +521,9 @@ public class QuestionPaperDAO {
         try {
             conn = DatabaseConnection.getConnection();
 
-            String sql = "SELECT * FROM questions WHERE question_paper_id = ?";
+            String sql = "SELECT q.*, s.name as subject_name FROM questions q " +
+                         "JOIN subjects s ON q.subject_id = s.id " +
+                         "WHERE q.question_paper_id = ?";
             ps = conn.prepareStatement(sql);
             ps.setInt(1, questionPaperId);
             rs = ps.executeQuery();
@@ -364,12 +537,11 @@ public class QuestionPaperDAO {
                 question.setImagePath(rs.getString("image_path"));
                 question.setHasLatex(rs.getBoolean("has_latex"));
 
-                // Get subject if it exists in the database
+                // Get subject from the joined subjects table
                 try {
-                    question.setSubject(rs.getString("subject"));
+                    question.setSubject(rs.getString("subject_name"));
                 } catch (SQLException e) {
-                    // Column might not exist in older database versions
-                    LOGGER.log(Level.WARNING, "Subject column not found in questions table: " + e.getMessage());
+                    LOGGER.log(Level.WARNING, "Error getting subject name: " + e.getMessage());
                 }
 
                 question.setCreatedAt(rs.getTimestamp("created_at"));
@@ -484,6 +656,276 @@ public class QuestionPaperDAO {
     }
 
     /**
+     * Get subjects for a question paper
+     * 
+     * @param conn The database connection
+     * @param questionPaperId The ID of the question paper
+     * @return Comma-separated list of subjects
+     */
+    private static String getSubjectsForPaper(Connection conn, int questionPaperId) throws SQLException {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        StringBuilder subjects = new StringBuilder();
+
+        try {
+            String sql = "SELECT DISTINCT s.name " +
+                         "FROM subjects s " +
+                         "JOIN questions q ON s.id = q.subject_id " +
+                         "WHERE q.question_paper_id = ? " +
+                         "ORDER BY s.name";
+            ps = conn.prepareStatement(sql);
+            ps.setInt(1, questionPaperId);
+            rs = ps.executeQuery();
+
+            boolean first = true;
+            while (rs.next()) {
+                if (!first) {
+                    subjects.append(", ");
+                }
+                subjects.append(rs.getString("name"));
+                first = false;
+            }
+        } finally {
+            DatabaseConnection.closeResources(ps, rs);
+        }
+
+        return subjects.toString();
+    }
+
+    /**
+     * Get questions per subject for a question paper
+     * 
+     * @param conn The database connection
+     * @param questionPaperId The ID of the question paper
+     * @return Comma-separated list of question counts per subject
+     */
+    private static String getQuestionsPerSubjectForPaper(Connection conn, int questionPaperId) throws SQLException {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        StringBuilder questionsPerSubject = new StringBuilder();
+
+        try {
+            String sql = "SELECT s.name, COUNT(q.id) as question_count " +
+                         "FROM subjects s " +
+                         "JOIN questions q ON s.id = q.subject_id " +
+                         "WHERE q.question_paper_id = ? " +
+                         "GROUP BY s.name " +
+                         "ORDER BY s.name";
+            ps = conn.prepareStatement(sql);
+            ps.setInt(1, questionPaperId);
+            rs = ps.executeQuery();
+
+            boolean first = true;
+            while (rs.next()) {
+                if (!first) {
+                    questionsPerSubject.append(", ");
+                }
+                questionsPerSubject.append(rs.getInt("question_count"));
+                first = false;
+            }
+        } finally {
+            DatabaseConnection.closeResources(ps, rs);
+        }
+
+        return questionsPerSubject.toString();
+    }
+
+    /**
+     * Get the count of questions for a specific school, exam type, and subject
+     * 
+     * @param school The school name
+     * @param isMockExam Whether this is a mock exam or actual exam
+     * @param subject The subject name
+     * @return The count of questions
+     */
+    public static int getQuestionCount(String school, boolean isMockExam, String subject) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        int count = 0;
+
+        try {
+            conn = DatabaseConnection.getConnection();
+
+            String sql = "SELECT COUNT(*) FROM questions q " +
+                         "JOIN question_papers qp ON q.question_paper_id = qp.id " +
+                         "JOIN schools s ON qp.school_id = s.id " +
+                         "JOIN exam_types et ON qp.exam_type_id = et.id " +
+                         "JOIN subjects subj ON q.subject_id = subj.id " +
+                         "WHERE s.name = ? AND et.is_mock_exam = ? AND subj.name = ?";
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, school);
+            ps.setBoolean(2, isMockExam);
+            ps.setString(3, subject);
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error getting question count", e);
+        } finally {
+            DatabaseConnection.closeResources(ps, rs);
+        }
+
+        return count;
+    }
+
+    /**
+     * Get the total count of questions for a specific school and exam type
+     * 
+     * @param school The school name
+     * @param isMockExam Whether this is a mock exam or actual exam
+     * @return The total count of questions
+     */
+    public static int getTotalQuestionCount(String school, boolean isMockExam) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        int count = 0;
+
+        try {
+            conn = DatabaseConnection.getConnection();
+
+            String sql = "SELECT COUNT(*) FROM questions q " +
+                         "JOIN question_papers qp ON q.question_paper_id = qp.id " +
+                         "JOIN schools s ON qp.school_id = s.id " +
+                         "JOIN exam_types et ON qp.exam_type_id = et.id " +
+                         "WHERE s.name = ? AND et.is_mock_exam = ?";
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, school);
+            ps.setBoolean(2, isMockExam);
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error getting total question count", e);
+        } finally {
+            DatabaseConnection.closeResources(ps, rs);
+        }
+
+        return count;
+    }
+
+    /**
+     * Get the maximum number of questions for a specific school, exam type, and subject
+     * 
+     * @param school The school name
+     * @param isMockExam Whether this is a mock exam or actual exam
+     * @param subject The subject name
+     * @return The maximum number of questions
+     */
+    public static int getMaxQuestions(String school, boolean isMockExam, String subject) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        int maxQuestions = 0;
+
+        try {
+            conn = DatabaseConnection.getConnection();
+
+            String sql = "SELECT es.max_questions FROM exam_subjects es " +
+                         "JOIN schools s ON es.school_id = s.id " +
+                         "JOIN exam_types et ON es.exam_type_id = et.id " +
+                         "JOIN subjects subj ON es.subject_id = subj.id " +
+                         "WHERE s.name = ? AND et.is_mock_exam = ? AND subj.name = ?";
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, school);
+            ps.setBoolean(2, isMockExam);
+            ps.setString(3, subject);
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                maxQuestions = rs.getInt("max_questions");
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error getting max questions", e);
+        } finally {
+            DatabaseConnection.closeResources(ps, rs);
+        }
+
+        return maxQuestions;
+    }
+
+    /**
+     * Get the total maximum number of questions for a specific school and exam type
+     * 
+     * @param school The school name
+     * @param isMockExam Whether this is a mock exam or actual exam
+     * @return The total maximum number of questions
+     */
+    public static int getTotalMaxQuestions(String school, boolean isMockExam) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        int totalMaxQuestions = 0;
+
+        try {
+            conn = DatabaseConnection.getConnection();
+
+            String sql = "SELECT SUM(es.max_questions) as total_max FROM exam_subjects es " +
+                         "JOIN schools s ON es.school_id = s.id " +
+                         "JOIN exam_types et ON es.exam_type_id = et.id " +
+                         "WHERE s.name = ? AND et.is_mock_exam = ?";
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, school);
+            ps.setBoolean(2, isMockExam);
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                totalMaxQuestions = rs.getInt("total_max");
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error getting total max questions", e);
+        } finally {
+            DatabaseConnection.closeResources(ps, rs);
+        }
+
+        return totalMaxQuestions;
+    }
+
+    /**
+     * Get all subjects for a specific school and exam type
+     * 
+     * @param school The school name
+     * @param isMockExam Whether this is a mock exam or actual exam
+     * @return List of subjects
+     */
+    public static List<String> getSubjectsForSchool(String school, boolean isMockExam) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        List<String> subjects = new ArrayList<>();
+
+        try {
+            conn = DatabaseConnection.getConnection();
+
+            String sql = "SELECT subj.name FROM exam_subjects es " +
+                         "JOIN schools s ON es.school_id = s.id " +
+                         "JOIN exam_types et ON es.exam_type_id = et.id " +
+                         "JOIN subjects subj ON es.subject_id = subj.id " +
+                         "WHERE s.name = ? AND et.is_mock_exam = ? " +
+                         "ORDER BY subj.name";
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, school);
+            ps.setBoolean(2, isMockExam);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                subjects.add(rs.getString("name"));
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error getting subjects for school", e);
+        } finally {
+            DatabaseConnection.closeResources(ps, rs);
+        }
+
+        return subjects;
+    }
+
+    /**
      * Initialize the database schema for question papers
      * 
      * @return true if initialization was successful, false otherwise
@@ -496,7 +938,7 @@ public class QuestionPaperDAO {
         try {
             conn = DatabaseConnection.getConnection();
 
-            // Load SQL script from resources
+            // Load SQL script from resources to recreate the tables
             java.io.InputStream inputStream = QuestionPaperDAO.class.getResourceAsStream("/database/question_paper.sql");
 
             if (inputStream == null) {
@@ -511,7 +953,7 @@ public class QuestionPaperDAO {
             // Split the SQL script on semicolons
             String[] statements = sql.split(";");
 
-            // Execute each statement
+            // Execute each statement to recreate the tables
             for (String statement : statements) {
                 if (!statement.trim().isEmpty()) {
                     try {
@@ -520,133 +962,57 @@ public class QuestionPaperDAO {
                         DatabaseConnection.closeResources(ps, null);
                         ps = null;
                     } catch (SQLException e) {
-                        // Log but continue with remaining statements
-                        LOGGER.log(Level.WARNING, "Error executing SQL statement: " + e.getMessage(), e);
+                        // Check if it's a duplicate key error (which is expected when rerunning the script)
+                        if (e.getMessage().contains("Duplicate key name")) {
+                            // This is expected when indexes already exist, just log as info
+                            LOGGER.log(Level.INFO, "Index already exists: " + e.getMessage());
+                        } else {
+                            // Log other errors as warnings but continue with remaining statements
+                            LOGGER.log(Level.WARNING, "Error executing SQL statement: " + e.getMessage(), e);
+                        }
                     }
                 }
             }
 
-            // Check if the question_papers table has the required columns
-            // If not, add them
+            LOGGER.info("Question paper schema initialized successfully");
+
+            // Load question paper data from question-paper-data.sql
+            // This only contains the 8 question paper records (4 schools x 2 exam types)
             try {
-                // Check if total_questions column exists
-                String checkColumnSql = "SELECT * FROM information_schema.columns WHERE table_schema = DATABASE() AND table_name = 'question_papers' AND column_name = 'total_questions'";
-                ps = conn.prepareStatement(checkColumnSql);
-                rs = ps.executeQuery();
+                // Load SQL script from resources
+                java.io.InputStream sampleDataStream = QuestionPaperDAO.class.getResourceAsStream("/database/question-paper-data.sql");
 
-                if (!rs.next()) {
-                    // Column doesn't exist, add it
-                    LOGGER.info("Adding missing total_questions column to question_papers table");
-                    DatabaseConnection.closeResources(ps, rs);
-                    ps = null;
-                    rs = null;
+                if (sampleDataStream == null) {
+                    LOGGER.warning("Could not find question-paper-data.sql script in resources");
+                } else {
+                    // Read the SQL script
+                    String sampleDataSql = new java.io.BufferedReader(new java.io.InputStreamReader(sampleDataStream))
+                            .lines().collect(java.util.stream.Collectors.joining("\n"));
 
-                    String alterTableSql = "ALTER TABLE question_papers ADD COLUMN total_questions INT";
-                    ps = conn.prepareStatement(alterTableSql);
-                    ps.execute();
-                    DatabaseConnection.closeResources(ps, null);
-                    ps = null;
+                    // Split the SQL script on semicolons
+                    String[] sampleDataStatements = sampleDataSql.split(";");
+
+                    // Execute each statement to insert the 8 question paper records
+                    for (String statement : sampleDataStatements) {
+                        if (!statement.trim().isEmpty()) {
+                            try {
+                                ps = conn.prepareStatement(statement);
+                                ps.execute();
+                                DatabaseConnection.closeResources(ps, null);
+                                ps = null;
+                            } catch (SQLException e) {
+                                // Log errors but continue with remaining statements
+                                LOGGER.log(Level.WARNING, "Error executing question paper data SQL statement: " + e.getMessage(), e);
+                            }
+                        }
+                    }
+
+                    LOGGER.info("Question paper data initialized successfully (8 question papers for 4 schools x 2 exam types)");
                 }
-
-                // Check if subjects column exists
-                checkColumnSql = "SELECT * FROM information_schema.columns WHERE table_schema = DATABASE() AND table_name = 'question_papers' AND column_name = 'subjects'";
-                ps = conn.prepareStatement(checkColumnSql);
-                rs = ps.executeQuery();
-
-                if (!rs.next()) {
-                    // Column doesn't exist, add it
-                    LOGGER.info("Adding missing subjects column to question_papers table");
-                    DatabaseConnection.closeResources(ps, rs);
-                    ps = null;
-                    rs = null;
-
-                    String alterTableSql = "ALTER TABLE question_papers ADD COLUMN subjects TEXT";
-                    ps = conn.prepareStatement(alterTableSql);
-                    ps.execute();
-                    DatabaseConnection.closeResources(ps, null);
-                    ps = null;
-                }
-
-                // Check if questions_per_subject column exists
-                checkColumnSql = "SELECT * FROM information_schema.columns WHERE table_schema = DATABASE() AND table_name = 'question_papers' AND column_name = 'questions_per_subject'";
-                ps = conn.prepareStatement(checkColumnSql);
-                rs = ps.executeQuery();
-
-                if (!rs.next()) {
-                    // Column doesn't exist, add it
-                    LOGGER.info("Adding missing questions_per_subject column to question_papers table");
-                    DatabaseConnection.closeResources(ps, rs);
-                    ps = null;
-                    rs = null;
-
-                    String alterTableSql = "ALTER TABLE question_papers ADD COLUMN questions_per_subject TEXT";
-                    ps = conn.prepareStatement(alterTableSql);
-                    ps.execute();
-                    DatabaseConnection.closeResources(ps, null);
-                    ps = null;
-                }
-
-                // Check if time_limit_minutes column exists
-                checkColumnSql = "SELECT * FROM information_schema.columns WHERE table_schema = DATABASE() AND table_name = 'question_papers' AND column_name = 'time_limit_minutes'";
-                ps = conn.prepareStatement(checkColumnSql);
-                rs = ps.executeQuery();
-
-                if (!rs.next()) {
-                    // Column doesn't exist, add it
-                    LOGGER.info("Adding missing time_limit_minutes column to question_papers table");
-                    DatabaseConnection.closeResources(ps, rs);
-                    ps = null;
-                    rs = null;
-
-                    String alterTableSql = "ALTER TABLE question_papers ADD COLUMN time_limit_minutes INT";
-                    ps = conn.prepareStatement(alterTableSql);
-                    ps.execute();
-                    DatabaseConnection.closeResources(ps, null);
-                    ps = null;
-                }
-
-                // Check if total_marks column exists
-                checkColumnSql = "SELECT * FROM information_schema.columns WHERE table_schema = DATABASE() AND table_name = 'question_papers' AND column_name = 'total_marks'";
-                ps = conn.prepareStatement(checkColumnSql);
-                rs = ps.executeQuery();
-
-                if (!rs.next()) {
-                    // Column doesn't exist, add it
-                    LOGGER.info("Adding missing total_marks column to question_papers table");
-                    DatabaseConnection.closeResources(ps, rs);
-                    ps = null;
-                    rs = null;
-
-                    String alterTableSql = "ALTER TABLE question_papers ADD COLUMN total_marks INT";
-                    ps = conn.prepareStatement(alterTableSql);
-                    ps.execute();
-                    DatabaseConnection.closeResources(ps, null);
-                    ps = null;
-                }
-
-                // Check if subject column exists in questions table
-                checkColumnSql = "SELECT * FROM information_schema.columns WHERE table_schema = DATABASE() AND table_name = 'questions' AND column_name = 'subject'";
-                ps = conn.prepareStatement(checkColumnSql);
-                rs = ps.executeQuery();
-
-                if (!rs.next()) {
-                    // Column doesn't exist, add it
-                    LOGGER.info("Adding missing subject column to questions table");
-                    DatabaseConnection.closeResources(ps, rs);
-                    ps = null;
-                    rs = null;
-
-                    String alterTableSql = "ALTER TABLE questions ADD COLUMN subject VARCHAR(255)";
-                    ps = conn.prepareStatement(alterTableSql);
-                    ps.execute();
-                    DatabaseConnection.closeResources(ps, null);
-                    ps = null;
-                }
-            } catch (SQLException e) {
-                LOGGER.log(Level.WARNING, "Error checking or adding columns to tables: " + e.getMessage(), e);
+            } catch (Exception e) {
+                LOGGER.log(Level.WARNING, "Error initializing question paper data", e);
             }
 
-            LOGGER.info("Question paper schema initialized successfully");
             return true;
 
         } catch (Exception e) {
