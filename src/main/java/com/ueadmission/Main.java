@@ -27,8 +27,6 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-
-
         try {
             // Initialize database schema and data
             try {
@@ -88,9 +86,11 @@ public class Main extends Application {
             NavigationUtil.setMainStage(primaryStage);
 
             // Configure the stage
-            primaryStage.setMaximized(true);
-            primaryStage.setTitle("UeAdmission - Home");
+            primaryStage.setTitle("UIU e-Admission Portal");
             primaryStage.setScene(scene);
+            primaryStage.setMinWidth(1024);
+            primaryStage.setMinHeight(768);
+            primaryStage.setMaximized(true);
 
             // Initialize notification center before showing the stage
             MFXNotifications.initialize(primaryStage);
@@ -169,51 +169,121 @@ public class Main extends Application {
             // Show the stage
             primaryStage.show();
 
-            // Add window close handler to ensure proper logout when window is closed
+            // Set up close request handler with confirmation dialog
             primaryStage.setOnCloseRequest(event -> {
-                LOGGER.info("Application closing, logging out user if authenticated");
-                AuthStateManager authStateManager = AuthStateManager.getInstance();
-                if (authStateManager.isAuthenticated() && authStateManager.getState().getUser() != null) {
-                    int userId = authStateManager.getState().getUser().getId();
-
-                    // Close all chat windows before logout
-                    try {
-                        com.ueadmission.components.FloatingChatIcon.closeAllChatWindows();
-                        LOGGER.info("Closed all chat windows on application close");
-                    } catch (Exception e) {
-                        LOGGER.log(Level.WARNING, "Error closing chat windows", e);
-                    }
-
-                    com.ueadmission.auth.UserDAO.logoutUser(userId);
-                    LOGGER.info("Logged out user ID: " + userId + " on application close");
-                }
+                event.consume(); // Prevent default close operation
+                handleApplicationExit(primaryStage);
             });
 
-            LOGGER.info("Main window shown successfully");
+            LOGGER.info("Application started successfully");
 
-        } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Failed to load FXML: " + e.getMessage(), e);
-            e.printStackTrace();
-
-            // Show error alert
-            Alert alert = new Alert(Alert.AlertType.ERROR,
-                    "Failed to load application UI: " + e.getMessage(),
-                    ButtonType.OK);
-            alert.setTitle("Application Error");
-            alert.setHeaderText("Failed to Start Application");
-            alert.showAndWait();
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Failed to start application: " + e.getMessage(), e);
-            e.printStackTrace();
-
-            // Show error alert
-            Alert alert = new Alert(Alert.AlertType.ERROR,
-                    "Application error: " + e.getMessage(),
-                    ButtonType.OK);
-            alert.setTitle("Application Error");
-            alert.setHeaderText("Failed to Start Application");
-            alert.showAndWait();
+            LOGGER.log(Level.SEVERE, "Error starting application", e);
+            showErrorAlert("Application Error", "Failed to start the application", e.getMessage());
         }
+    }
+
+    /**
+     * Handle application exit with confirmation dialog
+     * @param primaryStage The primary stage
+     */
+    private void handleApplicationExit(Stage primaryStage) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Exit Confirmation");
+        alert.setHeaderText("Are you sure you want to exit?");
+        alert.setContentText("Any unsaved changes will be lost.");
+
+        // Add UIU icon to the dialog
+        Stage alertStage = (Stage) alert.getDialogPane().getScene().getWindow();
+        try {
+            alertStage.getIcons().add(new Image(getClass().getResourceAsStream("/com.ueadmission/uiu_logo_update.png")));
+        } catch (Exception e) {
+            LOGGER.log(Level.WARNING, "Failed to set icon for exit dialog", e);
+        }
+
+        // Show the dialog and wait for user response
+        alert.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.OK) {
+                LOGGER.info("Application exit confirmed by user");
+
+                // Perform logout and cleanup
+                try {
+                    // Logout user if authenticated
+                    AuthStateManager authStateManager = AuthStateManager.getInstance();
+                    if (authStateManager.isAuthenticated() && authStateManager.getState().getUser() != null) {
+                        int userId = authStateManager.getState().getUser().getId();
+
+                        // Close all chat windows before logout
+                        try {
+                            com.ueadmission.components.FloatingChatIcon.closeAllChatWindows();
+                            LOGGER.info("Closed all chat windows on application close");
+                        } catch (Exception e) {
+                            LOGGER.log(Level.WARNING, "Error closing chat windows", e);
+                        }
+
+                        com.ueadmission.auth.UserDAO.logoutUser(userId);
+                        LOGGER.info("Logged out user ID: " + userId + " on application close");
+                    }
+
+                    // Perform additional cleanup
+                    cleanup();
+                } catch (Exception e) {
+                    LOGGER.log(Level.WARNING, "Error during application cleanup", e);
+                }
+
+                // Exit the application
+                primaryStage.close();
+                System.exit(0);
+            } else {
+                LOGGER.info("Application exit cancelled by user");
+            }
+        });
+    }
+
+    /**
+     * Perform cleanup operations before application exit
+     */
+    private void cleanup() {
+        LOGGER.info("Performing application cleanup");
+
+        // Stop all servers
+        try {
+            com.ueadmission.server.ServerLauncher.stopAllServers();
+            LOGGER.info("All application servers stopped successfully");
+        } catch (Exception e) {
+            LOGGER.log(Level.WARNING, "Error stopping application servers", e);
+        }
+
+        // Close database connections
+        try {
+            com.ueadmission.db.DatabaseConnection.closeAllConnections();
+            LOGGER.info("All database connections closed successfully");
+        } catch (Exception e) {
+            LOGGER.log(Level.WARNING, "Error closing database connections", e);
+        }
+    }
+
+    /**
+     * Show an error alert dialog
+     * @param title The dialog title
+     * @param header The dialog header text
+     * @param content The dialog content text
+     */
+    private void showErrorAlert(String title, String header, String content) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(header);
+        alert.setContentText(content);
+
+        // Add UIU icon to the dialog
+        Stage alertStage = (Stage) alert.getDialogPane().getScene().getWindow();
+        try {
+            alertStage.getIcons().add(new Image(getClass().getResourceAsStream("/com.ueadmission/uiu_logo_update.png")));
+        } catch (Exception e) {
+            LOGGER.log(Level.WARNING, "Failed to set icon for error dialog", e);
+        }
+
+        alert.showAndWait();
     }
 
     @Override
@@ -248,16 +318,9 @@ public class Main extends Application {
                 }
             }
 
-            // Stop all application servers
-            try {
-                com.ueadmission.server.ServerLauncher.stopAllServers();
-                LOGGER.info("All application servers stopped successfully");
-            } catch (Exception e) {
-                LOGGER.log(Level.WARNING, "Error stopping application servers", e);
-            }
+            // Use the cleanup method to handle server shutdown and database connection closing
+            cleanup();
 
-            // Cleanup resources when application closes
-            com.ueadmission.db.DatabaseConnection.closeConnection();
             LOGGER.info("Application closed, resources cleaned up");
         } catch (Exception e) {
             LOGGER.log(Level.WARNING, "Error during application shutdown", e);

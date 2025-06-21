@@ -164,6 +164,10 @@ public class ExamPortalController {
             LOGGER.log(Level.INFO, "Navigating to mock test screen");
             com.ueadmission.navigation.NavigationUtil.navigateToMockTest(event);
         } else if (buttonText.equals("Start Exam")) {
+            // Set the selected school in ExamController
+            com.ueadmission.exam.ExamController.setSelectedSchoolStatic(examTitle);
+            LOGGER.log(Level.INFO, "Set selected school for exam: {0}", examTitle);
+
             // Navigate to the actual exam screen for official exams
             LOGGER.log(Level.INFO, "Navigating to exam screen");
             com.ueadmission.navigation.NavigationUtil.navigateToExam(event);

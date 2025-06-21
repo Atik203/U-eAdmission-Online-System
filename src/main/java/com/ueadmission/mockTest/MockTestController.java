@@ -61,6 +61,7 @@ public class MockTestController {
     private int remainingTimeInSeconds;
     private int totalMarks;
     private boolean showingResults = false;
+    private boolean isActualExam = false; // Flag to determine if this is an actual exam
 
     // UI Elements - Navigation
     @FXML private MFXButton homeButton;
@@ -255,17 +256,8 @@ public class MockTestController {
         questions.clear();
 
         try {
-            // Get mock exam question papers for the selected school
-            List<QuestionPaper> papers = QuestionPaperDAO.getAllQuestionPapers();
-            QuestionPaper mockPaper = null;
-
-            // Find a mock exam paper for the selected school
-            for (QuestionPaper paper : papers) {
-                if (paper.getSchool().equals(school) && paper.isMockExam()) {
-                    mockPaper = paper;
-                    break;
-                }
-            }
+            // Get the most recent mock exam question paper for the selected school
+            QuestionPaper mockPaper = QuestionPaperDAO.getMostRecentQuestionPaper(true, school);
 
             // If no mock paper found, show error
             if (mockPaper == null) {
