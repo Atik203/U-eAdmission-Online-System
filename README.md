@@ -149,6 +149,14 @@ https://github.com/user-attachments/assets/e63f30b4-4c4e-4b9c-82a4-31008c1d5175
 
 https://github.com/user-attachments/assets/ac55f256-61a3-4b03-820f-6400489a019c
 
+### Add Question Demo
+
+https://github.com/user-attachments/assets/36acb46b-3e2d-4a01-951a-cab7703ebc60
+
+### Mock Test and Exam Demo
+
+https://github.com/user-attachments/assets/5b90ad7f-7a0c-407e-a65c-8e994c46ac38
+
 ## 🛠️ Technologies
 
 The U-eAdmission Online System is built using the following technologies:
