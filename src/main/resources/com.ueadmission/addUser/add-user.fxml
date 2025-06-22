@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import io.github.palexdev.materialfx.controls.MFXButton?>
+<?import io.github.palexdev.materialfx.controls.MFXScrollPane?>
+<?import io.github.palexdev.materialfx.controls.MFXTextField?>
+<?import io.github.palexdev.materialfx.controls.MFXPasswordField?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<MFXScrollPane fitToWidth="true" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ueadmission.addUser.AddUserController">
+    <VBox fx:id="mainContainer" spacing="0" stylesheets="@add-user.css">
+        <!-- 🔷 Navbar -->
+        <HBox id="navbar" alignment="CENTER_LEFT" spacing="30" style="-fx-background-color: #FA4506;">
+            <padding>
+                <Insets topRightBottomLeft="15" />
+            </padding>
+            <ImageView fitHeight="40" fitWidth="40">
+                <image>
+                    <Image url="@../uiu_logo_update.png" />
+                </image>
+            </ImageView>
+            <Label id="title" style="-fx-text-fill: white; -fx-font-weight: bold;" text="United International University" />
+            <Region fx:id="spacer" HBox.hgrow="ALWAYS" />
+            <MFXButton id="nav-button" fx:id="homeButton" styleClass="mfx-button" text="Home" />
+            <MFXButton id="nav-button" fx:id="aboutButton" styleClass="mfx-button" text="About" />
+            <MFXButton id="nav-button" fx:id="admissionButton" styleClass="mfx-button" text="Admission" />
+            <MFXButton id="nav-button" fx:id="examPortalButton" styleClass="mfx-button" text="Exam Portal" />
+            <MFXButton id="nav-button" fx:id="contactButton" styleClass="mfx-button" text="Contact" />
+
+            <!-- Profile button container - always visible on authenticated page -->
+            <HBox id="profileButtonContainer" alignment="CENTER">
+                <children>
+                    <com.ueadmission.components.ProfileButton fx:id="profileButton" styleClass="profile-button-container" />
+                </children>
+            </HBox>
+        </HBox>
+
+        <!-- Add User Section -->
+        <VBox alignment="CENTER" styleClass="registration-section">
+            <padding>
+                <Insets top="30" right="0" bottom="40" left="0" />
+            </padding>
+            <StackPane>
+                <VBox id="registration-box" alignment="CENTER" maxWidth="700" spacing="20">
+                    <padding>
+                        <Insets top="30" right="40" bottom="40" left="40" />
+                    </padding>
+
+                    <!-- Add User Header -->
+                    <HBox alignment="CENTER" spacing="15">
+                        <ImageView fitHeight="60" fitWidth="60">
+                            <image>
+                                <Image url="@../uiu_logo_update.png" />
+                            </image>
+                        </ImageView>
+                        <Label id="registration-title" text="Add New Admin User" />
+                    </HBox>
+
+                    <Label id="registration-subtitle" text="Fill in the details to create a new admin user" />
+
+                    <!-- Error Message -->
+                    <Label fx:id="errorLabel" styleClass="error-label" text="Please fill all required fields!" visible="false" />
+
+                    <!-- Success Message -->
+                    <Label fx:id="successLabel" styleClass="success-label" text="User added successfully!" visible="false" />
+
+                    <!-- Add User Form -->
+                    <VBox spacing="25">
+                        <!-- Personal Information Section -->
+                        <VBox styleClass="form-section">
+                            <Label styleClass="form-section-title" text="Personal Information" />
+                            <GridPane hgap="20" vgap="15">
+                                <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                                    <Label text="First Name *" styleClass="field-label" />
+                                    <MFXTextField fx:id="firstNameField" styleClass="form-field-small" />
+                                </VBox>
+                                <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                                    <Label text="Last Name *" styleClass="field-label" />
+                                    <MFXTextField fx:id="lastNameField" styleClass="form-field-small" />
+                                </VBox>
+                                <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                                    <Label text="Email Address *" styleClass="field-label" />
+                                    <MFXTextField fx:id="emailField" styleClass="form-field" />
+                                </VBox>
+                                <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                    <Label text="Phone Number *" styleClass="field-label" />
+                                    <MFXTextField fx:id="phoneField" styleClass="form-field-small" />
+                                </VBox>
+                            </GridPane>
+                        </VBox>
+
+                        <Separator />
+
+                        <!-- Address Section -->
+                        <VBox styleClass="form-section">
+                            <Label styleClass="form-section-title" text="Address Information" />
+                            <GridPane hgap="20" vgap="15">
+                                <VBox spacing="5" GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="0">
+                                    <Label text="Street Address *" styleClass="field-label" />
+                                    <MFXTextField fx:id="addressField" prefWidth="500" styleClass="form-field" />
+                                </VBox>
+                                <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                                    <Label text="City *" styleClass="field-label" />
+                                    <MFXTextField fx:id="cityField" styleClass="form-field-small" />
+                                </VBox>
+                                <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                    <Label text="Country" styleClass="field-label" />
+                                    <Label text="Bangladesh" styleClass="country-value" />
+                                </VBox>
+                            </GridPane>
+                        </VBox>
+
+                        <Separator />
+
+                        <!-- Security Section -->
+                        <VBox styleClass="form-section">
+                            <Label styleClass="form-section-title" text="Security" />
+                            <GridPane hgap="20" vgap="15">
+                                <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                                    <Label text="Password *" styleClass="field-label" />
+                                    <MFXPasswordField fx:id="passwordField" styleClass="form-field" />
+                                </VBox>
+                                <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                                    <Label text="Confirm Password *" styleClass="field-label" />
+                                    <MFXPasswordField fx:id="confirmPasswordField" styleClass="form-field" />
+                                </VBox>
+                            </GridPane>
+                        </VBox>
+
+                        <MFXButton fx:id="addUserButton" buttonType="RAISED" onAction="#handleAddUser" styleClass="mfx-button-primary" text="Create Admin User" prefWidth="500" prefHeight="45" />
+                    </VBox>
+                </VBox>
+            </StackPane>
+        </VBox>
+
+        <!-- 🔚 Footer -->
+        <VBox id="footer" alignment="CENTER" spacing="30" style="-fx-background-color: #222222;">
+            <padding>
+                <Insets top="50" right="20" bottom="30" left="20" />
+            </padding>
+            <HBox alignment="CENTER" spacing="60">
+                <VBox spacing="15" alignment="CENTER_LEFT" maxWidth="300">
+                    <ImageView fitHeight="60" fitWidth="60">
+                        <image>
+                            <Image url="@../uiu_logo_update.png" />
+                        </image>
+                    </ImageView>
+                    <Label styleClass="footer-text" text="UIU is committed to providing quality education and preparing students for the global challenges through innovative teaching methods and research." wrapText="true" />
+                </VBox>
+                <VBox spacing="15" alignment="CENTER_LEFT">
+                    <Label styleClass="footer-title" text="Quick Links" />
+                    <Label styleClass="footer-link" text="Home" />
+                    <Label styleClass="footer-link" text="About UIU" />
+                    <Label styleClass="footer-link" text="Apply Now" />
+                    <Label styleClass="footer-link" text="Academic Programs" />
+                </VBox>
+                <VBox spacing="15" alignment="CENTER_LEFT">
+                    <Label styleClass="footer-title" text="Resources" />
+                    <Label styleClass="footer-link" text="Student Portal" />
+                    <Label styleClass="footer-link" text="Exam Portal" />
+                    <Label styleClass="footer-link" text="FAQ" />
+                    <Label styleClass="footer-link" text="Help Center" />
+                </VBox>
+                <VBox spacing="15" alignment="CENTER_LEFT">
+                    <Label styleClass="footer-title" text="Social Media" />
+                    <Label styleClass="footer-link" text="Facebook" />
+                    <Label styleClass="footer-link" text="Twitter" />
+                    <Label styleClass="footer-link" text="LinkedIn" />
+                    <Label styleClass="footer-link" text="Instagram" />
+                </VBox>
+            </HBox>
+            <HBox alignment="CENTER" spacing="10">
+                <Label styleClass="copyright" text="© 2025 United International University. All rights reserved." />
+            </HBox>
+            <Label styleClass="developer" text="Developed by PhantomDevs" style="-fx-text-fill: #FA4506;" />
+        </VBox>
+    </VBox>
+</MFXScrollPane>
