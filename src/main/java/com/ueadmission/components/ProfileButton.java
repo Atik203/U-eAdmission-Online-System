@@ -326,6 +326,8 @@ public class ProfileButton extends HBox {
                     com.ueadmission.navigation.NavigationUtil.navigateToManageStudent(event);
                 } else if (screen.equals("manageuser")) {
                     com.ueadmission.navigation.NavigationUtil.navigateToManageUser(event);
+                } else if (screen.equals("adduser")) {
+                    com.ueadmission.navigation.NavigationUtil.navigateToAddUser(event);
                 } else if (screen.equals("addquestion")) {
                     com.ueadmission.navigation.NavigationUtil.navigateToQuestionPaper(event);
                 } else {
