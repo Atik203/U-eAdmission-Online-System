@@ -444,17 +444,16 @@ public class MockTestController {
             col2.setPercentWidth(50);
             gridPane.getColumnConstraints().addAll(col1, col2);
 
-            // Calculate how many questions should go in each column
+            // Get total questions for this subject
             int totalQuestions = subjectQuestions.size();
-            int questionsPerColumn = (totalQuestions + 1) / 2; // Ceiling division to ensure all questions fit
 
-            // Add questions to the grid
+            // Add questions to the grid in alternating left-right pattern
             for (int i = 0; i < totalQuestions; i++) {
                 Question question = subjectQuestions.get(i);
 
-                // Determine column and row
-                int column = i < questionsPerColumn ? 0 : 1;
-                int row = i < questionsPerColumn ? i : i - questionsPerColumn;
+                // Determine column (0 for left/even, 1 for right/odd) and row
+                int column = i % 2; // Alternates between 0 and 1
+                int row = i / 2;    // Integer division gives the row number
 
                 // Create and add the question WebView with sequential numbering
                 WebView webView = createQuestionWebView(question, showingResults, questionCounter++);

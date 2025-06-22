@@ -562,6 +562,63 @@ public class QuestionPaperDAO {
     }
 
     /**
+     * Get the 3 most recently added questions for a question paper
+     * 
+     * @param questionPaperId The ID of the question paper
+     * @return List of the 3 most recently added questions
+     */
+    public static List<Question> getRecentQuestionsForPaper(int questionPaperId) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        List<Question> questions = new ArrayList<>();
+
+        try {
+            conn = DatabaseConnection.getConnection();
+
+            String sql = "SELECT q.*, s.name as subject_name FROM questions q " +
+                         "JOIN subjects s ON q.subject_id = s.id " +
+                         "WHERE q.question_paper_id = ? " +
+                         "ORDER BY q.created_at ASC " +
+                         "LIMIT 3";
+            ps = conn.prepareStatement(sql);
+            ps.setInt(1, questionPaperId);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Question question = new Question();
+                question.setId(rs.getInt("id"));
+                question.setQuestionPaperId(rs.getInt("question_paper_id"));
+                question.setQuestionText(rs.getString("question_text"));
+                question.setHasImage(rs.getBoolean("has_image"));
+                question.setImagePath(rs.getString("image_path"));
+                question.setHasLatex(rs.getBoolean("has_latex"));
+
+                // Get subject from the joined subjects table
+                try {
+                    question.setSubject(rs.getString("subject_name"));
+                } catch (SQLException e) {
+                    LOGGER.log(Level.WARNING, "Error getting subject name: " + e.getMessage());
+                }
+
+                question.setCreatedAt(rs.getTimestamp("created_at"));
+                question.setUpdatedAt(rs.getTimestamp("updated_at"));
+
+                // Get options for this question
+                question.setOptions(getOptionsForQuestion(question.getId()));
+
+                questions.add(question);
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error getting recent questions for paper", e);
+        } finally {
+            DatabaseConnection.closeResources(ps, rs);
+        }
+
+        return questions;
+    }
+
+    /**
      * Get options for a question
      * 
      * @param questionId The ID of the question

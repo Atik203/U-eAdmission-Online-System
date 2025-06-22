@@ -106,8 +106,8 @@
   -fx-background-radius: 6;
   -fx-effect: dropshadow(gaussian, -shadow-color, 5, 0, 0, 1);
   -fx-min-height: 200;
-  -fx-pref-width: 400;
-  -fx-max-width: 450;
+  -fx-pref-width: 500;
+  -fx-max-width: 500;
 }
 
 /* Marks Container Styling */
