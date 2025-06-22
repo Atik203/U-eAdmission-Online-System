@@ -249,15 +249,10 @@ public class ProfileButton extends HBox {
                 resultMenuItem.setStyle("-fx-text-fill: #2E3B55; -fx-padding: 8 15;");
                 resultMenuItem.setOnAction(e -> navigateTo("result"));
 
-                MenuItem examScheduleMenuItem = new MenuItem("Exam Schedule");
-                examScheduleMenuItem.setStyle("-fx-text-fill: #2E3B55; -fx-padding: 8 15;");
-                examScheduleMenuItem.setOnAction(e -> navigateTo("examschedule"));
-
                 profileMenu.getItems().addAll(
                     profileMenuItem,
                     applicationMenuItem,
-                    resultMenuItem,
-                    examScheduleMenuItem
+                    resultMenuItem
                 );
             } else if (normalizedRole.equals("admin")) {
                 System.out.println("Building admin menu items");
@@ -270,13 +265,9 @@ public class ProfileButton extends HBox {
                 manageUserMenuItem.setStyle("-fx-text-fill: #2E3B55; -fx-padding: 8 15;");
                 manageUserMenuItem.setOnAction(e -> navigateTo("manageuser"));
 
-                MenuItem manageAdminMenuItem = new MenuItem("Manage User (Admin)");
-                manageAdminMenuItem.setStyle("-fx-text-fill: #2E3B55; -fx-padding: 8 15;");
-                manageAdminMenuItem.setOnAction(e -> navigateTo("manageadmin"));
-
-                MenuItem examScheduleMenuItem = new MenuItem("Set Exam Schedule");
-                examScheduleMenuItem.setStyle("-fx-text-fill: #2E3B55; -fx-padding: 8 15;");
-                examScheduleMenuItem.setOnAction(e -> navigateTo("setexamschedule"));
+                MenuItem addUserMenuItem = new MenuItem("Add User");
+                addUserMenuItem.setStyle("-fx-text-fill: #2E3B55; -fx-padding: 8 15;");
+                addUserMenuItem.setOnAction(e -> navigateTo("adduser"));
 
                 MenuItem publishResultMenuItem = new MenuItem("Publish Result");
                 publishResultMenuItem.setStyle("-fx-text-fill: #2E3B55; -fx-padding: 8 15;");
@@ -295,8 +286,7 @@ public class ProfileButton extends HBox {
                     profileMenuItem,
                     manageStudentMenuItem,
                     manageUserMenuItem,
-                    manageAdminMenuItem,
-                    examScheduleMenuItem,
+                    addUserMenuItem,
                     publishResultMenuItem,
                     addQuestionMenuItem,
                     monitorExamMenuItem
