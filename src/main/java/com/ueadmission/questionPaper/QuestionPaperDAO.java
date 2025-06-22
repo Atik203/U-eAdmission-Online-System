@@ -1033,6 +1033,50 @@ public class QuestionPaperDAO {
 
             LOGGER.info("Question paper schema initialized successfully");
 
+            // Execute update_question_papers.sql to add new fields
+            try {
+                // Load SQL script from resources
+                java.io.InputStream updateStream = QuestionPaperDAO.class.getResourceAsStream("/database/update_question_papers.sql");
+
+                if (updateStream == null) {
+                    LOGGER.warning("Could not find update_question_papers.sql script in resources");
+                } else {
+                    // Read the SQL script
+                    String updateSql = new java.io.BufferedReader(new java.io.InputStreamReader(updateStream))
+                            .lines().collect(java.util.stream.Collectors.joining("\n"));
+
+                    // Split the SQL script on semicolons
+                    String[] updateStatements = updateSql.split(";");
+
+                    // Execute each statement to update the question_papers table
+                    for (String statement : updateStatements) {
+                        if (!statement.trim().isEmpty()) {
+                            try {
+                                ps = conn.prepareStatement(statement);
+                                ps.execute();
+                                DatabaseConnection.closeResources(ps, null);
+                                ps = null;
+                            } catch (SQLException e) {
+                                // Check if it's a duplicate column or index error (which is expected when rerunning the script)
+                                if (e.getMessage().contains("Duplicate column name") || 
+                                    e.getMessage().contains("Duplicate key name") || 
+                                    e.getMessage().contains("already exists")) {
+                                    // This is expected when columns or indexes already exist, just log as info
+                                    LOGGER.log(Level.INFO, "Column or index already exists: " + e.getMessage());
+                                } else {
+                                    // Log other errors as warnings but continue with remaining statements
+                                    LOGGER.log(Level.WARNING, "Error executing update SQL statement: " + e.getMessage(), e);
+                                }
+                            }
+                        }
+                    }
+
+                    LOGGER.info("Question papers table updated successfully with new fields");
+                }
+            } catch (Exception e) {
+                LOGGER.log(Level.WARNING, "Error updating question papers table", e);
+            }
+
             // Load question paper data from question-paper-data.sql
             // This only contains the 8 question paper records (4 schools x 2 exam types)
             try {
