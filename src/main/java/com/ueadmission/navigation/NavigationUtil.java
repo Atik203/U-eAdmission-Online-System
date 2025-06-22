@@ -352,6 +352,16 @@ public class NavigationUtil {
     }
 
     /**
+     * Navigate to result screen
+     * 
+     * @param event The event that triggered navigation
+     * @return true if navigation was successful, false otherwise
+     */
+    public static boolean navigateToResult(Event event) {
+        return navigateTo(event, "/com.ueadmission/result/result.fxml", "Examination Results - UeAdmission");
+    }
+
+    /**
      * Get the current stage from known references
      * @return The current stage or null if not found
      */

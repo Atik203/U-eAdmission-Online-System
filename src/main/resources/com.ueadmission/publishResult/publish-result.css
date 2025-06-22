@@ -36,8 +36,61 @@
   -fx-background-radius: 8;
   -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 10, 0, 0, 3);
   -fx-alignment: center;
-  -fx-max-width: 800px;
-  -fx-pref-width: 800px;
+  -fx-max-width: 1000px;
+  -fx-pref-width: 1000px;
+}
+
+/* School Panel */
+.school-panel {
+  -fx-background-color: white;
+  -fx-background-radius: 8;
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0, 0, 2);
+  -fx-alignment: center;
+  -fx-min-width: 300px;
+  -fx-max-width: 450px;
+  -fx-pref-width: 400px;
+}
+
+/* School Title */
+.school-title {
+  -fx-font-size: 16px;
+  -fx-font-weight: bold;
+  -fx-text-fill: -secondary-color;
+  -fx-padding: 0 0 10 0;
+  -fx-border-width: 0 0 1 0;
+  -fx-border-color: -border-color;
+  -fx-alignment: center;
+}
+
+/* Analytics Container */
+.analytics-container {
+  -fx-background-color: rgba(0, 0, 0, 0.02);
+  -fx-background-radius: 5;
+  -fx-padding: 10;
+  -fx-border-width: 1;
+  -fx-border-color: -border-color;
+  -fx-border-radius: 5;
+}
+
+/* Analytics Row */
+.analytics-row {
+  -fx-spacing: 10;
+  -fx-alignment: center-left;
+  -fx-padding: 5 0;
+}
+
+/* Analytics Label */
+.analytics-label {
+  -fx-font-size: 14px;
+  -fx-text-fill: -text-dark;
+  -fx-min-width: 150px;
+}
+
+/* Analytics Value */
+.analytics-value {
+  -fx-font-size: 14px;
+  -fx-font-weight: bold;
+  -fx-text-fill: -secondary-color;
 }
 
 /* Section Title */
@@ -79,18 +132,122 @@
   -fx-padding: 15 0 0 0;
 }
 
-/* Publish Button */
-#publishButton {
-  -fx-padding: 10 30;
-  -fx-font-size: 15px;
+/* Global Button Container */
+.global-button-container {
+  -fx-padding: 20 0;
+}
+
+/* Pass Mark Field */
+.pass-mark-field {
+  -fx-font-size: 14px;
+  -fx-text-fill: -text-dark;
+  -fx-alignment: center;
+}
+
+/* Pass Mark Label */
+.pass-mark-label {
+  -fx-font-size: 14px;
+  -fx-text-fill: -text-dark;
+}
+
+/* Status Container */
+.status-container {
+  -fx-padding: 10 0;
+}
+
+/* Status Labels */
+.status-published {
+  -fx-font-size: 14px;
+  -fx-font-weight: bold;
+  -fx-text-fill: #28a745;
+  -fx-background-color: rgba(40, 167, 69, 0.1);
+  -fx-background-radius: 15;
+  -fx-padding: 5 15;
+}
+
+.status-not-published {
+  -fx-font-size: 14px;
+  -fx-font-weight: bold;
+  -fx-text-fill: #dc3545;
+  -fx-background-color: rgba(220, 53, 69, 0.1);
+  -fx-background-radius: 15;
+  -fx-padding: 5 15;
+}
+
+/* Exam Type Buttons */
+.exam-type-button {
+  -fx-background-color: #f8f9fa;
+  -fx-text-fill: -text-dark;
+  -fx-font-size: 14px;
+  -fx-padding: 8 15;
+  -fx-border-radius: 5;
+  -fx-background-radius: 5;
+  -fx-border-color: #dee2e6;
+  -fx-border-width: 1;
+}
+
+.exam-type-button:hover {
+  -fx-background-color: #e9ecef;
+}
+
+.exam-type-button-selected {
+  -fx-background-color: -primary-color;
+  -fx-text-fill: white;
+  -fx-font-size: 14px;
+  -fx-padding: 8 15;
+  -fx-border-radius: 5;
   -fx-background-radius: 5;
 }
 
-/* Clear Button */
-#clearButton {
-  -fx-padding: 10 30;
-  -fx-font-size: 15px;
+.exam-type-button-selected:hover {
+  -fx-background-color: -primary-dark;
+}
+
+/* Publish Button */
+.publish-button {
+  -fx-background-color: -primary-color;
+  -fx-text-fill: white;
+  -fx-font-weight: bold;
+  -fx-font-size: 14px;
+  -fx-padding: 8 20;
+  -fx-border-radius: 5;
   -fx-background-radius: 5;
+}
+
+.publish-button:hover {
+  -fx-background-color: -primary-dark;
+}
+
+/* Publish All Button */
+.publish-all-button {
+  -fx-background-color: -primary-color;
+  -fx-text-fill: white;
+  -fx-font-weight: bold;
+  -fx-font-size: 16px;
+  -fx-padding: 12 30;
+  -fx-border-radius: 5;
+  -fx-background-radius: 5;
+}
+
+.publish-all-button:hover {
+  -fx-background-color: -primary-dark;
+}
+
+/* Refresh Button */
+.refresh-button {
+  -fx-background-color: transparent;
+  -fx-text-fill: -secondary-color;
+  -fx-border-color: -secondary-color;
+  -fx-border-width: 1.5;
+  -fx-font-weight: bold;
+  -fx-font-size: 16px;
+  -fx-padding: 12 30;
+  -fx-border-radius: 5;
+  -fx-background-radius: 5;
+}
+
+.refresh-button:hover {
+  -fx-background-color: rgba(46, 59, 85, 0.05);
 }
 
 /* Loading Spinner */
