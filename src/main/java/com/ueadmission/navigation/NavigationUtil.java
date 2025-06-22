@@ -332,6 +332,16 @@ public class NavigationUtil {
     }
 
     /**
+     * Navigate to add user screen
+     * 
+     * @param event The event that triggered navigation
+     * @return true if navigation was successful, false otherwise
+     */
+    public static boolean navigateToAddUser(Event event) {
+        return navigateTo(event, "/com.ueadmission/addUser/add-user.fxml", "Add User - UeAdmission");
+    }
+
+    /**
      * Get the current stage from known references
      * @return The current stage or null if not found
      */
