@@ -39,7 +39,7 @@
             <MFXButton id="nav-button" fx:id="admissionButton" styleClass="mfx-button" text="Admission" />
             <MFXButton id="nav-button" fx:id="examPortalButton" styleClass="mfx-button" text="Exam Portal" />
             <MFXButton id="nav-button" fx:id="contactButton" styleClass="mfx-button" text="Contact" />
-            
+
             <!-- Profile button container - always visible on profile page -->
             <HBox id="profileButtonContainer" alignment="CENTER">
                 <children>
@@ -53,85 +53,243 @@
             <padding>
                 <Insets top="40" right="20" bottom="30" left="20" />
             </padding>
-            
+
             <Label styleClass="page-title" text="Publish Exam Results" />
             <Label styleClass="page-subtitle" text="Manage and publish examination results" />
         </VBox>
-        
+
         <!-- Publish Result Content Section -->
         <VBox id="publish-result-content" spacing="20">
             <padding>
                 <Insets top="20" right="30" bottom="40" left="30" />
             </padding>
-            
-            <!-- Publish Result Panel -->
-            <VBox id="publish-result-panel" spacing="20" styleClass="content-panel" maxWidth="800" alignment="CENTER">
+
+            <!-- Loading Spinner (Hidden by default) -->
+            <StackPane fx:id="loaderContainer" visible="false" managed="false" styleClass="loader-container">
+                <VBox alignment="CENTER" spacing="15">
+                    <ImageView fitHeight="80" fitWidth="80">
+                        <image>
+                            <Image url="@../loading.gif" />
+                        </image>
+                    </ImageView>
+                    <Label text="Loading data..." styleClass="loader-text" />
+                </VBox>
+            </StackPane>
+
+            <!-- Global Settings Panel -->
+            <VBox id="global-settings-panel" spacing="20" styleClass="content-panel" maxWidth="1000" alignment="CENTER">
                 <padding>
                     <Insets top="25" right="30" bottom="25" left="30" />
                 </padding>
-                
+
                 <!-- Section Title -->
-                <Label text="Publish Examination Results" styleClass="section-title"/>
-                
-                <!-- Loading Spinner (Hidden by default) -->
-                <StackPane fx:id="loaderContainer" visible="false" managed="false" styleClass="loader-container">
-                    <VBox alignment="CENTER" spacing="15">
-                        <ImageView fitHeight="80" fitWidth="80">
-                            <image>
-                                <Image url="@../loading.gif" />
-                            </image>
-                        </ImageView>
-                        <Label text="Loading data..." styleClass="loader-text" />
-                    </VBox>
-                </StackPane>
-                
-                <!-- Result Publication Form -->
-                <GridPane fx:id="resultFormGrid" hgap="20" vgap="15" styleClass="form-grid">
+                <Label text="Global Result Settings" styleClass="section-title"/>
+
+                <!-- Global Settings Form -->
+                <GridPane fx:id="globalSettingsGrid" hgap="20" vgap="15" styleClass="form-grid">
                     <columnConstraints>
                         <ColumnConstraints minWidth="150" prefWidth="180" />
                         <ColumnConstraints hgrow="ALWAYS" />
                     </columnConstraints>
-                    
-                    <!-- Exam Name -->
-                    <Label text="Exam Name:" styleClass="form-label" GridPane.rowIndex="0" GridPane.columnIndex="0" />
-                    <MFXTextField fx:id="examNameField" promptText="Enter exam name" styleClass="form-field" GridPane.rowIndex="0" GridPane.columnIndex="1" />
-                    
-                    <!-- Exam Date -->
-                    <Label text="Exam Date:" styleClass="form-label" GridPane.rowIndex="1" GridPane.columnIndex="0" />
-                    <MFXTextField fx:id="examDateField" promptText="YYYY-MM-DD" styleClass="form-field" GridPane.rowIndex="1" GridPane.columnIndex="1" />
-                    
-                    <!-- Department -->
-                    <Label text="Department:" styleClass="form-label" GridPane.rowIndex="2" GridPane.columnIndex="0" />
-                    <MFXTextField fx:id="departmentField" promptText="Enter department" styleClass="form-field" GridPane.rowIndex="2" GridPane.columnIndex="1" />
-                    
-                    <!-- Semester -->
-                    <Label text="Semester:" styleClass="form-label" GridPane.rowIndex="3" GridPane.columnIndex="0" />
-                    <MFXTextField fx:id="semesterField" promptText="Enter semester" styleClass="form-field" GridPane.rowIndex="3" GridPane.columnIndex="1" />
-                    
-                    <!-- Result File -->
-                    <Label text="Result File:" styleClass="form-label" GridPane.rowIndex="4" GridPane.columnIndex="0" />
-                    <HBox spacing="10" GridPane.rowIndex="4" GridPane.columnIndex="1">
-                        <MFXTextField fx:id="resultFileField" promptText="No file selected" styleClass="form-field" HBox.hgrow="ALWAYS" editable="false" />
-                        <MFXButton fx:id="browseButton" text="Browse" styleClass="mfx-button-small" />
+
+                    <!-- Minimum Pass Mark -->
+                    <Label text="Minimum Pass Mark (%):" styleClass="form-label" GridPane.rowIndex="0" GridPane.columnIndex="0" />
+                    <HBox spacing="10" alignment="CENTER_LEFT" GridPane.rowIndex="0" GridPane.columnIndex="1">
+                        <MFXTextField fx:id="passMarkField" text="40.00" promptText="Enter pass mark percentage" styleClass="form-field" prefWidth="150" />
+                        <MFXButton fx:id="applyPassMarkButton" text="Apply to All Schools" styleClass="mfx-button-small" />
                     </HBox>
-                    
-                    <!-- Publication Date -->
-                    <Label text="Publication Date:" styleClass="form-label" GridPane.rowIndex="5" GridPane.columnIndex="0" />
-                    <MFXTextField fx:id="publicationDateField" promptText="YYYY-MM-DD" styleClass="form-field" GridPane.rowIndex="5" GridPane.columnIndex="1" />
-                    
-                    <!-- Notes -->
-                    <Label text="Notes:" styleClass="form-label" GridPane.rowIndex="6" GridPane.columnIndex="0" />
-                    <MFXTextField fx:id="notesField" promptText="Additional notes (optional)" styleClass="form-field" GridPane.rowIndex="6" GridPane.columnIndex="1" />
+
                 </GridPane>
-                
-                <!-- Action Buttons -->
-                <HBox alignment="CENTER" spacing="15" styleClass="button-container">
-                    <MFXButton fx:id="publishButton" text="Publish Result" styleClass="mfx-button-primary" />
-                    <MFXButton fx:id="clearButton" text="Clear Form" styleClass="mfx-button-outline" />
-                </HBox>
             </VBox>
+
+            <!-- School Results Panels -->
+            <HBox spacing="20" alignment="CENTER">
+                <!-- Engineering & Technology -->
+                <VBox id="engineering-panel" spacing="15" styleClass="school-panel">
+                    <padding>
+                        <Insets top="20" right="20" bottom="20" left="20" />
+                    </padding>
+
+                    <Label text="School of Engineering &amp; Technology" styleClass="school-title" />
+
+                    <!-- Analytics -->
+                    <VBox styleClass="analytics-container" spacing="10">
+                        <HBox styleClass="analytics-row">
+                            <Label text="Total Students:" styleClass="analytics-label" />
+                            <Label fx:id="engTotalStudents" text="0" styleClass="analytics-value" />
+                        </HBox>
+                        <HBox styleClass="analytics-row">
+                            <Label text="Completed Exams:" styleClass="analytics-label" />
+                            <Label fx:id="engCompletedExams" text="0" styleClass="analytics-value" />
+                        </HBox>
+                        <HBox styleClass="analytics-row">
+                            <Label text="Average Score:" styleClass="analytics-label" />
+                            <Label fx:id="engAverageScore" text="0.00" styleClass="analytics-value" />
+                        </HBox>
+                        <HBox styleClass="analytics-row">
+                            <Label text="Pass Rate:" styleClass="analytics-label" />
+                            <Label fx:id="engPassRate" text="0%" styleClass="analytics-value" />
+                        </HBox>
+                    </VBox>
+
+                    <!-- School-specific pass mark -->
+                    <HBox spacing="10" alignment="CENTER">
+                        <Label text="Pass Mark:" styleClass="pass-mark-label" />
+                        <MFXTextField fx:id="engPassMarkField" text="40.00" styleClass="pass-mark-field" prefWidth="80" />
+                        <Label fx:id="engPercentLabel" text="Percent" />
+                    </HBox>
+
+                    <!-- Publication Status -->
+                    <HBox styleClass="status-container" alignment="CENTER">
+                        <Label fx:id="engPublishStatus" text="Not Published" styleClass="status-not-published" />
+                    </HBox>
+
+                    <!-- Publish Button -->
+                    <MFXButton fx:id="engPublishButton" text="Publish Results" styleClass="publish-button" />
+                </VBox>
+
+                <!-- Business & Economics -->
+                <VBox id="business-panel" spacing="15" styleClass="school-panel">
+                    <padding>
+                        <Insets top="20" right="20" bottom="20" left="20" />
+                    </padding>
+
+                    <Label text="School of Business &amp; Economics" styleClass="school-title" />
+
+                    <!-- Analytics -->
+                    <VBox styleClass="analytics-container" spacing="10">
+                        <HBox styleClass="analytics-row">
+                            <Label text="Total Students:" styleClass="analytics-label" />
+                            <Label fx:id="busTotalStudents" text="0" styleClass="analytics-value" />
+                        </HBox>
+                        <HBox styleClass="analytics-row">
+                            <Label text="Completed Exams:" styleClass="analytics-label" />
+                            <Label fx:id="busCompletedExams" text="0" styleClass="analytics-value" />
+                        </HBox>
+                        <HBox styleClass="analytics-row">
+                            <Label text="Average Score:" styleClass="analytics-label" />
+                            <Label fx:id="busAverageScore" text="0.00" styleClass="analytics-value" />
+                        </HBox>
+                        <HBox styleClass="analytics-row">
+                            <Label text="Pass Rate:" styleClass="analytics-label" />
+                            <Label fx:id="busPassRate" text="0%" styleClass="analytics-value" />
+                        </HBox>
+                    </VBox>
+
+                    <!-- School-specific pass mark -->
+                    <HBox spacing="10" alignment="CENTER">
+                        <Label text="Pass Mark:" styleClass="pass-mark-label" />
+                        <MFXTextField fx:id="busPassMarkField" text="40.00" styleClass="pass-mark-field" prefWidth="80" />
+                        <Label fx:id="busPercentLabel" text="Percent" />
+                    </HBox>
+
+                    <!-- Publication Status -->
+                    <HBox styleClass="status-container" alignment="CENTER">
+                        <Label fx:id="busPublishStatus" text="Not Published" styleClass="status-not-published" />
+                    </HBox>
+
+                    <!-- Publish Button -->
+                    <MFXButton fx:id="busPublishButton" text="Publish Results" styleClass="publish-button" />
+                </VBox>
+            </HBox>
+
+            <HBox spacing="20" alignment="CENTER">
+                <!-- Humanities & Social Sciences -->
+                <VBox id="humanities-panel" spacing="15" styleClass="school-panel">
+                    <padding>
+                        <Insets top="20" right="20" bottom="20" left="20" />
+                    </padding>
+
+                    <Label text="School of Humanities &amp; Social Sciences" styleClass="school-title" />
+
+                    <!-- Analytics -->
+                    <VBox styleClass="analytics-container" spacing="10">
+                        <HBox styleClass="analytics-row">
+                            <Label text="Total Students:" styleClass="analytics-label" />
+                            <Label fx:id="humTotalStudents" text="0" styleClass="analytics-value" />
+                        </HBox>
+                        <HBox styleClass="analytics-row">
+                            <Label text="Completed Exams:" styleClass="analytics-label" />
+                            <Label fx:id="humCompletedExams" text="0" styleClass="analytics-value" />
+                        </HBox>
+                        <HBox styleClass="analytics-row">
+                            <Label text="Average Score:" styleClass="analytics-label" />
+                            <Label fx:id="humAverageScore" text="0.00" styleClass="analytics-value" />
+                        </HBox>
+                        <HBox styleClass="analytics-row">
+                            <Label text="Pass Rate:" styleClass="analytics-label" />
+                            <Label fx:id="humPassRate" text="0%" styleClass="analytics-value" />
+                        </HBox>
+                    </VBox>
+
+                    <!-- School-specific pass mark -->
+                    <HBox spacing="10" alignment="CENTER">
+                        <Label text="Pass Mark:" styleClass="pass-mark-label" />
+                        <MFXTextField fx:id="humPassMarkField" text="40.00" styleClass="pass-mark-field" prefWidth="80" />
+                        <Label fx:id="humPercentLabel" text="Percent" />
+                    </HBox>
+
+                    <!-- Publication Status -->
+                    <HBox styleClass="status-container" alignment="CENTER">
+                        <Label fx:id="humPublishStatus" text="Not Published" styleClass="status-not-published" />
+                    </HBox>
+
+                    <!-- Publish Button -->
+                    <MFXButton fx:id="humPublishButton" text="Publish Results" styleClass="publish-button" />
+                </VBox>
+
+                <!-- Life Sciences -->
+                <VBox id="life-sciences-panel" spacing="15" styleClass="school-panel">
+                    <padding>
+                        <Insets top="20" right="20" bottom="20" left="20" />
+                    </padding>
+
+                    <Label text="School of Life Sciences" styleClass="school-title" />
+
+                    <!-- Analytics -->
+                    <VBox styleClass="analytics-container" spacing="10">
+                        <HBox styleClass="analytics-row">
+                            <Label text="Total Students:" styleClass="analytics-label" />
+                            <Label fx:id="lifeTotalStudents" text="0" styleClass="analytics-value" />
+                        </HBox>
+                        <HBox styleClass="analytics-row">
+                            <Label text="Completed Exams:" styleClass="analytics-label" />
+                            <Label fx:id="lifeCompletedExams" text="0" styleClass="analytics-value" />
+                        </HBox>
+                        <HBox styleClass="analytics-row">
+                            <Label text="Average Score:" styleClass="analytics-label" />
+                            <Label fx:id="lifeAverageScore" text="0.00" styleClass="analytics-value" />
+                        </HBox>
+                        <HBox styleClass="analytics-row">
+                            <Label text="Pass Rate:" styleClass="analytics-label" />
+                            <Label fx:id="lifePassRate" text="0%" styleClass="analytics-value" />
+                        </HBox>
+                    </VBox>
+
+                    <!-- School-specific pass mark -->
+                    <HBox spacing="10" alignment="CENTER">
+                        <Label text="Pass Mark:" styleClass="pass-mark-label" />
+                        <MFXTextField fx:id="lifePassMarkField" text="40.00" styleClass="pass-mark-field" prefWidth="80" />
+                        <Label fx:id="lifePercentLabel" text="Percent" />
+                    </HBox>
+
+                    <!-- Publication Status -->
+                    <HBox styleClass="status-container" alignment="CENTER">
+                        <Label fx:id="lifePublishStatus" text="Not Published" styleClass="status-not-published" />
+                    </HBox>
+
+                    <!-- Publish Button -->
+                    <MFXButton fx:id="lifePublishButton" text="Publish Results" styleClass="publish-button" />
+                </VBox>
+            </HBox>
+
+            <!-- Global Action Buttons -->
+            <HBox alignment="CENTER" spacing="20" styleClass="global-button-container">
+                <MFXButton fx:id="publishAllButton" text="Publish All Results" styleClass="publish-all-button" />
+                <MFXButton fx:id="refreshButton" text="Refresh Data" styleClass="refresh-button" />
+            </HBox>
         </VBox>
-        
+
         <!-- Footer -->
         <VBox id="footer" alignment="CENTER" spacing="30" style="-fx-background-color: #222222;">
             <padding>
