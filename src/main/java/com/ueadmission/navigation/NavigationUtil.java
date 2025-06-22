@@ -55,7 +55,21 @@ public class NavigationUtil {
 
         try {
             // Get current stage from event source
-            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            Stage currentStage = null;
+
+            // Check if the source is a Node
+            if (event.getSource() instanceof Node) {
+                currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            } else {
+                // If not a Node, try to get the current stage from other sources
+                currentStage = getCurrentStage();
+
+                if (currentStage == null) {
+                    LOGGER.severe("Cannot navigate: event source is not a Node and could not determine current stage");
+                    return false;
+                }
+            }
+
             return navigateTo(currentStage, fxmlPath, title);
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Failed to navigate: " + e.getMessage(), e);
@@ -359,6 +373,15 @@ public class NavigationUtil {
      */
     public static boolean navigateToResult(Event event) {
         return navigateTo(event, "/com.ueadmission/result/result.fxml", "Examination Results - UeAdmission");
+    }
+
+    /**
+     * Navigate to the Exam Monitoring page
+     * @param event The event that triggered the navigation
+     * @return true if navigation was successful, false otherwise
+     */
+    public static boolean navigateToExamMonitoring(Event event) {
+        return navigateTo(event, "/com.ueadmission/examMonitoring/exam-monitoring.fxml", "Exam Monitoring");
     }
 
     /**

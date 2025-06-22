@@ -6,6 +6,7 @@
     <file url="file://$PROJECT_DIR$/src/main/resources/database/database.sql" dialect="MySQL" />
     <file url="file://$PROJECT_DIR$/src/main/resources/database/question-paper-data.sql" dialect="MySQL" />
     <file url="file://$PROJECT_DIR$/src/main/resources/database/question_paper.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/database/update_exam_sessions.sql" dialect="MySQL" />
     <file url="file://$PROJECT_DIR$/src/main/resources/database/update_question_papers.sql" dialect="MySQL" />
   </component>
 </project>

@@ -1,0 +1,148 @@
+/* Exam Monitoring Page Specific Styles */
+
+/* Import common styles */
+@import "../common.css";
+
+/* Page Header Section */
+#page-header {
+  -fx-background-color: white;
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 10, 0, 0, 2);
+  -fx-background-radius: 0 0 10 10;
+  -fx-alignment: center;
+  -fx-padding: 40 20 30 20;
+}
+
+.page-title {
+  -fx-font-size: 28px;
+  -fx-font-weight: bold;
+  -fx-text-fill: -text-dark;
+}
+
+.page-subtitle {
+  -fx-font-size: 16px;
+  -fx-text-fill: -text-dark;
+  -fx-opacity: 0.7;
+}
+
+/* Page Content Section */
+#page-content {
+  -fx-background-color: -bg-light;
+  -fx-alignment: center;
+}
+
+/* Content Panel */
+.content-panel {
+  -fx-background-color: white;
+  -fx-background-radius: 8;
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 10, 0, 0, 3);
+  -fx-alignment: center;
+  -fx-max-width: 1000px;
+  -fx-pref-width: 1000px;
+}
+
+/* Section Title */
+.section-title {
+  -fx-font-size: 20px;
+  -fx-font-weight: bold;
+  -fx-text-fill: -primary-color;
+  -fx-padding: 0 0 15 0;
+  -fx-border-width: 0 0 2 0;
+  -fx-border-color: -primary-color;
+  -fx-alignment: center;
+}
+
+/* Student Table */
+.student-table {
+  -fx-padding: 10 0;
+  -fx-alignment: center;
+  -fx-pref-width: 900px;
+}
+
+.student-table .table-column {
+  -fx-alignment: center;
+}
+
+.student-table .table-row-cell:selected {
+  -fx-background-color: derive(-primary-color, 80%);
+}
+
+.student-table .table-row-cell:hover {
+  -fx-background-color: derive(-primary-color, 90%);
+}
+
+/* Warning status styles */
+.warning-status-low {
+  -fx-text-fill: #FFA500; /* Orange for low warning */
+}
+
+.warning-status-medium {
+  -fx-text-fill: #FF6600; /* Dark orange for medium warning */
+}
+
+.warning-status-high {
+  -fx-text-fill: #FF0000; /* Red for high warning (cheated) */
+  -fx-font-weight: bold;
+}
+
+/* Button Container */
+.button-container {
+  -fx-padding: 15 0 0 0;
+}
+
+/* Refresh Button */
+#refreshButton {
+  -fx-padding: 10 30;
+  -fx-font-size: 15px;
+  -fx-background-radius: 5;
+}
+
+/* Loading Spinner */
+.spinner {
+  -fx-progress-color: -primary-color;
+  -fx-progress-background-color: rgba(250, 69, 6, 0.2);
+}
+
+.loader-container {
+  -fx-padding: 30;
+  -fx-alignment: center;
+}
+
+.loader-text {
+  -fx-text-fill: -text-dark;
+  -fx-font-size: 14px;
+  -fx-padding: 50 0 0 0;
+}
+
+/* No Data Container */
+.no-data-container {
+  -fx-padding: 30;
+  -fx-alignment: center;
+}
+
+.no-data-text {
+  -fx-text-fill: -text-dark;
+  -fx-font-size: 16px;
+  -fx-font-weight: bold;
+  -fx-opacity: 0.7;
+}
+
+/* Apply animation to the spinner */
+.spinner .arc {
+  -fx-animation-duration: 1.5s;
+}
+
+/* Responsive layout adjustments */
+@media (max-width: 1000px) {
+  #page-content {
+    -fx-padding: 15 15 30 15;
+  }
+
+  #monitoring-info {
+    -fx-padding: 15;
+    -fx-pref-width: 100%;
+  }
+
+  .student-table {
+    -fx-pref-width: 100%;
+  }
+}
