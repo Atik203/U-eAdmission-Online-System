@@ -1,0 +1,132 @@
+/* Publish Result Page Specific Styles */
+
+/* Import common styles */
+@import "../common.css";
+
+/* Publish Result Header Section */
+#publish-result-header {
+  -fx-background-color: white;
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 10, 0, 0, 2);
+  -fx-background-radius: 0 0 10 10;
+  -fx-alignment: center;
+  -fx-padding: 40 20 30 20;
+}
+
+.page-title {
+  -fx-font-size: 28px;
+  -fx-font-weight: bold;
+  -fx-text-fill: -primary-color;
+}
+
+.page-subtitle {
+  -fx-font-size: 16px;
+  -fx-text-fill: -text-dark;
+  -fx-opacity: 0.8;
+}
+
+/* Publish Result Content Section */
+#publish-result-content {
+  -fx-background-color: -bg-light;
+  -fx-alignment: center;
+}
+
+/* Content Panel */
+.content-panel {
+  -fx-background-color: white;
+  -fx-background-radius: 8;
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 10, 0, 0, 3);
+  -fx-alignment: center;
+  -fx-max-width: 800px;
+  -fx-pref-width: 800px;
+}
+
+/* Section Title */
+.section-title {
+  -fx-font-size: 20px;
+  -fx-font-weight: bold;
+  -fx-text-fill: -primary-color;
+  -fx-padding: 0 0 15 0;
+  -fx-border-width: 0 0 2 0;
+  -fx-border-color: -primary-color;
+  -fx-alignment: center;
+}
+
+/* Form Grid */
+.form-grid {
+  -fx-padding: 10 0;
+  -fx-alignment: center;
+  -fx-pref-width: 700px;
+}
+
+/* Form Labels */
+.form-label {
+  -fx-font-size: 15px;
+  -fx-font-weight: bold;
+  -fx-text-fill: -text-dark;
+  -fx-opacity: 0.8;
+  -fx-alignment: center-right;
+}
+
+/* Form Fields */
+.form-field {
+  -fx-font-size: 15px;
+  -fx-text-fill: -text-dark;
+  -fx-padding: 0 0 0 10;
+}
+
+/* Button Container */
+.button-container {
+  -fx-padding: 15 0 0 0;
+}
+
+/* Publish Button */
+#publishButton {
+  -fx-padding: 10 30;
+  -fx-font-size: 15px;
+  -fx-background-radius: 5;
+}
+
+/* Clear Button */
+#clearButton {
+  -fx-padding: 10 30;
+  -fx-font-size: 15px;
+  -fx-background-radius: 5;
+}
+
+/* Loading Spinner */
+.spinner {
+  -fx-progress-color: -primary-color;
+  -fx-progress-background-color: rgba(250, 69, 6, 0.2);
+}
+
+.loader-container {
+  -fx-padding: 30;
+  -fx-alignment: center;
+}
+
+.loader-text {
+  -fx-text-fill: -text-dark;
+  -fx-font-size: 14px;
+  -fx-padding: 50 0 0 0;
+}
+
+/* Apply animation to the spinner */
+.spinner .arc {
+  -fx-animation-duration: 1.5s;
+}
+
+/* Responsive layout adjustments */
+@media (max-width: 800px) {
+  #publish-result-content {
+    -fx-padding: 15 15 30 15;
+  }
+
+  #publish-result-panel {
+    -fx-padding: 15;
+    -fx-pref-width: 100%;
+  }
+
+  .form-grid {
+    -fx-pref-width: 100%;
+  }
+}
