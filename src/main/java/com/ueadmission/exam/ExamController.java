@@ -33,11 +33,14 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
+import javafx.stage.Stage;
 
 /**
  * Controller for the Exam page
@@ -80,6 +83,11 @@ public class ExamController {
     private int remainingTimeInSeconds;
     private int totalMarks;
     private boolean showingResults = false;
+
+    // Anti-cheating feature
+    private int warningCount = 0;
+    private int examSessionId = 0;
+    private static final int MAX_WARNINGS = 3;
 
     @FXML
     public void initialize() {
@@ -144,11 +152,204 @@ public class ExamController {
         // Retrieve questions for the selected school
         retrieveQuestionsForSchool(selectedSchool);
 
+        // Create exam session in database
+        createExamSession();
+
         // Display questions
         displayQuestionsWithWebView();
 
         // Start countdown timer
         startCountdownTimer();
+
+        // Set up anti-cheating features
+        setupAntiCheatingFeatures();
+    }
+
+    /**
+     * Set up anti-cheating features to detect window minimize/resize
+     */
+    private void setupAntiCheatingFeatures() {
+        // Run on JavaFX thread to ensure stage is available
+        Platform.runLater(() -> {
+            try {
+                Scene scene = getScene();
+                if (scene != null && scene.getWindow() != null) {
+                    Stage stage = (Stage) scene.getWindow();
+
+                    // Add listener for iconified property (minimized)
+                    stage.iconifiedProperty().addListener((observable, oldValue, newValue) -> {
+                        if (Boolean.TRUE.equals(newValue)) {
+                            handleCheatingAttempt("Window was minimized");
+                        }
+                    });
+
+                    // Store initial size
+                    final double initialWidth = stage.getWidth();
+                    final double initialHeight = stage.getHeight();
+
+                    // Add listeners for width and height changes
+                    stage.widthProperty().addListener((observable, oldValue, newValue) -> {
+                        if (Math.abs(newValue.doubleValue() - initialWidth) > 20) { // Allow small changes
+                            handleCheatingAttempt("Window width was changed");
+                            // Reset to original size
+                            Platform.runLater(() -> stage.setWidth(initialWidth));
+                        }
+                    });
+
+                    stage.heightProperty().addListener((observable, oldValue, newValue) -> {
+                        if (Math.abs(newValue.doubleValue() - initialHeight) > 20) { // Allow small changes
+                            handleCheatingAttempt("Window height was changed");
+                            // Reset to original size
+                            Platform.runLater(() -> stage.setHeight(initialHeight));
+                        }
+                    });
+
+                    // Prevent resizing
+                    stage.setResizable(false);
+
+                    LOGGER.info("Anti-cheating features set up successfully");
+                } else {
+                    LOGGER.warning("Could not set up anti-cheating features - stage not available");
+                }
+            } catch (Exception e) {
+                LOGGER.log(Level.SEVERE, "Error setting up anti-cheating features", e);
+            }
+        });
+    }
+
+    /**
+     * Handle a cheating attempt by incrementing warning count and showing alert
+     */
+    private void handleCheatingAttempt(String reason) {
+        warningCount++;
+        LOGGER.warning("Cheating attempt detected: " + reason + " - Warning " + warningCount + " of " + MAX_WARNINGS);
+
+        // Ensure exam session exists before updating warning count
+        if (examSessionId <= 0) {
+            // Create exam session if it doesn't exist yet
+            createExamSession();
+        }
+
+        // Update warning count in database
+        updateWarningCountInDatabase();
+
+        if (warningCount <= MAX_WARNINGS) {
+            // Show warning alert
+            Platform.runLater(() -> {
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Warning");
+                alert.setHeaderText("Cheating Attempt Detected");
+                alert.setContentText("You are not allowed to " + reason.toLowerCase() + ". This is warning " + 
+                                    warningCount + " of " + MAX_WARNINGS + ". If you reach " + (MAX_WARNINGS + 1) + 
+                                    " warnings, your exam will be automatically submitted.");
+                alert.showAndWait();
+            });
+        }
+
+        // If max warnings reached, submit exam
+        if (warningCount > MAX_WARNINGS) {
+            Platform.runLater(() -> {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Exam Terminated");
+                alert.setHeaderText("Maximum Warnings Exceeded");
+                alert.setContentText("You have exceeded the maximum number of warnings. Your exam will be submitted automatically.");
+                alert.showAndWait();
+
+                // Submit the exam
+                submitAnswers();
+            });
+        }
+    }
+
+    /**
+     * Create an exam session in the database
+     */
+    private void createExamSession() {
+        // Get current user ID
+        AuthState authState = AuthStateManager.getInstance().getState();
+        if (authState == null || !authState.isAuthenticated() || authState.getUser() == null) {
+            LOGGER.warning("Cannot create exam session - user not authenticated");
+            return;
+        }
+
+        int studentId = authState.getUser().getId();
+
+        // Get question paper ID
+        if (questions == null || questions.isEmpty()) {
+            LOGGER.warning("Cannot create exam session - no questions available");
+            return;
+        }
+
+        // Get the question paper ID from the first question
+        int questionPaperId = -1;
+        try {
+            // Try to get the question paper ID from QuestionPaperDAO
+            QuestionPaper questionPaper = QuestionPaperDAO.getMostRecentQuestionPaper(false, selectedSchool);
+            if (questionPaper != null) {
+                questionPaperId = questionPaper.getId();
+            }
+        } catch (Exception e) {
+            LOGGER.log(Level.WARNING, "Error getting question paper ID", e);
+        }
+
+        if (questionPaperId <= 0) {
+            LOGGER.warning("Cannot create exam session - invalid question paper ID");
+            return;
+        }
+
+        // Create exam session in database
+        try (Connection conn = DatabaseConnection.getConnection()) {
+            String sql = "INSERT INTO exam_sessions (student_id, question_paper_id, start_time, status) VALUES (?, ?, NOW(), 'in_progress')";
+            try (PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+                stmt.setInt(1, studentId);
+                stmt.setInt(2, questionPaperId);
+                int rowsAffected = stmt.executeUpdate();
+
+                if (rowsAffected > 0) {
+                    // Get the generated exam session ID
+                    try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+                        if (generatedKeys.next()) {
+                            examSessionId = generatedKeys.getInt(1);
+                            LOGGER.info("Created exam session with ID " + examSessionId);
+                        } else {
+                            LOGGER.warning("Failed to get exam session ID");
+                        }
+                    }
+                } else {
+                    LOGGER.warning("Failed to create exam session - no rows affected");
+                }
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error creating exam session", e);
+        }
+    }
+
+    /**
+     * Update warning count in the database
+     */
+    private void updateWarningCountInDatabase() {
+        // Only update if we have a valid exam session ID
+        if (examSessionId <= 0) {
+            LOGGER.warning("Cannot update warning count - no valid exam session ID");
+            return;
+        }
+
+        try (Connection conn = DatabaseConnection.getConnection()) {
+            String sql = "UPDATE exam_sessions SET warning_count = ? WHERE id = ?";
+            try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setInt(1, warningCount);
+                stmt.setInt(2, examSessionId);
+                int rowsAffected = stmt.executeUpdate();
+
+                if (rowsAffected > 0) {
+                    LOGGER.info("Updated warning count to " + warningCount + " for exam session " + examSessionId);
+                } else {
+                    LOGGER.warning("Failed to update warning count - no rows affected");
+                }
+            }
+        } catch (SQLException e) {
+            LOGGER.log(Level.SEVERE, "Error updating warning count in database", e);
+        }
     }
 
     /**
