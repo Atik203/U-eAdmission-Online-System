@@ -44,11 +44,71 @@ public class DatabaseInitializer {
             // Initialize chat tables
             initializeChatTables(conn);
 
+            // Execute update scripts
+            executeUpdateScripts(conn);
+
             LOGGER.info("Database schema initialized successfully");
             return true;
         } catch (SQLException e) {
             LOGGER.log(Level.SEVERE, "Failed to initialize database schema", e);
             return false;
+        }
+    }
+
+    /**
+     * Execute update scripts to modify existing tables
+     * @param conn The database connection to use
+     */
+    private static void executeUpdateScripts(Connection conn) {
+        try {
+            // Execute update_exam_sessions.sql script
+            executeScriptFromResource(conn, "/database/update_exam_sessions.sql");
+            LOGGER.info("Executed update_exam_sessions.sql script");
+        } catch (Exception e) {
+            LOGGER.log(Level.WARNING, "Failed to execute update scripts", e);
+        }
+    }
+
+    /**
+     * Execute an SQL script from a resource file
+     * @param conn The database connection to use
+     * @param resourcePath The path to the resource file
+     */
+    private static void executeScriptFromResource(Connection conn, String resourcePath) {
+        try (InputStream is = DatabaseInitializer.class.getResourceAsStream(resourcePath);
+             BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
+
+            if (is == null) {
+                LOGGER.warning("Resource not found: " + resourcePath);
+                return;
+            }
+
+            StringBuilder scriptBuilder = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                // Skip comments and empty lines
+                if (line.trim().isEmpty() || line.trim().startsWith("--") || line.trim().startsWith("#")) {
+                    continue;
+                }
+                scriptBuilder.append(line).append(" ");
+            }
+
+            String script = scriptBuilder.toString();
+            String[] statements = script.split(";");
+
+            for (String statement : statements) {
+                if (statement.trim().isEmpty()) {
+                    continue;
+                }
+
+                try (Statement stmt = conn.createStatement()) {
+                    stmt.execute(statement);
+                }
+            }
+
+            LOGGER.info("Successfully executed script: " + resourcePath);
+        } catch (Exception e) {
+            LOGGER.log(Level.WARNING, "Error executing script: " + resourcePath, e);
         }
     }
 

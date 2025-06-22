@@ -47,6 +47,7 @@ module com.u.eadmission.ueadmission {
     opens com.ueadmission.addUser to javafx.fxml;
     opens com.ueadmission.publishResult to javafx.fxml;
     opens com.ueadmission.result to javafx.fxml;
+    opens com.ueadmission.examMonitoring to javafx.fxml;
 
     exports com.ueadmission;
     exports com.ueadmission.about;
@@ -69,4 +70,5 @@ module com.u.eadmission.ueadmission {
     exports com.ueadmission.addUser;
     exports com.ueadmission.publishResult;
     exports com.ueadmission.result;
+    exports com.ueadmission.examMonitoring;
 }
