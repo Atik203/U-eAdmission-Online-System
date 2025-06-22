@@ -327,4 +327,106 @@ public class MFXNotifications {
         // Log to console
         System.out.println("[PAYMENT_SUCCESS] Transaction ID: " + transactionId + ", Amount: " + amount);
     }
+    /**
+     * Show a custom styled user addition success notification
+     * @param userName The name of the user that was added
+     * @param userEmail The email of the user that was added
+     */
+    public static void showUserAddedSuccess(String userName, String userEmail) {
+        if (notificationPane == null) {
+            System.err.println("Notification center not initialized");
+            return;
+        }
+
+        // Create content with custom styling for user addition success
+        VBox content = new VBox(5);
+        content.setPadding(new javafx.geometry.Insets(15));
+        content.setPrefWidth(300);
+        content.setMaxWidth(300);
+
+        // Style with green background and border
+        String backgroundColor = "-fx-background-color: #4caf50;"; // Green
+        String borderStyle = "-fx-border-width: 0 0 0 4; -fx-border-color: #2e7d32;"; // Darker green
+        String textColor = "-fx-text-fill: white;";
+
+        content.setStyle(backgroundColor + "-fx-background-radius: 8; " + borderStyle + 
+                         "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 3);");
+
+        // Create header with checkmark icon
+        javafx.scene.layout.HBox headerBox = new javafx.scene.layout.HBox(10);
+        headerBox.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+
+        // Create circular background for checkmark
+        javafx.scene.layout.StackPane checkmarkContainer = new javafx.scene.layout.StackPane();
+        checkmarkContainer.setStyle("-fx-background-color: white; -fx-background-radius: 50%; -fx-min-width: 24; -fx-min-height: 24;");
+
+        // Add checkmark symbol
+        Label checkmark = new Label("✓");
+        checkmark.setStyle("-fx-text-fill: #4caf50; -fx-font-weight: bold; -fx-font-size: 14px;");
+        checkmarkContainer.getChildren().add(checkmark);
+
+        Label titleLabel = new Label("User Added Successfully");
+        titleLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14px; " + textColor);
+
+        headerBox.getChildren().addAll(checkmarkContainer, titleLabel);
+
+        // Add user details
+        Label nameLabel = new Label("Name: " + userName);
+        nameLabel.setStyle(textColor + "-fx-font-size: 13px;");
+
+        Label emailLabel = new Label("Email: " + userEmail);
+        emailLabel.setStyle(textColor + "-fx-font-size: 13px;");
+
+        Label roleLabel = new Label("Role: Admin");
+        roleLabel.setStyle(textColor + "-fx-font-size: 13px;");
+
+        content.getChildren().addAll(headerBox, nameLabel, emailLabel, roleLabel);
+
+        // Create notification
+        MFXSimpleNotification notification = new MFXSimpleNotification(content);
+
+        // Show notification by adding it directly to the notification pane
+        Platform.runLater(() -> {
+            // Get the notifications container (first child of notificationPane)
+            if (notificationPane.getChildren().size() > 0 && notificationPane.getChildren().get(0) instanceof VBox) {
+                VBox notificationsContainer = (VBox) notificationPane.getChildren().get(0);
+
+                // Make sure notification pane is visible and on top
+                notificationPane.setVisible(true);
+                notificationPane.toFront();
+
+                // Add the notification
+                notificationsContainer.getChildren().add(notification.getContent());
+                activeNotificationNodes.add(notification.getContent());
+
+                // Add fade-in animation
+                FadeTransition fadeIn = new FadeTransition(Duration.millis(200), notification.getContent());
+                fadeIn.setFromValue(0.0);
+                fadeIn.setToValue(1.0);
+                fadeIn.play();
+
+                // Auto dismiss after 5 seconds with fade-out
+                new Thread(() -> {
+                    try {
+                        Thread.sleep(4800); // Slightly less to account for fade out time
+                        Platform.runLater(() -> {
+                            FadeTransition fadeOut = new FadeTransition(Duration.millis(200), notification.getContent());
+                            fadeOut.setFromValue(1.0);
+                            fadeOut.setToValue(0.0);
+                            fadeOut.setOnFinished(e -> {
+                                notificationsContainer.getChildren().remove(notification.getContent());
+                                activeNotificationNodes.remove(notification.getContent());
+                            });
+                            fadeOut.play();
+                        });
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }).start();
+            }
+        });
+
+        // Log to console
+        System.out.println("[USER_ADDED] Name: " + userName + ", Email: " + userEmail);
+    }
 }
