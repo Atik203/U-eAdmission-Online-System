@@ -982,8 +982,8 @@ public class QuestionPaperController {
                 // Set as current question paper
                 currentQuestionPaper = paper;
 
-                // Load existing questions from the database
-                List<Question> existingQuestions = QuestionPaperDAO.getQuestionsForPaper(paper.getId());
+                // Load existing questions from the database - limit to 3 most recent
+                List<Question> existingQuestions = QuestionPaperDAO.getRecentQuestionsForPaper(paper.getId());
 
                 // Store questions in the appropriate list based on exam type
                 if (isMockExam) {
@@ -1016,7 +1016,7 @@ public class QuestionPaperController {
                 // Only count questions in the current session
                 updateQuestionCountsPerSubject();
 
-                // Reset the question list - only show questions added in current session
+                // Reset the question list - only show 3 most recently added questions
                 updateQuestionList();
 
                 LOGGER.info("Loaded most recent question paper with ID: " + paper.getId() + 
