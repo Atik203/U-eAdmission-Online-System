@@ -1,0 +1,77 @@
+/* Add User Page Specific Styles */
+
+/* Import common styles */
+@import "../common.css";
+
+/* Add User Content Section */
+#content-container {
+  -fx-background-color: -bg-light;
+  -fx-alignment: center;
+  -fx-padding: 40;
+}
+
+/* Registration Section */
+.registration-section {
+  -fx-background-color: -bg-light;
+  -fx-alignment: center;
+}
+
+#registration-box {
+  -fx-background-color: white;
+  -fx-background-radius: 8;
+  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 10, 0, 0, 5);
+}
+
+#registration-title {
+  -fx-font-size: 24px;
+  -fx-font-weight: bold;
+  -fx-text-fill: -primary;
+}
+
+#registration-subtitle {
+  -fx-font-size: 14px;
+  -fx-text-fill: -text-secondary;
+  -fx-padding: 0 0 10 0;
+}
+
+.form-section {
+  -fx-spacing: 15;
+}
+
+.form-section-title {
+  -fx-font-size: 16px;
+  -fx-font-weight: bold;
+  -fx-text-fill: -text-primary;
+}
+
+.field-label {
+  -fx-font-size: 12px;
+  -fx-text-fill: -text-secondary;
+}
+
+.form-field {
+  -fx-pref-width: 300px;
+}
+
+.form-field-small {
+  -fx-pref-width: 200px;
+}
+
+.country-value {
+  -fx-font-size: 14px;
+  -fx-text-fill: -text-primary;
+  -fx-padding: 5 0 0 0;
+}
+
+.error-label {
+  -fx-text-fill: -error;
+  -fx-font-size: 14px;
+  -fx-padding: 5 0;
+}
+
+.success-label {
+  -fx-text-fill: #4caf50;
+  -fx-font-size: 14px;
+  -fx-font-weight: bold;
+  -fx-padding: 5 0;
+}
