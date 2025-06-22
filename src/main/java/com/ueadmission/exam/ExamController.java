@@ -250,18 +250,41 @@ public class ExamController {
     }
 
     /**
-     * Display questions using WebView
+     * Display questions using WebView in a two-column layout
      */
     private void displayQuestionsWithWebView() {
         // Clear existing questions
         questionListContainer.getChildren().clear();
 
-        // Add each question
+        // Create a GridPane for two-column layout
+        javafx.scene.layout.GridPane gridPane = new javafx.scene.layout.GridPane();
+        gridPane.setHgap(20);
+        gridPane.setVgap(20);
+
+        // Set column constraints for equal width columns
+        javafx.scene.layout.ColumnConstraints col1 = new javafx.scene.layout.ColumnConstraints();
+        col1.setPercentWidth(50);
+        javafx.scene.layout.ColumnConstraints col2 = new javafx.scene.layout.ColumnConstraints();
+        col2.setPercentWidth(50);
+        gridPane.getColumnConstraints().addAll(col1, col2);
+
+        // Get total number of questions
+        int totalQuestions = questions.size();
+
+        // Add questions to the grid in alternating left-right pattern
         for (int i = 0; i < questions.size(); i++) {
             Question question = questions.get(i);
             WebView webView = createQuestionWebView(question, false, i + 1);
-            questionListContainer.getChildren().add(webView);
+
+            // Determine column (0 for left/even, 1 for right/odd) and row
+            int column = i % 2; // Alternates between 0 and 1
+            int row = i / 2;    // Integer division gives the row number
+
+            gridPane.add(webView, column, row, 1, 1);
         }
+
+        // Add the GridPane to the question list container
+        questionListContainer.getChildren().add(gridPane);
     }
 
     /**

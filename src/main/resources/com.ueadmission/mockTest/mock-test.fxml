@@ -57,13 +57,13 @@
                 </padding>
 
                 <!-- Mock Test Header -->
-                <VBox maxWidth="1000" alignment="CENTER" spacing="10">
+                <VBox maxWidth="1200" alignment="CENTER" spacing="10">
                     <Label styleClass="section-title" text="Mock Test" />
                     <Label styleClass="section-subtitle" text="Practice for your admission exam" wrapText="true" />
                 </VBox>
 
                 <!-- Mock Test Content -->
-                <VBox maxWidth="1000" alignment="CENTER" spacing="20" styleClass="mock-test-content">
+                <VBox maxWidth="1200" alignment="CENTER" spacing="20" styleClass="mock-test-content">
                     <!-- Exam Information Section -->
                     <VBox fx:id="examInfoSection" spacing="15" alignment="CENTER">
                         <HBox spacing="30" alignment="CENTER">
