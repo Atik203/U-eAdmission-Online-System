@@ -939,13 +939,8 @@ public class ChatController {
                 timeTooltip.setStyle("-fx-font-size: 12px;");
                 timeLabel.setTooltip(timeTooltip);
 
-                // Show unread badge if needed
-                if (user.getUnreadCount() > 0) {
-                    unreadBadge.setText(String.valueOf(Math.min(user.getUnreadCount(), 99))); // Cap at 99
-                    unreadBadgePane.setVisible(true);
-                } else {
-                    unreadBadgePane.setVisible(false);
-                }
+                // Hide unread badge as per requirement
+                unreadBadgePane.setVisible(false);
 
                 setGraphic(container);
             }
