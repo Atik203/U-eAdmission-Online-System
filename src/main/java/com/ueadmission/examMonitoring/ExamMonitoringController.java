@@ -137,13 +137,13 @@ public class ExamMonitoringController implements AuthStateAware {
             @Override
             public TableCell<StudentWarning, Void> call(final TableColumn<StudentWarning, Void> param) {
                 return new TableCell<>() {
-                    private final MFXButton resetButton = new MFXButton("Reset Warnings");
+                    private final MFXButton expellButton = new MFXButton("Expell Student");
 
                     {
-                        resetButton.getStyleClass().add("mfx-button-primary");
-                        resetButton.setOnAction(event -> {
+                        expellButton.getStyleClass().add("mfx-button-primary");
+                        expellButton.setOnAction(event -> {
                             StudentWarning warning = getTableView().getItems().get(getIndex());
-                            resetWarningCount(warning.getStudentId(), warning.getExamSessionId());
+                            expellStudent(warning.getStudentId(), warning.getExamSessionId());
                         });
                     }
 
@@ -153,7 +153,7 @@ public class ExamMonitoringController implements AuthStateAware {
                         if (empty) {
                             setGraphic(null);
                         } else {
-                            setGraphic(resetButton);
+                            setGraphic(expellButton);
                         }
                     }
                 };
@@ -162,27 +162,27 @@ public class ExamMonitoringController implements AuthStateAware {
     }
 
     /**
-     * Reset the warning count for a student.
+     * Expell a student from an exam by deleting their exam session record.
      * @param studentId The student ID.
      * @param examSessionId The exam session ID.
      */
-    private void resetWarningCount(int studentId, int examSessionId) {
+    private void expellStudent(int studentId, int examSessionId) {
         try (Connection conn = DatabaseConnection.getConnection()) {
-            String sql = "UPDATE exam_sessions SET warning_count = 0 WHERE id = ? AND student_id = ?";
+            String sql = "DELETE FROM exam_sessions WHERE id = ? AND student_id = ?";
             try (PreparedStatement stmt = conn.prepareStatement(sql)) {
                 stmt.setInt(1, examSessionId);
                 stmt.setInt(2, studentId);
                 int rowsAffected = stmt.executeUpdate();
 
                 if (rowsAffected > 0) {
-                    MFXNotifications.showSuccess("Success", "Warning count reset successfully");
+                    MFXNotifications.showSuccess("Success", "Student expelled successfully");
                     loadStudentWarnings(); // Refresh the data
                 } else {
-                    MFXNotifications.showError("Error", "Failed to reset warning count");
+                    MFXNotifications.showError("Error", "Failed to expell student");
                 }
             }
         } catch (SQLException e) {
-            LOGGER.log(Level.SEVERE, "Error resetting warning count", e);
+            LOGGER.log(Level.SEVERE, "Error expelling student", e);
             MFXNotifications.showError("Error", "Database error: " + e.getMessage());
         }
     }
