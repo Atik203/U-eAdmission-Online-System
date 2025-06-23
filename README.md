@@ -283,6 +283,31 @@ The U-eAdmission Online System is built using the following technologies:
 - Maven (for dependency management)
 - MySQL Server 8.0 or higher
 
+### Environment Setup
+
+1. Copy the `.env.example` file to a new file named `.env`:
+
+   ```
+   copy .env.example .env
+   ```
+
+2. Edit the `.env` file with your actual configuration values:
+   - Cloudinary credentials (if you're using image uploads)
+   - Database connection details
+   - Application settings
+
+### Database Setup
+
+1. Create a new MySQL database named `uiu_admission_db`
+
+2. Import the database dump file to set up the schema and initial data:
+
+   ```
+   mysql -u your_username -p uiu_admission_db < uiu_admission_db.sql
+   ```
+
+   The `uiu_admission_db.sql` file is included in the repository and contains a complete database dump for easy testing.
+
 ### Steps to Run
 
 1. Clone the repository:
@@ -297,13 +322,15 @@ The U-eAdmission Online System is built using the following technologies:
    cd U-eAdmission-Online-System
    ```
 
-3. Compile the project:
+3. Set up the environment and database as described above
+
+4. Compile the project:
 
    ```
    mvn clean compile
    ```
 
-4. Run the application:
+5. Run the application:
    ```
    mvn javafx:run
    ```
