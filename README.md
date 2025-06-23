@@ -162,13 +162,20 @@ https://github.com/user-attachments/assets/5b90ad7f-7a0c-407e-a65c-8e994c46ac38
 The U-eAdmission Online System is built using the following technologies:
 
 - **Java 21**: Core programming language
-- **JavaFX**: GUI framework for building the desktop application
-- **MySQL**: Database for storing application data, user information, and test questions
+- **JavaFX 21**: GUI framework for building the desktop application (controls, FXML, web, swing, media)
+- **MySQL 8.0**: Database for storing application data, user information, and test questions
 - **JDBC**: Java Database Connectivity for database operations
 - **Maven**: Dependency management and build automation
+- **JUnit 5**: Testing framework for unit tests
+- **MaterialFX 11.17**: Modern UI components for JavaFX
+- **AtlantaFX 2.0.1**: Theme library for JavaFX
+- **ControlsFX 11.2.1**: Additional UI controls for JavaFX
+- **FormsFX 11.6.0**: Framework for creating forms in JavaFX
+- **BootstrapFX 0.4.0**: Bootstrap-like styling for JavaFX
+- **Ikonli 12.3.1**: Icon packs for JavaFX
+- **Cloudinary 2.2.0**: Cloud-based image and video management
+- **Java-dotenv 5.2.2**: Environment variable management
 - **CSS**: Custom styling for the UI components
-- **WebRTC**: Implementation for video meeting functionality
-- **JavaMail API**: Email notification system
 - **Git**: Version control system
 
 ## 🔧 Installation & Setup
@@ -178,6 +185,7 @@ The U-eAdmission Online System is built using the following technologies:
 - Java Development Kit (JDK) 21 or higher
 - JavaFX SDK 21 or higher
 - Maven (for dependency management)
+- MySQL Server 8.0 or higher
 
 ### Steps to Run
 
@@ -204,13 +212,29 @@ The U-eAdmission Online System is built using the following technologies:
    mvn javafx:run
    ```
 
+### Running the Chat Server
+
+For multi-instance chat functionality, you need to run the standalone chat server:
+
+1. Using the batch file (Windows):
+   ```
+   run-chat-server.bat
+   ```
+
+2. Using Java command (Cross-Platform):
+   ```
+   java -cp target\classes com.ueadmission.chat.server.StandaloneChatServer
+   ```
+
 ## 📂 Project Structure
 
 ```
 U-eAdmission/
 ├── img/                       # Screenshots and images
 ├── lib/                       # External libraries and dependencies
+├── config/                    # Configuration files
 ├── README-CHAT.md             # Chat system documentation
+├── ARCHITECTURE.md            # Detailed architecture documentation
 ├── src/
 │   ├── main/
 │   │   ├── java/
@@ -230,37 +254,26 @@ U-eAdmission/
 │   │   │           │   ├── session/           # User session handling
 │   │   │           │   └── state/             # Authentication state management
 │   │   │           ├── chat/                  # Chat functionality
+│   │   │           │   └── server/            # Chat server implementation
 │   │   │           ├── components/            # Reusable UI components
 │   │   │           ├── contact/               # Contact page functionality
 │   │   │           ├── context/               # Application context management
 │   │   │           ├── db/                    # Database connection and operations
+│   │   │           ├── exam/                  # Exam functionality
+│   │   │           ├── examMonitoring/        # Exam monitoring system
+│   │   │           ├── examPortal/            # Exam portal interface
 │   │   │           ├── navigation/            # Navigation utilities
 │   │   │           ├── payment/               # Payment processing
 │   │   │           ├── profile/               # User profile management
+│   │   │           ├── questionPaper/         # Question paper management
+│   │   │           ├── result/                # Result processing
 │   │   │           ├── student/               # Student-specific functionality
 │   │   │           └── utils/                 # Utility classes
 │   │   └── resources/
 │   │       ├── com.ueadmission/              # FXML, CSS, and other resources
-│   │       │   ├── about/
-│   │       │   ├── admin/
-│   │       │   ├── admission/
-│   │       │   ├── application/
-│   │       │   ├── auth/
-│   │       │   ├── chat/
-│   │       │   ├── components/
-│   │       │   ├── contact/
-│   │       │   ├── images/
-│   │       │   ├── payment/
-│   │       │   ├── profile/
-│   │       │   └── student/
 │   │       └── database/                     # SQL database scripts
 │   └── test/
 │       └── java/                             # Test classes
-├── target/                                   # Compiled output
-├── video/                                    # Demo videos
-│   ├── AdminLogin.mp4
-│   ├── StudentLogin.mp4
-│   └── StudentRegistration.mp4
 ├── pom.xml                                   # Maven project configuration
 └── README.md                                 # Project documentation
 ```
@@ -317,10 +330,12 @@ This project maintains two primary branches:
 - Ensure all tests are passing
 - Update documentation if necessary
 
-Thank you for contributing to make the U-eAdmission Online System better!
-
 ## 👥 Team Members
 
 - [Md. Atikur Rahaman](https://github.com/Atik203) - **Team Leader**
 - [Sagor Ahmed](https://github.com/SASagorAhmed)
 - [Md. Salman Rohoman Nayeem](https://github.com/Md-Salman-Rahman339)
+
+## 📄 License
+
+This project is licensed under the Apache License 2.0 - see the [LICENSE.md](LICENSE.md) file for details.
