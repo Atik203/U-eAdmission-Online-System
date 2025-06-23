@@ -63,9 +63,9 @@ public class LoginController extends BaseController {
         // Hide error label initially
         errorLabel.setVisible(false);
         
-        // Set default values for testing purposes
-        emailField.setText("atikurrahaman0304@gmail.com");
-        passwordField.setText("atik1234");
+//        // Set default values for testing purposes
+//        emailField.setText("atikurrahaman0304@gmail.com");
+//        passwordField.setText("atik1234");
 
         // Set up navigation buttons
         if (homeButton != null) {
