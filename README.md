@@ -123,6 +123,94 @@ The U-eAdmission Online System is a comprehensive JavaFX application designed to
 
 </details>
 
+### Add User Screen
+
+![Add User Screen](img/add-user-1.png)
+
+### Add Question Screen
+
+![Add Question Screen](img/add-question-1.png)
+
+<details>
+  <summary><b>Show More Add Question Screenshots</b></summary>
+
+### Additional Add Question Screen Views
+
+![Add Question Screen 2](img/add-question-2.png)
+
+</details>
+
+### Exam Screen
+
+![Exam Screen](img/exam-1.png)
+
+<details>
+  <summary><b>Show More Exam Screenshots</b></summary>
+
+### Additional Exam Screen Views
+
+![Exam Screen 2](img/exam-2.png)
+
+</details>
+
+### Exam Monitoring Screen
+
+![Exam Monitoring Screen](img/exam-monitoring-1.png)
+
+### Exam Portal Screen
+
+![Exam Portal Screen](img/exam-portal-1.png)
+
+<details>
+  <summary><b>Show More Exam Portal Screenshots</b></summary>
+
+### Additional Exam Portal Screen Views
+
+![Exam Portal Screen 2](img/exam-portal-2.png)
+
+![Exam Portal Screen 3](img/exam-portal-3.png)
+
+</details>
+
+### Mock Test Screen
+
+![Mock Test Screen](img/mock-test-1.png)
+
+<details>
+  <summary><b>Show More Mock Test Screenshots</b></summary>
+
+### Additional Mock Test Screen Views
+
+![Mock Test Screen 2](img/mock-test-2.png)
+
+</details>
+
+### Publish Result Screen
+
+![Publish Result Screen](img/publish-result-1.png)
+
+<details>
+  <summary><b>Show More Publish Result Screenshots</b></summary>
+
+### Additional Publish Result Screen Views
+
+![Publish Result Screen 2](img/publish-result-2.png)
+
+</details>
+
+### Result Screen
+
+![Result Screen](img/result-1.png)
+
+<details>
+  <summary><b>Show More Result Screenshots</b></summary>
+
+### Additional Result Screen Views
+
+![Result Screen 2](img/result-2.png)
+
+</details>
+
 For detailed information about the chat system, including how to run the standalone chat server and configure the chat system, please refer to the [Chat System Documentation](README-CHAT.md).
 
 ## 🎬 Demo Videos
@@ -156,6 +244,14 @@ https://github.com/user-attachments/assets/36acb46b-3e2d-4a01-951a-cab7703ebc60
 ### Mock Test and Exam Demo
 
 https://github.com/user-attachments/assets/5b90ad7f-7a0c-407e-a65c-8e994c46ac38
+
+### Exam Monitoring Demo
+
+https://github.com/user-attachments/assets/42ab74e9-3621-429a-aefd-cb891ce79aa4
+
+### Result Publish Demo
+
+https://github.com/user-attachments/assets/dc4609ee-a18d-4444-bcc7-3da7ca633435
 
 ## 🛠️ Technologies
 
