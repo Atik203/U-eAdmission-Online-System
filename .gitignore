@@ -32,7 +32,6 @@ build/
 !**/src/test/**/build/
 
 ### VS Code ###
-.vscode/
 
 ### Mac OS ###
 .DS_Store
@@ -40,4 +39,5 @@ build/
 ### video files ###
 video
 
-.env
+config.bat
+node_modules
