@@ -1,9 +1,12 @@
 package com.ueadmission.examPortal;
 
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.ueadmission.application.model.Application;
+import com.ueadmission.application.service.ApplicationService;
 import com.ueadmission.auth.state.AuthState;
 import com.ueadmission.auth.state.AuthStateManager;
 import com.ueadmission.components.ProfileButton;
@@ -25,6 +28,9 @@ public class ExamPortalController {
 
     private static final Logger LOGGER = Logger.getLogger(ExamPortalController.class.getName());
     private Consumer<AuthState> authStateListener;
+
+    // Service for application operations
+    private final ApplicationService applicationService = new ApplicationService();
 
     // UI Elements - Navigation
     @FXML private MFXButton homeButton;
@@ -80,6 +86,11 @@ public class ExamPortalController {
 
                 // After initialization, immediately update UI with current auth state
                 refreshUI();
+
+                // Update exam buttons based on user's applications
+                if (AuthStateManager.getInstance().isAuthenticated()) {
+                    updateExamButtonsBasedOnApplications();
+                }
             } catch (Exception e) {
                 LOGGER.log(Level.SEVERE, "Error initializing containers during startup: {0}", e.getMessage());
             }
@@ -371,6 +382,166 @@ public class ExamPortalController {
                     }
                 }
             }
+
+            // Update exam buttons based on user's applications
+            updateExamButtonsBasedOnApplications();
+        }
+    }
+
+    /**
+     * Check if the current user has applied for a program in the specified school
+     * 
+     * @param schoolName The name of the school to check
+     * @return true if the user has applied for a program in the school, false otherwise
+     */
+    private boolean hasAppliedForSchool(String schoolName) {
+        if (!AuthStateManager.getInstance().isAuthenticated()) {
+            return false;
+        }
+
+        try {
+            // Get all applications for the current user
+            List<Application> userApplications = applicationService.getUserApplications().get();
+
+            // Check if any application is for a program in the specified school
+            for (Application app : userApplications) {
+                String programName = app.getProgramName();
+
+                // Check if the program belongs to the specified school
+                if (isProgramInSchool(programName, schoolName)) {
+                    LOGGER.log(Level.INFO, "User has applied for program {0} in school {1}", 
+                            new Object[]{programName, schoolName});
+                    return true;
+                }
+            }
+
+            LOGGER.log(Level.INFO, "User has not applied for any program in school {0}", schoolName);
+            return false;
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Error checking if user has applied for school: {0}", e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Check if a program belongs to a specific school
+     * 
+     * @param programName The name of the program
+     * @param schoolName The name of the school
+     * @return true if the program belongs to the school, false otherwise
+     */
+    private boolean isProgramInSchool(String programName, String schoolName) {
+        // School of Engineering & Technology
+        if (schoolName.contains("Engineering") || schoolName.contains("Technology")) {
+            return programName.contains("CSE") || 
+                   programName.contains("EEE") || 
+                   programName.contains("Civil") ||
+                   programName.contains("Computer Science") ||
+                   programName.contains("Electrical") ||
+                   programName.contains("Engineering");
+        }
+
+        // School of Business & Economics
+        if (schoolName.contains("Business") || schoolName.contains("Economics")) {
+            return programName.contains("BBA") || 
+                   programName.contains("Business") || 
+                   programName.contains("Economics") ||
+                   programName.contains("Finance") ||
+                   programName.contains("Accounting") ||
+                   programName.contains("Marketing");
+        }
+
+        // School of Humanities & Social Sciences
+        if (schoolName.contains("Humanities") || schoolName.contains("Social Sciences")) {
+            return programName.contains("English") || 
+                   programName.contains("MSJ") || 
+                   programName.contains("Media") ||
+                   programName.contains("Journalism") ||
+                   programName.contains("Sociology") ||
+                   programName.contains("Humanities");
+        }
+
+        // School of Life Sciences
+        if (schoolName.contains("Life Sciences")) {
+            return programName.contains("Pharmacy") || 
+                   programName.contains("Biotech") || 
+                   programName.contains("Biology") ||
+                   programName.contains("Life Sciences") ||
+                   programName.contains("Biochemistry");
+        }
+
+        return false;
+    }
+
+    /**
+     * Update the "Start Exam" buttons based on the user's applications
+     */
+    private void updateExamButtonsBasedOnApplications() {
+        LOGGER.info("Updating exam buttons based on user's applications");
+
+        try {
+            javafx.scene.Scene scene = getScene();
+            if (scene == null) {
+                LOGGER.warning("Scene is null, cannot update exam buttons");
+                return;
+            }
+
+            // Check if the current user is an admin
+            boolean isAdmin = false;
+            if (AuthStateManager.getInstance().isAuthenticated() && 
+                AuthStateManager.getInstance().getState().getUser() != null) {
+                String userRole = AuthStateManager.getInstance().getState().getUser().getRole();
+                isAdmin = userRole != null && userRole.equalsIgnoreCase("admin");
+
+                if (isAdmin) {
+                    LOGGER.info("User is admin, all exam buttons will be enabled");
+                }
+            }
+
+            // Find all "Start Exam" buttons in the actual exam section
+            List<Node> examButtons = scene.getRoot().lookupAll(".start-exam-button")
+                    .stream()
+                    .filter(node -> node instanceof MFXButton && ((MFXButton) node).getText().equals("Start Exam"))
+                    .toList();
+
+            LOGGER.log(Level.INFO, "Found {0} 'Start Exam' buttons", examButtons.size());
+
+            // For each button, check if the user has applied for the corresponding school
+            for (Node node : examButtons) {
+                MFXButton button = (MFXButton) node;
+
+                // Get the exam card container (parent of the button's parent)
+                VBox examCard = (VBox) button.getParent().getParent();
+
+                // Get the exam title (school name)
+                Label titleLabel = (Label) examCard.getChildren().get(0);
+                String schoolName = titleLabel.getText();
+
+                // If user is admin, don't disable the button
+                if (isAdmin) {
+                    button.setDisable(false);
+                    LOGGER.log(Level.INFO, "Admin user: Enabled 'Start Exam' button for school: {0}", schoolName);
+                    continue;
+                }
+
+                // For non-admin users, check if they have applied for this school
+                boolean hasApplied = hasAppliedForSchool(schoolName);
+
+                // Enable/disable the button based on whether the user has applied
+                button.setDisable(!hasApplied);
+
+                // Add a tooltip explaining why the button is disabled
+                if (!hasApplied) {
+                    javafx.scene.control.Tooltip tooltip = new javafx.scene.control.Tooltip(
+                            "You must apply for a program in this school before you can take the exam");
+                    javafx.scene.control.Tooltip.install(button, tooltip);
+                    LOGGER.log(Level.INFO, "Disabled 'Start Exam' button for school: {0}", schoolName);
+                } else {
+                    LOGGER.log(Level.INFO, "Enabled 'Start Exam' button for school: {0}", schoolName);
+                }
+            }
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Error updating exam buttons: {0}", e.getMessage());
         }
     }
 
