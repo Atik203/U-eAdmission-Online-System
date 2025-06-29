@@ -9,7 +9,7 @@
 
 .payment-header {
   -fx-background-color: -primary-color;
-  -fx-padding: 15px;
+  -fx-padding: 10px;
   -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 5, 0, 0, 3);
 }
 
@@ -43,7 +43,7 @@
 
 .payment-content {
   -fx-background-color: -bg-light;
-  -fx-padding: 20px;
+  -fx-padding: 15px;
 }
 
 .payment-summary,
@@ -54,8 +54,8 @@
   -fx-border-radius: 8px;
   -fx-background-radius: 8px;
   -fx-effect: dropshadow(gaussian, -shadow-color, 5, 0, 0, 2);
-  -fx-padding: 20px;
-  -fx-spacing: 15px;
+  -fx-padding: 10px;
+  -fx-spacing: 10px;
 }
 
 /* Button Styles */
@@ -132,7 +132,7 @@
   -fx-font-size: 18px;
   -fx-font-weight: bold;
   -fx-text-fill: -primary-color;
-  -fx-padding: 0 0 10px 0;
+  -fx-padding: 0 0 6px 0;
 }
 
 .subsection-title {
@@ -180,17 +180,17 @@
   -fx-background-color: -bg-light;
   -fx-border-color: -border-color;
   -fx-border-width: 1px 0 0 0;
-  -fx-padding: 20px;
+  -fx-padding: 10px 25px 15px 25px;
 }
 
 /* Card details section */
 .card-details {
-  -fx-spacing: 15px;
-  -fx-padding: 15px 0 0 0;
+  -fx-spacing: 8px;
+  -fx-padding: 8px 0 0 0;
 }
 
 /* Separator styling */
 .separator {
-  -fx-padding: 10 0;
+  -fx-padding: 6 0;
   -fx-opacity: 0.6;
 }
